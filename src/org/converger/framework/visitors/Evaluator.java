@@ -118,4 +118,8 @@ public class Evaluator implements
 		return Math.abs(arg);
 	}
 	
+	@Override
+	public Double visitSqrt(final Double arg) {
+		return Math.sqrt(arg);
+	}
 }

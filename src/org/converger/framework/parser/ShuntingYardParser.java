@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.converger.framework.Environment;
+import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.Operator;
 
@@ -20,6 +21,7 @@ public class ShuntingYardParser implements Parser {
 	
 	private final Stack<Token> output;
 	private final Stack<Token> stack;
+	private boolean expectUnaryMinus;
 	
 	/**
 	 * Initializes this parser.
@@ -27,6 +29,7 @@ public class ShuntingYardParser implements Parser {
 	public ShuntingYardParser() {
 		this.output = new Stack<>();
 		this.stack = new Stack<>();
+		this.expectUnaryMinus = true;
 	}
 	
 	/**
@@ -46,6 +49,7 @@ public class ShuntingYardParser implements Parser {
 				//Number: push it on the output stack
 				this.output.push(new Token(token, Token.Type.NUMBER));
 				hasCoefficient = true;
+				this.expectUnaryMinus = false;
 			} else if (ShuntingYardParser.isName(token)) {
 				//Function or variable
 				if (hasCoefficient) {
@@ -61,11 +65,13 @@ public class ShuntingYardParser implements Parser {
 					this.output.push(new Token(token, Token.Type.VARIABLE));
 				}
 				hasCoefficient = false;
+				this.expectUnaryMinus = false;
 			} else if (ShuntingYardParser.isSymbol(token)) {
 				//It can be either a parenthesis, or an operator
 				if (token.equals(Token.LEFT_PARENTHESIS.getContent())) {
 					//If it's a left parenthesis, push it on the operator stack
 					this.stack.push(Token.LEFT_PARENTHESIS);
+					this.expectUnaryMinus = true;
 				} else if (token.equals(Token.RIGHT_PARENTHESIS.getContent())) {
 					try {
 						//Pops tokens from the operator stack until a left
@@ -83,18 +89,27 @@ public class ShuntingYardParser implements Parser {
 					if (!stack.isEmpty() && stack.peek().getType() == Token.Type.FUNCTION) {
 						output.push(stack.pop());
 					}
-					hasCoefficient = false;
+					this.expectUnaryMinus = false;
 				} else {
 					//If it's not a parenthesis, it's an operator
 					this.pushOperator(this.getOperator(token));
-					hasCoefficient = false;
+					this.expectUnaryMinus = false;
 				}
+				hasCoefficient = false;
 			}
 		}
 		this.complete();
 	}
 	
 	private void pushOperator(final Operator o) {
+		
+		//Check for unary minus
+		if (this.expectUnaryMinus && o.equals(BinaryOperator.SUBTRACTION)) {
+			this.output.push(new Token("-1", Token.Type.NUMBER));
+			this.stack.push(new Token("*", Token.Type.OPERATOR));
+			return;
+		}
+		
 		boolean hasOperator = true;
 		//Repeat until there is an operator on top of the stack
 		while (hasOperator && !this.stack.isEmpty()) {

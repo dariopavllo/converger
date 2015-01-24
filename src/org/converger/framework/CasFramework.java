@@ -2,6 +2,7 @@ package org.converger.framework;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * This interface defines the operations which can be done on this CAS.
@@ -39,6 +40,13 @@ public interface CasFramework {
 	 * @return the processed expression
 	 */
 	Expression substitute(Expression input, Map<String, Expression> subexpressions);
+	
+	/**
+	 * Returns a list of the variables contained in the expression.
+	 * @param input the target expression
+	 * @return a set of variables
+	 */
+	Set<String> enumerateVariables(Expression input);
 	
 	/**
 	 * Differentiates the supplied function with respect to the supplied variable.

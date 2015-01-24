@@ -66,7 +66,7 @@ public enum NAryOperator implements Operator {
 		 * @param operands the list of operands
 		 * @return an implementation-dependent value
 		 */
-		default X visitDefault(final List<X> operands) {
+		default X visitDefaultNAryOperator(final List<X> operands) {
 			throw new UnsupportedOperationException();
 		}
 		
@@ -76,7 +76,7 @@ public enum NAryOperator implements Operator {
 		 * @return an implementation-dependent value
 		 */
 		default X visitAddition(final List<X> operands) {
-			return this.visitDefault(operands);
+			return this.visitDefaultNAryOperator(operands);
 		}
 		
 		/**
@@ -85,7 +85,7 @@ public enum NAryOperator implements Operator {
 		 * @return an implementation-dependent value
 		 */
 		default X visitProduct(final List<X> operands) {
-			return this.visitDefault(operands);
+			return this.visitDefaultNAryOperator(operands);
 		}
 	}
 }

@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.converger.framework.Expression;
-import org.converger.framework.core.BinaryOperation;
-import org.converger.framework.core.Constant;
-import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
-import org.converger.framework.core.Variable;
 
 /**
  * This visitor implements a specific type of simplifier which
@@ -17,29 +13,7 @@ import org.converger.framework.core.Variable;
  * For example, (a+b) + (c+d) + e becomes a + b + c + d + e.
  * @author Dario Pavllo
  */
-public class TreeLeveler implements Expression.Visitor<Expression> {
-
-	@Override
-	public Expression visit(final Variable v) {
-		return v;
-	}
-
-	@Override
-	public Expression visit(final Constant v) {
-		return v;
-	}
-
-	@Override
-	public Expression visit(final BinaryOperation v) {
-		return new BinaryOperation(v.getOperator(),
-			this.visit(v.getFirstOperand()),
-			this.visit(v.getSecondOperand()));
-	}
-
-	@Override
-	public Expression visit(final FunctionOperation v) {
-		return new FunctionOperation(v.getFunction(), this.visit(v.getArgument()));
-	}
+public class TreeLeveler extends AbstractExpressionVisitor {
 
 	@Override
 	public Expression visit(final NAryOperation v) {
