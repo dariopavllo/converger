@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.converger.framework.Expression;
+import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
@@ -166,11 +167,7 @@ public class Differentiator implements
 	@Override
 	public Expression visitCos(final Expression arg) {
 		// D cos(x) = -sin(x)
-		return new NAryOperation(
-			NAryOperator.PRODUCT,
-			Constant.valueOf(-1),
-			new FunctionOperation(Function.SIN, arg)
-		);
+		return MathUtils.negate(new FunctionOperation(Function.SIN, arg));
 	}
 	
 	@Override
@@ -190,6 +187,20 @@ public class Differentiator implements
 			BinaryOperator.DIVISION,
 			new FunctionOperation(Function.ABS, arg),
 			arg
+		);
+	}
+	
+	@Override
+	public Expression visitSqrt(final Expression arg) {
+		// D sqrt(x) = 1/(2sqrt(x))
+		return new BinaryOperation(
+			BinaryOperator.DIVISION,
+			Constant.ONE,
+			new NAryOperation(
+				NAryOperator.PRODUCT,
+				Constant.valueOf(2),
+				new FunctionOperation(Function.SQRT, arg)
+			)
 		);
 	}
 

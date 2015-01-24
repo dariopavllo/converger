@@ -6,6 +6,7 @@ import java.util.Stack;
 
 import org.converger.framework.Environment;
 import org.converger.framework.Expression;
+import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
@@ -64,8 +65,8 @@ public class TreeBuilder {
 	}
 	
 	private void pushOperator(final Token t) {
-		final Expression o2 = this.stack.pop();
-		final Expression o1 = this.stack.pop();
+		final Expression o2 = this.stack.pop(); //Second operand
+		final Expression o1 = this.stack.pop(); //First operand
 		
 		final Operator o = Environment.getSingleton().getOperator(t.getContent());
 		Expression result;
@@ -77,11 +78,7 @@ public class TreeBuilder {
 				result = new NAryOperation(
 					NAryOperator.ADDITION,
 					o1,
-					new NAryOperation(
-						NAryOperator.PRODUCT,
-						Constant.valueOf(-1),
-						o2
-					)
+					MathUtils.negate(o2)
 				);
 			} else {
 				//Normal case
@@ -103,4 +100,5 @@ public class TreeBuilder {
 		final Function f = Environment.getSingleton().getFunction(t.getContent());
 		this.stack.push(new FunctionOperation(f, argument));
 	}
+	
 }

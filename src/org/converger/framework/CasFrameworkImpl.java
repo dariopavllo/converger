@@ -4,6 +4,7 @@ package org.converger.framework;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.converger.framework.core.SpecialConstant;
 import org.converger.framework.core.Variable;
@@ -15,8 +16,11 @@ import org.converger.framework.visitors.BasicPrinter;
 import org.converger.framework.visitors.Differentiator;
 import org.converger.framework.visitors.Evaluator;
 import org.converger.framework.visitors.LatexPrinter;
+import org.converger.framework.visitors.RationalSimplifier;
 import org.converger.framework.visitors.Simplifier;
 import org.converger.framework.visitors.TreeLeveler;
+import org.converger.framework.visitors.TreeSorter;
+import org.converger.framework.visitors.VariableEnumerator;
 
 /**
  * Actual implementation of the CAS framework.
@@ -49,10 +53,10 @@ public final class CasFrameworkImpl implements CasFramework {
 		} catch (final IllegalArgumentException e) {
 			//Rethrow
 			throw new IllegalArgumentException(e.getMessage(), e);
-		} catch (final Exception e) {
+		} /*catch (final Exception e) {
 			//Unexpected error
 			throw new IllegalArgumentException("Unexpected syntax error", e);
-		}
+		}*/
 	}
 
 	@Override
@@ -66,6 +70,8 @@ public final class CasFrameworkImpl implements CasFramework {
 			previous = current;
 			current = new Simplifier().visit(current);
 			current = new TreeLeveler().visit(current);
+			current = new RationalSimplifier().visit(current);
+			current = new TreeSorter().visit(current);
 			steps++;
 		} while (!previous.equals(current));
 		System.out.println("Simplified in " + steps + " steps.");
@@ -107,6 +113,13 @@ public final class CasFrameworkImpl implements CasFramework {
 	@Override
 	public String toLatexText(final Expression input) {
 		return new LatexPrinter().visit(input);
+	}
+
+	@Override
+	public Set<String> enumerateVariables(final Expression input) {
+		final VariableEnumerator enumerator = new VariableEnumerator();
+		enumerator.visit(input);
+		return enumerator.getVariables();
 	}
 
 }

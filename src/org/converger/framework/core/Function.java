@@ -33,6 +33,13 @@ public enum Function {
 		public <X> X accept(final Visitor<X> v, final X arg) {
 			return v.visitAbs(arg);
 		}
+	},
+	/** Square root. */
+	SQRT("sqrt") {
+		@Override
+		public <X> X accept(final Visitor<X> v, final X arg) {
+			return v.visitSqrt(arg);
+		}
 	};
 	
 	private final String name;
@@ -72,7 +79,7 @@ public enum Function {
 		 * @param arg the function argument
 		 * @return an implementation-dependent value
 		 */
-		default X visitDefault(final X arg) {
+		default X visitDefaultFunction(final X arg) {
 			throw new UnsupportedOperationException();
 		}
 		
@@ -82,7 +89,7 @@ public enum Function {
 		 * @return an implementation-dependent value
 		 */
 		default X visitSin(final X arg) {
-			return this.visitDefault(arg);
+			return this.visitDefaultFunction(arg);
 		}
 		
 		/**
@@ -91,7 +98,7 @@ public enum Function {
 		 * @return an implementation-dependent value
 		 */
 		default X visitCos(final X arg) {
-			return this.visitDefault(arg);
+			return this.visitDefaultFunction(arg);
 		}
 		
 		/**
@@ -100,7 +107,7 @@ public enum Function {
 		 * @return an implementation-dependent value
 		 */
 		default X visitLn(final X arg) {
-			return this.visitDefault(arg);
+			return this.visitDefaultFunction(arg);
 		}
 		
 		/**
@@ -109,7 +116,16 @@ public enum Function {
 		 * @return an implementation-dependent value
 		 */
 		default X visitAbs(final X arg) {
-			return this.visitDefault(arg);
+			return this.visitDefaultFunction(arg);
+		}
+		
+		/**
+		 * Action to do on the square root function.
+		 * @param arg the function argument
+		 * @return an implementation-dependent value
+		 */
+		default X visitSqrt(final X arg) {
+			return this.visitDefaultFunction(arg);
 		}
 	}
 }

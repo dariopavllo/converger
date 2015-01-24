@@ -73,7 +73,7 @@ public enum BinaryOperator implements Operator {
 		 * @param o2 the second operand
 		 * @return an implementation-dependent value
 		 */
-		default X visitDefault(final X o1, final X o2) {
+		default X visitDefaultBinaryOperator(final X o1, final X o2) {
 			throw new UnsupportedOperationException();
 		}
 		
@@ -84,7 +84,7 @@ public enum BinaryOperator implements Operator {
 		 * @return an implementation-dependent value
 		 */
 		default X visitDivision(final X o1, final X o2) {
-			return this.visitDefault(o1, o2);
+			return this.visitDefaultBinaryOperator(o1, o2);
 		}
 		
 		/**
@@ -94,7 +94,7 @@ public enum BinaryOperator implements Operator {
 		 * @return an implementation-dependent value
 		 */
 		default X visitPower(final X o1, final X o2) {
-			return this.visitDefault(o1, o2);
+			return this.visitDefaultBinaryOperator(o1, o2);
 		}
 	}
 
