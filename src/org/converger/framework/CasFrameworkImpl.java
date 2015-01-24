@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.converger.framework.core.SpecialConstant;
 import org.converger.framework.core.Variable;
 import org.converger.framework.parser.ShuntingYardParser;
 import org.converger.framework.parser.Token;
@@ -40,10 +41,18 @@ public final class CasFrameworkImpl implements CasFramework {
 	public Expression parse(final String input) {
 		final Tokenizer tokenizer = new Tokenizer(input);
 		final ShuntingYardParser parser = new ShuntingYardParser();
-		parser.parse(tokenizer);
-		final List<Token> result = parser.getOutputList();
-		final TreeBuilder tb = new TreeBuilder(result);
-		return tb.build();
+		try {
+			parser.parse(tokenizer);
+			final List<Token> result = parser.getOutputList();
+			final TreeBuilder tb = new TreeBuilder(result);
+			return tb.build();
+		} catch (final IllegalArgumentException e) {
+			//Rethrow
+			throw new IllegalArgumentException(e.getMessage(), e);
+		} catch (final Exception e) {
+			//Unexpected error
+			throw new IllegalArgumentException("Unexpected syntax error", e);
+		}
 	}
 
 	@Override
@@ -82,9 +91,10 @@ public final class CasFrameworkImpl implements CasFramework {
 		final Map<Variable, Double> finalMap = new HashMap<>();
 		values.forEach((x, y) -> finalMap.put(new Variable(x), y));
 		
-		//Magic constants
-		finalMap.put(Environment.E, Math.E);
-		finalMap.put(Environment.PI, Math.PI);
+		//Special constants
+		for (final SpecialConstant c : SpecialConstant.values()) {
+			finalMap.put(c.getAsVariable(), c.getValue());
+		}
 		
 		return new Evaluator(finalMap).visit(input);
 	}

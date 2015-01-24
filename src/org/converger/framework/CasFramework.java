@@ -1,6 +1,7 @@
 package org.converger.framework;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * This interface defines the operations which can be done on this CAS.
@@ -20,6 +21,7 @@ public interface CasFramework {
 	 * Parses an expression and returns its internal representation.
 	 * @param input	the expression string in infix notation
 	 * @return the parsed expression tree
+	 * @throws IllegalArgumentException if the expression contains syntax errors
 	 */
 	Expression parse(String input);
 	
@@ -51,6 +53,7 @@ public interface CasFramework {
 	 * @param input the function to evaluate
 	 * @param values a map containing correspondences between variables and values
 	 * @return a real number representing the final result
+	 * @throws NoSuchElementException if a mapping is not found for a certain variable
 	 */
 	double evaluate(Expression input, Map<String, Double> values);
 	
