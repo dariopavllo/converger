@@ -8,7 +8,6 @@ import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Function;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.Operator;
-import org.converger.framework.core.Variable;
 
 /**
  * This class contains the framework's global data, such as
@@ -16,12 +15,6 @@ import org.converger.framework.core.Variable;
  * @author Dario Pavllo
  */
 public final class Environment {
-
-	/** Represents the pi constant: 3.14159... */
-	public static final Variable PI = new Variable("pi");
-	
-	/** Represents the Euler's constant (e): 2.71828... */
-	public static final Variable E = new Variable("e");
 	
 	private static final Environment SINGLETON = new Environment();
 	

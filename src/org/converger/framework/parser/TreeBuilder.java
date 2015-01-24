@@ -41,22 +41,22 @@ public class TreeBuilder {
 	public Expression build() {
 		for (final Token t : this.tokenList) {
 			switch (t.getType()) {
-			case OPERATOR:
-				this.pushOperator(t);
-				break;
-			case FUNCTION:
-				this.pushFunction(t);
-				break;
-			case NUMBER:
-				final int value = Integer.parseInt(t.getContent());
-				this.stack.push(Constant.valueOf(value));
-				break;
-			case VARIABLE:
-				this.stack.push(new Variable(t.getContent()));
-				break;
-			default:
-				//Unexpected error (should never happen)
-				throw new IllegalStateException("Internal error (unexpected token)");
+				case OPERATOR:
+					this.pushOperator(t);
+					break;
+				case FUNCTION:
+					this.pushFunction(t);
+					break;
+				case NUMBER:
+					final int value = Integer.parseInt(t.getContent());
+					this.stack.push(Constant.valueOf(value));
+					break;
+				case VARIABLE:
+					this.stack.push(new Variable(t.getContent()));
+					break;
+				default:
+					//Unexpected error (should never happen)
+					throw new IllegalStateException("Internal error (unexpected token)");
 			}
 		}
 		

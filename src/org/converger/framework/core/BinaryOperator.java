@@ -21,7 +21,7 @@ public enum BinaryOperator implements Operator {
 		}
 	},
 	/** Subtraction operator (only for parsing purposes). */
-	SUBTRACTION("-", 2) {
+	SUBTRACTION("-", 1) {
 		@Override
 		public <X> X accept(final Visitor<X> v, final X o1, final X o2) {
 			/* Subtraction is used only for parsing purposes,

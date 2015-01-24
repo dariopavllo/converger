@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.converger.framework.Environment;
+import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.Operator;
 
 /**
@@ -39,20 +40,28 @@ public class ShuntingYardParser implements Parser {
 	
 	@Override
 	public void parse(final Iterable<String> input) {
+		boolean hasCoefficient = false;
 		for (final String token : input) {
 			if (ShuntingYardParser.isNumber(token)) {
 				//Number: push it on the output stack
 				this.output.push(new Token(token, Token.Type.NUMBER));
-			} else if (token.matches("[a-zA-Z]+")) {
+				hasCoefficient = true;
+			} else if (ShuntingYardParser.isName(token)) {
 				//Function or variable
+				if (hasCoefficient) {
+					//If the previous token was a coefficient (number), a multiplication
+					//operation is implicitly added (e.g. 3x^2 = 3*x^2).
+					this.pushOperator(NAryOperator.PRODUCT);
+				}
 				if (Environment.getSingleton().hasFunction(token)) {
 					this.stack.push(new Token(token, Token.Type.FUNCTION));
 				} else {
-					//If there is no function which has the given name,
+					//If there is no function with the given name,
 					//it is treated as a variable
 					this.output.push(new Token(token, Token.Type.VARIABLE));
 				}
-			} else if (token.length() == 1) { //NOPMD
+				hasCoefficient = false;
+			} else if (ShuntingYardParser.isSymbol(token)) {
 				//It can be either a parenthesis, or an operator
 				if (token.equals(Token.LEFT_PARENTHESIS.getContent())) {
 					//If it's a left parenthesis, push it on the operator stack
@@ -74,9 +83,11 @@ public class ShuntingYardParser implements Parser {
 					if (!stack.isEmpty() && stack.peek().getType() == Token.Type.FUNCTION) {
 						output.push(stack.pop());
 					}
+					hasCoefficient = false;
 				} else {
 					//If it's not a parenthesis, it's an operator
 					this.pushOperator(this.getOperator(token));
+					hasCoefficient = false;
 				}
 			}
 		}
@@ -118,6 +129,13 @@ public class ShuntingYardParser implements Parser {
 		}
 	}
 	
+	private Operator getOperator(final String token) {
+		if (!Environment.getSingleton().hasOperator(token)) {
+			throw new IllegalArgumentException("Unknown operator: " + token);
+		}
+		return Environment.getSingleton().getOperator(token);
+	}
+	
 	private static boolean isNumber(final String str) {
 		try {
 			Double.parseDouble(str);
@@ -127,10 +145,11 @@ public class ShuntingYardParser implements Parser {
 		}
 	}
 	
-	private Operator getOperator(final String token) {
-		if (!Environment.getSingleton().hasOperator(token)) {
-			throw new IllegalArgumentException("Unknown operator: " + token);
-		}
-		return Environment.getSingleton().getOperator(token);
+	private static boolean isName(final String str) {
+		return str.matches("[a-zA-Z]+");
+	}
+	
+	private static boolean isSymbol(final String str) {
+		return str.length() == 1; //NOPMD
 	}
 }

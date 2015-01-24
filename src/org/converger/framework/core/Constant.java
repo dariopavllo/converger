@@ -11,7 +11,6 @@ public final class Constant implements Expression {
 
 	/** Constant 0. */
 	public static final Constant ZERO = Constant.valueOf(0);
-	
 	/** Constant 1. */
 	public static final Constant ONE = Constant.valueOf(1);
 	
