@@ -25,12 +25,16 @@ public class LatexPrinter implements
 	
 	@Override
 	public String visit(final Variable v) {
-		return v.getName();
+		return "\\mathit{" + v.getName() + "}";
 	}
 
 	@Override
 	public String visit(final Constant v) {
-		return v.toString();
+		if (v.getValue() < 0) {
+			return "(" + v.toString() + ")";
+		} else {
+			return v.toString();
+		}
 	}
 
 	@Override
@@ -62,23 +66,12 @@ public class LatexPrinter implements
 				.map(x -> this.visit(x))
 				.collect(Collectors.toList());
 		return v.getOperator().accept(this, output);
-		/*final String output = v.getOperands()
-			.stream()
-			.map(x -> this.visit(x))
-			.collect(
-				Collectors.joining(v.getOperator().getSymbol())
-			);
-		if (this.firstLevel) {
-			this.firstLevel = false;
-			return output;
-		} else {
-			return "\\left(" + output + "\\right)";
-		}*/
 	}
 	
 	@Override
 	public String visit(final FunctionOperation v) {
-		return v.getFunction().getName() + "\\left(" + this.visit(v.getArgument()) + "\\right)";
+		return "\\mathrm{" + v.getFunction().getName() + "}"
+				+ "\\left(" + this.visit(v.getArgument()) + "\\right)";
 	}
 
 	@Override
@@ -95,12 +88,13 @@ public class LatexPrinter implements
 	
 	@Override
 	public String visitAddition(final List<String> operands) {
-		return operands.stream().collect(Collectors.joining(" + ", "\\left(", "\\right)"));
+		return operands.stream().collect(
+				Collectors.joining("\\;+\\;", "\\left(", "\\right)"));
 	}
 
 	@Override
 	public String visitProduct(final List<String> operands) {
-		return operands.stream().collect(Collectors.joining("{\\cdot}"));
+		return operands.stream().collect(Collectors.joining("{\\,}"));
 	}
 	
 	

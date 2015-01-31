@@ -24,6 +24,7 @@ public class TreeLeveler extends AbstractExpressionVisitor {
 				final NAryOperation op = (NAryOperation) child;
 				if (op.getOperator() == v.getOperator()) {
 					for (final Expression childOfChild : op.getOperands()) {
+						//Merges its children with the parent node
 						leveled.add(childOfChild);
 					}
 				} else {

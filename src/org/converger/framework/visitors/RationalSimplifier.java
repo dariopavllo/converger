@@ -40,33 +40,9 @@ public class RationalSimplifier extends AbstractExpressionVisitor
 		}
 	}
 	
-	@Override
-	public Expression visitProduct(final List<Expression> operands) {
-		// a*(x/y)*b*(z/w) = (a*x*b*z)/(y*w)
-		final List<Expression> numerator = new ArrayList<>();
-		final List<Expression> denominator = new ArrayList<>();
-		for (final Expression operand : operands) {
-			if (operand instanceof BinaryOperation) {
-				final BinaryOperation bOp = (BinaryOperation) operand;
-				if (bOp.getOperator() == BinaryOperator.DIVISION) {
-					numerator.add(bOp.getFirstOperand());
-					denominator.add(bOp.getSecondOperand());
-				} else {
-					numerator.add(operand);
-				}
-			} else {
-				numerator.add(operand);
-			}
-		}
-		if (!denominator.isEmpty()) {
-			return new BinaryOperation(
-				BinaryOperator.DIVISION,
-				MathUtils.implode(NAryOperator.PRODUCT, numerator),
-				MathUtils.implode(NAryOperator.PRODUCT, denominator)
-			);
-		}
-		return new NAryOperation(NAryOperator.PRODUCT, operands);
-	}
+	/*------------------
+	 * Binary operators
+	 *-----------------*/
 	
 	@Override
 	public Expression visitDivision(final Expression o1, final Expression o2) {
@@ -105,4 +81,35 @@ public class RationalSimplifier extends AbstractExpressionVisitor
 		return new BinaryOperation(BinaryOperator.DIVISION, o1, o2);
 	}
 
+	/*-----------------
+	 * N-ary operators
+	 *-----------------*/
+	
+	@Override
+	public Expression visitProduct(final List<Expression> operands) {
+		// a*(x/y)*b*(z/w) = (a*x*b*z)/(y*w)
+		final List<Expression> numerator = new ArrayList<>();
+		final List<Expression> denominator = new ArrayList<>();
+		for (final Expression operand : operands) {
+			if (operand instanceof BinaryOperation) {
+				final BinaryOperation bOp = (BinaryOperation) operand;
+				if (bOp.getOperator() == BinaryOperator.DIVISION) {
+					numerator.add(bOp.getFirstOperand());
+					denominator.add(bOp.getSecondOperand());
+				} else {
+					numerator.add(operand);
+				}
+			} else {
+				numerator.add(operand);
+			}
+		}
+		if (!denominator.isEmpty()) {
+			return new BinaryOperation(
+				BinaryOperator.DIVISION,
+				MathUtils.implode(NAryOperator.PRODUCT, numerator),
+				MathUtils.implode(NAryOperator.PRODUCT, denominator)
+			);
+		}
+		return new NAryOperation(NAryOperator.PRODUCT, operands);
+	}
 }

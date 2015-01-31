@@ -76,6 +76,10 @@ public class Evaluator implements
 				this.visit(v.getArgument()));
 	}
 
+	/*------------------
+	 * Binary operators
+	 *-----------------*/
+	
 	@Override
 	public Double visitDivision(final Double o1, final Double o2) {
 		return o1 / o2;
@@ -86,7 +90,9 @@ public class Evaluator implements
 		return Math.pow(o1, o2);
 	}
 		
-	
+	/*-----------------
+	 * N-ary operators
+	 *-----------------*/
 		
 	@Override
 	public Double visitAddition(final List<Double> operands) {
@@ -97,6 +103,10 @@ public class Evaluator implements
 	public Double visitProduct(final List<Double> operands) {
 		return operands.stream().reduce(1.0, (x, y) -> x * y);
 	}
+	
+	/*-----------
+	 * Functions
+	 *-----------*/
 	
 	@Override
 	public Double visitSin(final Double arg) {

@@ -7,21 +7,21 @@ package org.converger.framework.core;
 public enum BinaryOperator implements Operator {
 
 	/** Division operator. */
-	DIVISION("/", 2) {
+	DIVISION("/", 2, Associativity.LEFT) {
 		@Override
 		public <X> X accept(final Visitor<X> v, final X o1, final X o2) {
 			return v.visitDivision(o1, o2);
 		}
 	},
 	/** Power (exponentiation) operator. */
-	POWER("^", 3) {
+	POWER("^", 3, Associativity.RIGHT) {
 		@Override
 		public <X> X accept(final Visitor<X> v, final X o1, final X o2) {
 			return v.visitPower(o1, o2);
 		}
 	},
 	/** Subtraction operator (only for parsing purposes). */
-	SUBTRACTION("-", 1) {
+	SUBTRACTION("-", 1, Associativity.LEFT) {
 		@Override
 		public <X> X accept(final Visitor<X> v, final X o1, final X o2) {
 			/* Subtraction is used only for parsing purposes,
@@ -32,10 +32,12 @@ public enum BinaryOperator implements Operator {
 	
 	private final String symbol;
 	private final int precedence;
+	private final Associativity associativity;
 	
-	private BinaryOperator(final String opSymbol, final int opPrecedence) {
+	private BinaryOperator(final String opSymbol, final int opPrecedence, final Associativity as) {
 		this.symbol = opSymbol;
 		this.precedence = opPrecedence;
+		this.associativity = as;
 	}
 	
 	@Override
@@ -46,6 +48,11 @@ public enum BinaryOperator implements Operator {
 	@Override
 	public int getPrecedence() {
 		return this.precedence;
+	}
+	
+	@Override
+	public Associativity getAssociativity() {
+		return this.associativity;
 	}
 	
 	/**

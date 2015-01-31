@@ -117,7 +117,10 @@ public class ShuntingYardParser implements Parser {
 			if (topToken.getType() == Token.Type.OPERATOR) {
 				//Compares the precedence of the two last operators
 				final Operator topOperator = this.getOperator(topToken.getContent());
-				if (o.getPrecedence() <= topOperator.getPrecedence()) {
+				if (o.getAssociativity() == Operator.Associativity.LEFT
+						&& o.getPrecedence() <= topOperator.getPrecedence()
+					|| o.getAssociativity() == Operator.Associativity.RIGHT
+						&& o.getPrecedence() < topOperator.getPrecedence()) {
 					this.stack.pop();
 					this.output.push(topToken);
 				} else {

@@ -19,4 +19,16 @@ public interface Operator {
 	 */
 	int getPrecedence();
 	
+	/**
+	 * Returns the associativity of this operator, useful for parsing.
+	 * @return the associativity of this operator
+	 */
+	Associativity getAssociativity();
+	
+	/**
+	 * Represents the associativity of an operator.
+	 */
+	enum Associativity {
+		LEFT, RIGHT;
+	}
 }

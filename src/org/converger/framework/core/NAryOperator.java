@@ -11,14 +11,14 @@ import java.util.List;
 public enum NAryOperator implements Operator {
 
 	/** Addition operator. */
-	ADDITION("+", 1) {
+	ADDITION("+", 1, Associativity.LEFT) {
 		@Override
 		public <X> X accept(final Visitor<X> v, final List<X> operands) {
 			return v.visitAddition(operands);
 		}
 	},
 	/** Product operator. */
-	PRODUCT("*", 2) {
+	PRODUCT("*", 2, Associativity.LEFT) {
 		@Override
 		public <X> X accept(final Visitor<X> v, final List<X> operands) {
 			return v.visitProduct(operands);
@@ -27,10 +27,13 @@ public enum NAryOperator implements Operator {
 	
 	private final String symbol;
 	private final int precedence;
+	private final Associativity associativity;
 	
-	private NAryOperator(final String operatorSymbol, final int precedenceValue) {
+	private NAryOperator(final String operatorSymbol, final int precedenceValue,
+			final Associativity as) {
 		this.symbol = operatorSymbol;
 		this.precedence = precedenceValue;
+		this.associativity = as;
 	}
 	
 	@Override
@@ -41,6 +44,11 @@ public enum NAryOperator implements Operator {
 	@Override
 	public int getPrecedence() {
 		return this.precedence;
+	}
+	
+	@Override
+	public Associativity getAssociativity() {
+		return this.associativity;
 	}
 	
 	/**
