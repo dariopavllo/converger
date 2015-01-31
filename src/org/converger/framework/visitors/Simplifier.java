@@ -59,9 +59,9 @@ public class Simplifier implements
 		return v.getFunction().accept(this, this.visit(v.getArgument()));
 	}
 	
-	/*-----------
-	 * Operators
-	 *-----------*/
+	/*------------------
+	 * Binary operators
+	 *-----------------*/
 	
 	@Override
 	public Expression visitDivision(final Expression o1, final Expression o2) {
@@ -86,9 +86,30 @@ public class Simplifier implements
 		if (o2.equals(Constant.ONE)) {
 			return visit(o1);
 		}
+		
+		//If the operands are constants, the result can be calculated
+		if (o1 instanceof Constant && o2 instanceof Constant) {
+			final long base = ((Constant) o1).getValue();
+			final long exponent = ((Constant) o2).getValue();
+			if (exponent >= 0) {
+				final long result = MathUtils.integerPower(base, exponent);
+				return Constant.valueOf(result);
+			} else {
+				//a^(-b) = 1/(a^b)
+				final long result = MathUtils.integerPower(base, -exponent);
+				return new BinaryOperation(
+					BinaryOperator.DIVISION,
+					Constant.ONE,
+					Constant.valueOf(result)
+				);
+			}
+		}
 		return new BinaryOperation(BinaryOperator.POWER, o1, o2);
 	}
 	
+	/*-----------------
+	 * N-ary operators
+	 *-----------------*/
 	
 	@Override
 	public Expression visitAddition(final List<Expression> operands) {
@@ -184,7 +205,7 @@ public class Simplifier implements
 	@Override
 	public Expression visitAbs(final Expression arg) {
 		if (arg instanceof Constant) {
-			//If the argument is a constant, the absolute value can be calculated
+			//If the argument is a constant, its absolute value can be calculated
 			final Constant c = (Constant) arg;
 			return c.getValue() >= 0 ? c : MathUtils.negate(c);
 		}
@@ -194,7 +215,7 @@ public class Simplifier implements
 	@Override
 	public Expression visitSqrt(final Expression arg) {
 		if (arg instanceof Constant) {
-			//Tries to compute the square root
+			//Tries to compute the integer square root
 			final Constant c = (Constant) arg;
 			final long squareRoot = (long) Math.sqrt(c.getValue());
 			if (squareRoot * squareRoot == c.getValue()) {

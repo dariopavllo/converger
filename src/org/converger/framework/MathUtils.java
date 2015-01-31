@@ -33,7 +33,7 @@ public final class MathUtils {
 	 * Build (safely) an n-ary operation using the supplied operator
 	 * and list of operands.
 	 * If the list is empty, the constant 0 is returned.
-	 * If the list contains only one element, it is directly returned without the operation.
+	 * If the list contains only one element, it is directly returned without any operation.
 	 * @param operator an n-ary operator
 	 * @param operands the list of operands
 	 * @return an n-ary operation using the supplied arguments
@@ -47,6 +47,30 @@ public final class MathUtils {
 				return operands.get(0);
 			default:
 				return new NAryOperation(operator, operands);
+		}
+	}
+	
+	/**
+	 * Calculates the integer power of a natural number using the
+	 * exponentiation-by-squaring algorithm, in O(log(exponent)).
+	 * @param base the number to exponentiate
+	 * @param exponent the exponent
+	 * @return the operation result
+	 */
+	public static long integerPower(final long base, final long exponent) {
+		//Base cases
+		if (base == 0) {
+			return 1;
+		}
+		if (exponent == 1) { //NOPMD
+			return base;
+		}
+		
+		//Exponentiation by squaring
+		if (exponent % 2 == 0) { //If the exponent is even
+			return integerPower(base * base, exponent / 2);
+		} else {
+			return base * integerPower(base * base, (exponent - 1) / 2);
 		}
 	}
 	

@@ -17,7 +17,7 @@ import org.converger.framework.core.Variable;
 
 /**
  * This visitor differentiates the visited function with
- * respect to the supplied variable, and returns its derivate.
+ * respect to the supplied variable, and returns its derivative.
  * The output expression must be simplified afterwards.
  * @author Dario Pavllo
  */
@@ -38,11 +38,13 @@ public class Differentiator implements
 	
 	@Override
 	public Expression visit(final Variable v) {
+		//Derivative of a variable: 1 if it's the target variable, 0 otherwise
 		return v.equals(this.target) ? Constant.ONE : Constant.ZERO;
 	}
 
 	@Override
 	public Expression visit(final Constant v) {
+		//The derivative of an additive constant is always 0
 		return Constant.ZERO;
 	}
 
@@ -59,7 +61,7 @@ public class Differentiator implements
 	
 	@Override
 	public Expression visit(final FunctionOperation v) {
-		// D f(g(x)) = f'(g(x)) * g'(x)
+		//Derivative of function composition: [f(g(x))]' = f'(g(x)) * g'(x)
 		return new NAryOperation(
 			NAryOperator.PRODUCT,
 			v.getFunction().accept(this, v.getArgument()), // f'(g(x))
@@ -68,70 +70,77 @@ public class Differentiator implements
 	}
 
 
-	/*
+	/*------------------
 	 * Binary operators
-	 */
+	 *-----------------*/
 	
 	@Override
-	public Expression visitDivision(final Expression o1, final Expression o2) {
+	public Expression visitDivision(final Expression f, final Expression g) {
+		//Derivative of division: [f(x)/g(x)]' = (f'(x)*g(x) - f(x)*g'(x))/g^2(x)
 		return new BinaryOperation(
 			BinaryOperator.DIVISION,
 			new NAryOperation(
 				NAryOperator.ADDITION,
 				new NAryOperation(
 					NAryOperator.PRODUCT,
-					visit(o1),
-					o2
+					this.visit(f),
+					g
 				),
 				new NAryOperation(
 					NAryOperator.PRODUCT,
 					Constant.valueOf(-1),
-					o1,
-					visit(o2)
+					f,
+					this.visit(g)
 				)
 			),
 			new BinaryOperation(
 				BinaryOperator.POWER,
-				o2,
+				g,
 				Constant.valueOf(2)
 			)
 		);
 	}
 
 	@Override
-	public Expression visitPower(final Expression o1, final Expression o2) {
-		if (o2 instanceof Constant) {
-			final Constant coefficient = (Constant) o2;
+	public Expression visitPower(final Expression f, final Expression g) {
+		//If g is a constant: [f(x)^g]' = g*f(x)^(g-1)
+		if (g instanceof Constant) {
+			final Constant coefficient = (Constant) g;
 			return new NAryOperation(
 					NAryOperator.PRODUCT,
 					Constant.valueOf(coefficient.getValue()),
-					new BinaryOperation(BinaryOperator.POWER, o1, Constant.valueOf(coefficient.getValue() - 1)),
-					visit(o1)
+					new BinaryOperation(
+						BinaryOperator.POWER,
+						f,
+						Constant.valueOf(coefficient.getValue() - 1)
+					),
+					this.visit(f)
 				);
 		}
+		//General case: [f(x)^g(x)]' = f(x)^g(x) * [ g(x) * ln(f(x)) ]'
 		return new NAryOperation(
 			NAryOperator.PRODUCT,
-			new BinaryOperation(BinaryOperator.POWER, o1, o2),
-			visit(
+			new BinaryOperation(BinaryOperator.POWER, f, g),
+			this.visit(
 				new NAryOperation(
 					NAryOperator.PRODUCT,
-					new FunctionOperation(Function.LN, o1),
-					o2
+					new FunctionOperation(Function.LN, f),
+					g
 				)
 			)
 		);
 	}
 	
-	/*
+	/*-----------------
 	 * N-ary operators
-	 */
+	 *-----------------*/
 	
 	@Override
 	public Expression visitAddition(final List<Expression> operands) {
-		//(f1 + f2 + ... + fn)' = f1' + f2' + ... + fn'
+		//Derivative of addition: (f1 + f2 + ... + fn)' = f1' + f2' + ... + fn'
 		final List<Expression> filtered = operands
 			.stream()
-			.map(x -> visit(x))
+			.map(x -> this.visit(x))
 			.collect(Collectors.toList());
 		
 		return new NAryOperation(NAryOperator.ADDITION, filtered);
@@ -139,40 +148,44 @@ public class Differentiator implements
 
 	@Override
 	public Expression visitProduct(final List<Expression> operands) {
+		/* Derivative of product (generalized to any number of factors):
+		 * (f1 * f2 * ... * fn)' = (f1' * f2 * ... * fn) + (f1 * f2' * ... * fn)
+		 * + ... + (f1 * f2 * ... * fn')
+		 */
 		final List<Expression> addends = new ArrayList<>(operands.size());
 		for (int i = 0; i < operands.size(); i++) {
-			final List<Expression> terms = new ArrayList<>(operands.size());
+			final List<Expression> factors = new ArrayList<>(operands.size());
 			for (int j = 0; j < operands.size(); j++) {
 				if (i == j) {
-					terms.add(visit(operands.get(j)));
+					factors.add(this.visit(operands.get(j)));
 				} else {
-					terms.add(operands.get(j));
+					factors.add(operands.get(j));
 				}
 			}
-			addends.add(new NAryOperation(NAryOperator.PRODUCT, terms));
+			addends.add(new NAryOperation(NAryOperator.PRODUCT, factors));
 		}
 		return new NAryOperation(NAryOperator.ADDITION, addends);
 	}
 	
-	/*
+	/*-----------
 	 * Functions
-	 */
+	 *-----------*/
 	
 	@Override
 	public Expression visitSin(final Expression arg) {
-		// D sin(x) = cos(x)
+		//Derivative of sin(x) = cos(x)
 		return new FunctionOperation(Function.COS, arg);
 	}
 	
 	@Override
 	public Expression visitCos(final Expression arg) {
-		// D cos(x) = -sin(x)
+		//Derivative of cos(x) = -sin(x)
 		return MathUtils.negate(new FunctionOperation(Function.SIN, arg));
 	}
 	
 	@Override
 	public Expression visitLn(final Expression arg) {
-		// D ln(x) = 1/x
+		//Derivative of ln(x) = 1/x
 		return new BinaryOperation(
 			BinaryOperator.DIVISION,
 			Constant.ONE,
@@ -182,7 +195,7 @@ public class Differentiator implements
 	
 	@Override
 	public Expression visitAbs(final Expression arg) {
-		// D |x| = |x|/x
+		//Derivative of |x| = |x|/x
 		return new BinaryOperation(
 			BinaryOperator.DIVISION,
 			new FunctionOperation(Function.ABS, arg),
@@ -192,7 +205,7 @@ public class Differentiator implements
 	
 	@Override
 	public Expression visitSqrt(final Expression arg) {
-		// D sqrt(x) = 1/(2sqrt(x))
+		//Derivative of sqrt(x) = 1/(2sqrt(x))
 		return new BinaryOperation(
 			BinaryOperator.DIVISION,
 			Constant.ONE,

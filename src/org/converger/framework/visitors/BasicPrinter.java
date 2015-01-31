@@ -23,7 +23,11 @@ public class BasicPrinter implements Expression.Visitor<String> {
 
 	@Override
 	public String visit(final Constant v) {
-		return v.toString();
+		if (v.getValue() < 0) {
+			return "(" + v.toString() + ")";
+		} else {
+			return v.toString();
+		}
 	}
 
 	@Override
