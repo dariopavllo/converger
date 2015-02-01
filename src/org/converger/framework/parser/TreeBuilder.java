@@ -49,19 +49,22 @@ public class TreeBuilder {
 					this.pushFunction(t);
 					break;
 				case NUMBER:
-					final int value = Integer.parseInt(t.getContent());
-					this.stack.push(Constant.valueOf(value));
+					this.pushNumber(t);
 					break;
 				case VARIABLE:
 					this.stack.push(new Variable(t.getContent()));
 					break;
 				default:
-					//Unexpected error (should never happen)
+					//Unexpected token (should never happen)
 					throw new IllegalStateException("Internal error (unexpected token)");
 			}
 		}
 		
-		return stack.pop();
+		if (this.stack.size() != 1) { //NOPMD
+			//The stack should contain ONLY the result at this point
+			throw new IllegalArgumentException("Invalid expression");
+		}
+		return this.stack.pop();
 	}
 	
 	private void pushOperator(final Token t) {
@@ -97,8 +100,39 @@ public class TreeBuilder {
 	private void pushFunction(final Token t) {
 		final Expression argument = this.stack.pop();
 		
+		//Finds the function with the given name
 		final Function f = Environment.getSingleton().getFunction(t.getContent());
 		this.stack.push(new FunctionOperation(f, argument));
+	}
+	
+	private void pushNumber(final Token t) {
+		//Splits the string using "." as a separator
+		final String[] parts = t.getContent().split("\\.");
+		Expression number;
+		switch (parts.length) {
+			case 1:
+				//Integer number
+				final long value = Long.parseLong(t.getContent());
+				number = Constant.valueOf(value);
+				break;
+				
+			case 2:
+				//Rational number (e.g. 1.234 = 1234/1000)
+				final String numeratorStr = parts[0] + parts[1];
+				final long numerator = Long.parseLong(numeratorStr);
+				final long denominator = MathUtils.integerPower(10, parts[1].length());
+				number = new BinaryOperation(
+					BinaryOperator.DIVISION,
+					Constant.valueOf(numerator),
+					Constant.valueOf(denominator)
+				);
+				break;
+				
+			default:
+				throw new IllegalArgumentException("Invalid number: " + t.getContent());
+		}
+
+		this.stack.push(number);
 	}
 	
 }

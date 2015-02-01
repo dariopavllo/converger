@@ -1,6 +1,7 @@
 package org.converger.framework;
 
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +14,13 @@ import org.converger.framework.parser.Token;
 import org.converger.framework.parser.Tokenizer;
 import org.converger.framework.parser.TreeBuilder;
 import org.converger.framework.visitors.BasicPrinter;
+import org.converger.framework.visitors.Collector;
 import org.converger.framework.visitors.Differentiator;
 import org.converger.framework.visitors.Evaluator;
 import org.converger.framework.visitors.LatexPrinter;
 import org.converger.framework.visitors.RationalSimplifier;
 import org.converger.framework.visitors.Simplifier;
+import org.converger.framework.visitors.Substitutor;
 import org.converger.framework.visitors.TreeLeveler;
 import org.converger.framework.visitors.TreeSorter;
 import org.converger.framework.visitors.VariableEnumerator;
@@ -53,10 +56,10 @@ public final class CasFrameworkImpl implements CasFramework {
 		} catch (final IllegalArgumentException e) {
 			//Rethrow
 			throw new IllegalArgumentException(e.getMessage(), e);
-		} /*catch (final Exception e) {
+		} catch (final EmptyStackException e) {
 			//Unexpected error
-			throw new IllegalArgumentException("Unexpected syntax error", e);
-		}*/
+			throw new IllegalArgumentException("Syntax error", e);
+		}
 	}
 
 	@Override
@@ -71,6 +74,7 @@ public final class CasFrameworkImpl implements CasFramework {
 			current = new Simplifier().visit(current);
 			current = new TreeLeveler().visit(current);
 			current = new RationalSimplifier().visit(current);
+			current = new Collector().visit(current);
 			current = new TreeSorter().visit(current);
 			steps++;
 		} while (!previous.equals(current));
@@ -81,8 +85,10 @@ public final class CasFrameworkImpl implements CasFramework {
 	@Override
 	public Expression substitute(final Expression input,
 			final Map<String, Expression> subexpressions) {
-		// TODO Auto-generated method stub
-		return null;
+		final Map<Variable, Expression> finalMap = new HashMap<>();
+		subexpressions.forEach((x, y) -> finalMap.put(new Variable(x), y));
+		
+		return new Substitutor(finalMap).visit(input);
 	}
 
 	@Override

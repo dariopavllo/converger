@@ -43,95 +43,120 @@ public class ShuntingYardParser implements Parser {
 	
 	@Override
 	public void parse(final Iterable<String> input) {
-		boolean hasCoefficient = false;
+		//Tells whether implicit multiplication is allowed for the next token (coefficients)
+		boolean expectImplicitMultiplication = false;
+		
 		for (final String token : input) {
 			if (ShuntingYardParser.isNumber(token)) {
 				//Number: push it on the output stack
 				this.output.push(new Token(token, Token.Type.NUMBER));
-				hasCoefficient = true;
+				expectImplicitMultiplication = true;
 				this.expectUnaryMinus = false;
+				
 			} else if (ShuntingYardParser.isName(token)) {
 				//Function or variable
-				if (hasCoefficient) {
-					//If the previous token was a coefficient (number), a multiplication
-					//operation is implicitly added (e.g. 3x^2 = 3*x^2).
+				
+				if (expectImplicitMultiplication) {
+					/* If the previous token was a coefficient (number), a multiplication
+					 * operation is implicitly added (e.g. 3x^2 = 3*x^2).
+					 * This applies for more complex cases as well (e.g 5x cos(x) sin(x)). */
 					this.pushOperator(NAryOperator.PRODUCT);
 				}
+				
 				if (Environment.getSingleton().hasFunction(token)) {
 					this.stack.push(new Token(token, Token.Type.FUNCTION));
+					expectImplicitMultiplication = false;
 				} else {
 					//If there is no function with the given name,
 					//it is treated as a variable
 					this.output.push(new Token(token, Token.Type.VARIABLE));
+					expectImplicitMultiplication = true;
 				}
-				hasCoefficient = false;
 				this.expectUnaryMinus = false;
+				
 			} else if (ShuntingYardParser.isSymbol(token)) {
 				//It can be either a parenthesis, or an operator
 				if (token.equals(Token.LEFT_PARENTHESIS.getContent())) {
 					//If it's a left parenthesis, push it on the operator stack
+					if (expectImplicitMultiplication) {
+						//Same as before (e.g. 5(...) = 5*(...) )
+						this.pushOperator(NAryOperator.PRODUCT);
+					}
 					this.stack.push(Token.LEFT_PARENTHESIS);
+					expectImplicitMultiplication = false;
 					this.expectUnaryMinus = true;
 				} else if (token.equals(Token.RIGHT_PARENTHESIS.getContent())) {
 					try {
 						//Pops tokens from the operator stack until a left
 						//parenthesis is found.
-						while (!stack.peek().equals(Token.LEFT_PARENTHESIS)) {
+						while (!this.stack.peek().equals(Token.LEFT_PARENTHESIS)) {
 							//Transfers the token to the output stack
-							output.push(stack.pop());
+							this.output.push(this.stack.pop());
 						}
-						stack.pop(); //Pops the left parenthesis
-						
+						this.stack.pop(); //Pops the left parenthesis
 					} catch (final EmptyStackException e) {
 						//If no left parentheses are found, they are mismatched
 						throw new IllegalArgumentException("Mismatched parentheses", e);
 					}
-					if (!stack.isEmpty() && stack.peek().getType() == Token.Type.FUNCTION) {
-						output.push(stack.pop());
+					
+					if (!this.stack.isEmpty()
+							&& this.stack.peek().getType() == Token.Type.FUNCTION) {
+						this.output.push(this.stack.pop());
 					}
+					expectImplicitMultiplication = true;
 					this.expectUnaryMinus = false;
+					
 				} else {
 					//If it's not a parenthesis, it's an operator
 					this.pushOperator(this.getOperator(token));
+					expectImplicitMultiplication = false;
 					this.expectUnaryMinus = false;
 				}
-				hasCoefficient = false;
+				
+			} else {
+				throw new IllegalArgumentException("Unrecognized token: " + token);
 			}
 		}
 		this.complete();
 	}
 	
 	private void pushOperator(final Operator o) {
-		
-		//Check for unary minus
+		//Checks for unary minus
 		if (this.expectUnaryMinus && o.equals(BinaryOperator.SUBTRACTION)) {
+			//Unary minus found: the next token is negated
 			this.output.push(new Token("-1", Token.Type.NUMBER));
-			this.stack.push(new Token("*", Token.Type.OPERATOR));
-			return;
-		}
-		
-		boolean hasOperator = true;
-		//Repeat until there is an operator on top of the stack
-		while (hasOperator && !this.stack.isEmpty()) {
-			final Token topToken = this.stack.peek();
-			if (topToken.getType() == Token.Type.OPERATOR) {
-				//Compares the precedence of the two last operators
-				final Operator topOperator = this.getOperator(topToken.getContent());
-				if (o.getAssociativity() == Operator.Associativity.LEFT
-						&& o.getPrecedence() <= topOperator.getPrecedence()
-					|| o.getAssociativity() == Operator.Associativity.RIGHT
-						&& o.getPrecedence() < topOperator.getPrecedence()) {
-					this.stack.pop();
-					this.output.push(topToken);
+			this.stack.push(new Token(NAryOperator.PRODUCT.getSymbol(), Token.Type.OPERATOR));
+			
+		} else {
+			//Ordinary binary operation
+			
+			//Tells whether there's an operator onto the top of the stack
+			boolean hasOperator = true;
+			
+			//Repeat until there is an operator onto the top of the stack
+			while (hasOperator && !this.stack.isEmpty()) {
+				final Token topToken = this.stack.peek();
+				if (topToken.getType() == Token.Type.OPERATOR) {
+					//Compares the precedence of the two last operators
+					final Operator topOperator = this.getOperator(topToken.getContent());
+					
+					//Refer to the algorithm's pseudo-code to understand this part
+					if (o.getAssociativity() == Operator.Associativity.LEFT
+							&& o.getPrecedence() <= topOperator.getPrecedence()
+						|| o.getAssociativity() == Operator.Associativity.RIGHT
+							&& o.getPrecedence() < topOperator.getPrecedence()) {
+						this.stack.pop();
+						this.output.push(topToken);
+					} else {
+						hasOperator = false;
+					}
 				} else {
 					hasOperator = false;
 				}
-			} else {
-				hasOperator = false;
 			}
+			//Pushes the operator onto the top of the operator stack
+			this.stack.push(new Token(o.getSymbol(), Token.Type.OPERATOR));
 		}
-		//Pushes the operator onto the top of the operator stack
-		this.stack.push(new Token(o.getSymbol(), Token.Type.OPERATOR));
 	}
 	
 	private void complete() {

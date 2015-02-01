@@ -14,7 +14,6 @@ import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.SpecialConstant;
-import org.converger.framework.core.Variable;
 
 /**
  * This visitor simplifies algebraically the supplied expression.
@@ -22,21 +21,11 @@ import org.converger.framework.core.Variable;
  * an expression to another equivalent expression with less complexity.
  * @author Dario Pavllo
  */
-public class Simplifier implements
+public class Simplifier extends AbstractExpressionVisitor implements
 	Expression.Visitor<Expression>,
 	BinaryOperator.Visitor<Expression>,
 	NAryOperator.Visitor<Expression>,
 	Function.Visitor<Expression> {
-
-	@Override
-	public Expression visit(final Variable v) {
-		return v;
-	}
-
-	@Override
-	public Expression visit(final Constant v) {
-		return v;
-	}
 
 	@Override
 	public Expression visit(final BinaryOperation v) {
@@ -49,8 +38,9 @@ public class Simplifier implements
 	public Expression visit(final NAryOperation v) {
 		final List<Expression> simplified = v.getOperands()
 			.stream()
-			.map(x -> visit(x))
+			.map(x -> this.visit(x))
 			.collect(Collectors.toList());
+		
 		return v.getOperator().accept(this, simplified);
 	}
 	
