@@ -57,7 +57,7 @@ public class Tokenizer implements Iterable<String> {
 	private TokenType getCharacterType(final char c) {
 		if (Character.isAlphabetic(c)) {
 			return TokenType.WORD;
-		} else if (Character.isDigit(c)) {
+		} else if (Character.isDigit(c) || c == '.') {
 			return TokenType.NUMBER;
 		} else if (Character.isWhitespace(c)) {
 			return TokenType.NONE;

@@ -39,6 +39,9 @@ public class EvaluationTest {
 		this.test("3 * (5 + 2)^2 * 3", 441);
 		this.test("3*2+2*5-1*7*2*3+7-(18/3)*100/5", -139);
 		this.test("(7-2)*7*3 + 4+4+6 * 5^3*3/5", 563);
+		this.test("2^3^2", 512);
+		this.test("2^(3^2)", 512);
+		this.test("(2^3)^2", 64);
 	}
 	
 	@Test
@@ -66,6 +69,7 @@ public class EvaluationTest {
 		this.test("x^2 - 2x + 1 + 3cos(0)", 84, values);
 		this.test("5ln(e)", 5, values);
 		this.test("8ln(e^e)/(4e)", 2, values);
+		this.test("5x ln(e)", 50, values);
 	}
 	//CHECKSTYLE:ON
 }

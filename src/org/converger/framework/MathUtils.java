@@ -2,6 +2,8 @@ package org.converger.framework;
 
 import java.util.List;
 
+import org.converger.framework.core.BinaryOperation;
+import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
@@ -51,8 +53,8 @@ public final class MathUtils {
 	}
 	
 	/**
-	 * Calculates the integer power of a natural number using the
-	 * exponentiation-by-squaring algorithm, in O(log(exponent)).
+	 * Calculates the integer power of a natural number (a^b) using the
+	 * exponentiation-by-squaring algorithm, in O(log(b)).
 	 * @param base the number to exponentiate
 	 * @param exponent the exponent
 	 * @return the operation result
@@ -72,6 +74,24 @@ public final class MathUtils {
 		} else {
 			return base * integerPower(base * base, (exponent - 1) / 2);
 		}
+	}
+	
+	
+	/**
+	 * Tells whether the given expression is a rational number,
+	 * i.e., can be expressed as a/b (a, b are constants).
+	 * @param exp the expression to test
+	 * @return true if the expression is a natural number, false otherwise
+	 */
+	public static boolean isRational(final Expression exp) {
+		if (exp instanceof BinaryOperation) {
+			final BinaryOperation op = (BinaryOperation) exp;
+			if (op.getOperator() == BinaryOperator.DIVISION) {
+				return op.getFirstOperand() instanceof Constant
+					&& op.getSecondOperand() instanceof Constant;
+			}
+		}
+		return false;
 	}
 	
 }
