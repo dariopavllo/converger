@@ -41,6 +41,7 @@ public abstract class AbstractExpressionVisitor implements Expression.Visitor<Ex
 
 	@Override
 	public Expression visit(final NAryOperation v) {
+		//Visits its children recursively before visiting the node
 		final List<Expression> visited = v.getOperands()
 			.stream()
 			.map(e -> this.visit(e))

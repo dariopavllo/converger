@@ -3,64 +3,61 @@ package org.converger.framework.visitors;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.converger.framework.Expression;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
-import org.converger.framework.core.Constant;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.Variable;
 
 /**
- * This visitor implements a LaTeX printer.
- * It returns a string in LaTeX language with can be rendered subsequently.
+ * This visitor implements a basic printer,
+ * which converts an expression to plain text.
  * @author Dario Pavllo
  */
-public class LatexPrinter implements
-	Expression.Visitor<String>,
-	BinaryOperator.Visitor<String>, 
-	NAryOperator.Visitor<String> {
-
+public class LatexPrinter extends AbstractPrinter
+	implements BinaryOperator.Visitor<String>, NAryOperator.Visitor<String> {
+	
+	/**
+	 * Instantiates this printer.
+	 */
+	public LatexPrinter() {
+		//Division parenthesization: disabled (not needed on fractions)
+		super(false, "\\;+\\;", "\\;-\\;");
+	}
+	
+	@Override
+	protected String parenthesize(final String expression) {
+		return "\\left(" + expression + "\\right)";
+	}
 	
 	@Override
 	public String visit(final Variable v) {
-		return "\\mathit{" + v.getName() + "}";
+		return "\\mathit{" + super.visit(v) + "}";
 	}
 
 	@Override
-	public String visit(final Constant v) {
-		if (v.getValue() < 0) {
-			return "(" + v.toString() + ")";
-		} else {
-			return v.toString();
-		}
-	}
-
-	@Override
-	public String visit(final BinaryOperation v) {
+	protected String printBinary(final BinaryOperation v) {
+		
 		final String o1 = this.visit(v.getFirstOperand());
 		final String o2 = this.visit(v.getSecondOperand());
-
+		String result;
 		try {
-			//There is a special syntax for this operator
-			return v.getOperator().accept(this, o1, o2);
+			//If there's a special syntax for this operator...
+			result = v.getOperator().accept(this, o1, o2);
 		} catch (final UnsupportedOperationException e) {
 			//Fallback syntax
-			final String output = new StringBuilder()
-				.append("\\left(")
+			result = new StringBuilder()
 				.append(this.visit(v.getFirstOperand()))
 				.append(v.getOperator().getSymbol())
 				.append(this.visit(v.getSecondOperand()))
-				.append("\\right)")
 				.toString();
-			return output;
 		}
-		
+		return result;
 	}
-	
+
 	@Override
-	public String visit(final NAryOperation v) {
+	protected String printNAry(final NAryOperation v) {
 		final List<String> output = v.getOperands()
 				.stream()
 				.map(x -> this.visit(x))
@@ -69,33 +66,19 @@ public class LatexPrinter implements
 	}
 	
 	@Override
-	public String visit(final FunctionOperation v) {
+	protected String printFunction(final FunctionOperation v) {
 		return "\\mathrm{" + v.getFunction().getName() + "}"
-				+ "\\left(" + this.visit(v.getArgument()) + "\\right)";
+				+ this.parenthesize(this.visit(v.getArgument()));
 	}
 
 	@Override
 	public String visitDivision(final String o1, final String o2) {
-		//firstLevel = true;
 		return "\\frac{" + o1 + "}{" + o2 + "}";
-	}
-	
-	@Override
-	public String visitPower(final String o1, final String o2) {
-		return o1 + "^" + o2;
-	}
-	
-	
-	@Override
-	public String visitAddition(final List<String> operands) {
-		return operands.stream().collect(
-				Collectors.joining("\\;+\\;", "\\left(", "\\right)"));
 	}
 
 	@Override
 	public String visitProduct(final List<String> operands) {
 		return operands.stream().collect(Collectors.joining("{\\,}"));
 	}
-	
 	
 }

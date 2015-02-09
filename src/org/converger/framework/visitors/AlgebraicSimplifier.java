@@ -1,16 +1,16 @@
 package org.converger.framework.visitors;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.converger.framework.Expression;
-import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.Function;
 import org.converger.framework.core.FunctionOperation;
+import org.converger.framework.core.MathUtils;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.SpecialConstant;
@@ -21,7 +21,7 @@ import org.converger.framework.core.SpecialConstant;
  * an expression to another equivalent expression with less complexity.
  * @author Dario Pavllo
  */
-public class Simplifier extends AbstractExpressionVisitor implements
+public class AlgebraicSimplifier extends AbstractExpressionVisitor implements
 	Expression.Visitor<Expression>,
 	BinaryOperator.Visitor<Expression>,
 	NAryOperator.Visitor<Expression>,
@@ -59,10 +59,17 @@ public class Simplifier extends AbstractExpressionVisitor implements
 		if (o2.equals(Constant.ONE)) {
 			return o1;
 		}
-		// 0/x = 0 (for each x != 0)
+		
+		// 0/x = 0 (if x != 0)
 		if (o1.equals(Constant.ZERO) && !o2.equals(Constant.ZERO)) {
 			return Constant.ZERO;
 		}
+		
+		// x/x = 1 (if x != 0)
+		if (o1.equals(o2) && !o2.equals(Constant.ZERO)) {
+			return Constant.ONE;
+		}
+		
 		return new BinaryOperation(BinaryOperator.DIVISION, o1, o2);
 	}
 
@@ -103,65 +110,20 @@ public class Simplifier extends AbstractExpressionVisitor implements
 	
 	@Override
 	public Expression visitAddition(final List<Expression> operands) {
-		long constantTerm = 0;
-		final List<Expression> addends = new ArrayList<>();
-		for (final Expression o : operands) {
-			if (o instanceof Constant) {
-				final Constant c = (Constant) o;
-				constantTerm += c.getValue();
-			} else {
-				addends.add(o);
-			}
-		}
-		if (constantTerm != 0) {
-			addends.add(Constant.valueOf(constantTerm));
-		}
-		
-		switch (addends.size()) {
-			case 0:
-				return Constant.ZERO;
-			case 1:
-				return addends.get(0);
-			default:
-				return new NAryOperation(NAryOperator.ADDITION, addends);
-		}
+		//Identity
+		return new NAryOperation(NAryOperator.ADDITION, operands);
 	}
 
 	@Override
 	public Expression visitProduct(final List<Expression> operands) {
+		//Zero property: any term multiplied by zero is zero
 		for (final Expression o : operands) {
 			if (o.equals(Constant.ZERO)) {
 				return Constant.ZERO;
 			}
 		}
-
-		/*final List<Expression> multiplicands = operands.stream()
-			.filter(x -> !x.equals(Constant.ONE))
-			.collect(Collectors.toList());*/
 		
-		long constantTerm = 1;
-		final List<Expression> multiplicands = new ArrayList<>();
-		for (final Expression o : operands) {
-			if (o instanceof Constant) {
-				final Constant c = (Constant) o;
-				constantTerm *= c.getValue();
-			} else {
-				multiplicands.add(o);
-			}
-		}
-		
-		if (constantTerm != 1) { //NOPMD
-			multiplicands.add(Constant.valueOf(constantTerm));
-		}
-		
-		switch (multiplicands.size()) {
-			case 0:
-				return Constant.ZERO;
-			case 1:
-				return multiplicands.get(0);
-			default:
-				return new NAryOperation(NAryOperator.PRODUCT, multiplicands);
-		}
+		return new NAryOperation(NAryOperator.PRODUCT, operands);
 	}
 	
 	/*------------
@@ -197,7 +159,7 @@ public class Simplifier extends AbstractExpressionVisitor implements
 		if (arg instanceof Constant) {
 			//If the argument is a constant, its absolute value can be calculated
 			final Constant c = (Constant) arg;
-			return c.getValue() >= 0 ? c : MathUtils.negate(c);
+			return c.getValue() >= 0 ? c : ExpressionFactory.negate(c);
 		}
 		return new FunctionOperation(Function.ABS, arg);
 	}

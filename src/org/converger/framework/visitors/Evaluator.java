@@ -18,7 +18,7 @@ import org.converger.framework.core.Variable;
 
 /**
  * This visitor evaluates a function at a point
- * using a supplied map of variables->values.
+ * using a supplied map of variables-values.
  * The expression is evaluated numerically, not algebraically,
  * and the result is a real value.
  * @throws NoSuchElementException if a variable with no mapped value is found.

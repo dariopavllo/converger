@@ -11,9 +11,9 @@ import org.converger.framework.Expression;
  * Console test class.
  * @author Dario Pavllo
  */
-public final class Test {
+public final class ConsoleTest {
 
-	private Test() {
+	private ConsoleTest() {
 	}
 	
 	/**
@@ -31,7 +31,7 @@ public final class Test {
 			final Expression simplified = cas.simplify(exp);
 			System.out.println(cas.toPlainText(simplified));
 			System.out.println(cas.toLatexText(simplified));
-			System.out.println("----Derivate----");
+			System.out.println("----Derivative----");
 			final Expression derivated = cas.differentiate(exp, "x");
 			System.out.println(cas.toPlainText(derivated));
 			System.out.println(cas.toLatexText(derivated));
