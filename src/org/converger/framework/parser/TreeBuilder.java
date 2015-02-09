@@ -6,12 +6,13 @@ import java.util.Stack;
 
 import org.converger.framework.Environment;
 import org.converger.framework.Expression;
-import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.Function;
 import org.converger.framework.core.FunctionOperation;
+import org.converger.framework.core.MathUtils;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.Operator;
@@ -81,7 +82,7 @@ public class TreeBuilder {
 				result = new NAryOperation(
 					NAryOperator.ADDITION,
 					o1,
-					MathUtils.negate(o2)
+					ExpressionFactory.negate(o2)
 				);
 			} else {
 				//Normal case

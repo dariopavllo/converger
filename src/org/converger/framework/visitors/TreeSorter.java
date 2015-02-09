@@ -18,34 +18,38 @@ public class TreeSorter extends AbstractExpressionVisitor {
 
 	@Override
 	public Expression visit(final NAryOperation v) {
+		final NAryOperation children = (NAryOperation) super.visit(v);
 		final List<Expression> sorted = new ArrayList<>(v.getOperands().size());
-		for (final Expression child : v.getOperands()) {
-			if (child instanceof Constant) {
-				sorted.add(this.visit(child));
-			}
-		}
-		for (final Expression child : v.getOperands()) {
-			if (child instanceof Variable) {
-				sorted.add(this.visit(child));
-			}
-		}
-		for (final Expression child : v.getOperands()) {
-			if (child instanceof NAryOperation) {
-				sorted.add(this.visit(child));
-			}
-		}
-		for (final Expression child : v.getOperands()) {
-			if (child instanceof BinaryOperation) {
-				sorted.add(this.visit(child));
-			}
-		}
-		for (final Expression child : v.getOperands()) {
-			if (child instanceof FunctionOperation) {
-				sorted.add(this.visit(child));
-			}
-		}
+		
+		final List<Expression> constants = iterateAndAdd(Constant.class, children);
+		//Sorts the constants by value
+		constants.sort((x, y) -> (int) (((Constant) x).getValue() - ((Constant) y).getValue()));
+		sorted.addAll(constants);
+		
+		final List<Expression> variables = iterateAndAdd(Variable.class, children);
+		//Sorts the variables by name (lexicographically)
+		variables.sort((x, y) -> ((Variable) x).getName().compareTo(((Variable) y).getName()));
+		sorted.addAll(variables);
+		
+		//Adds the other operations in the following order
+		sorted.addAll(iterateAndAdd(NAryOperation.class, children));
+		sorted.addAll(iterateAndAdd(BinaryOperation.class, children));
+		sorted.addAll(iterateAndAdd(FunctionOperation.class, children));
 		
 		return new NAryOperation(v.getOperator(), sorted);
 	}
-
+	
+	private static List<Expression> iterateAndAdd(
+			final Class<? extends Expression> operationClass,
+			final NAryOperation operation) {
+		
+		//Gets all the operations having the specified type and returns them in a list
+		final List<Expression> outputList = new ArrayList<>();
+		for (final Expression child : operation.getOperands()) {
+			if (operationClass.isAssignableFrom(child.getClass())) {
+				outputList.add(child);
+			}
+		}
+		return outputList;
+	}
 }

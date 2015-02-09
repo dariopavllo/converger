@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.converger.framework.Expression;
-import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
+import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.BinaryOperator;
@@ -106,8 +106,8 @@ public class RationalSimplifier extends AbstractExpressionVisitor
 		if (!denominator.isEmpty()) {
 			return new BinaryOperation(
 				BinaryOperator.DIVISION,
-				MathUtils.implode(NAryOperator.PRODUCT, numerator),
-				MathUtils.implode(NAryOperator.PRODUCT, denominator)
+				ExpressionFactory.implode(NAryOperator.PRODUCT, numerator),
+				ExpressionFactory.implode(NAryOperator.PRODUCT, denominator)
 			);
 		}
 		return new NAryOperation(NAryOperator.PRODUCT, operands);

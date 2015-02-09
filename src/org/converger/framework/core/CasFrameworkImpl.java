@@ -1,4 +1,4 @@
-package org.converger.framework;
+package org.converger.framework.core;
 
 
 import java.util.EmptyStackException;
@@ -7,19 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.converger.framework.core.SpecialConstant;
-import org.converger.framework.core.Variable;
+import org.converger.framework.CasFramework;
+import org.converger.framework.Expression;
 import org.converger.framework.parser.ShuntingYardParser;
 import org.converger.framework.parser.Token;
 import org.converger.framework.parser.Tokenizer;
 import org.converger.framework.parser.TreeBuilder;
 import org.converger.framework.visitors.BasicPrinter;
 import org.converger.framework.visitors.Collector;
+import org.converger.framework.visitors.ConstantFolder;
 import org.converger.framework.visitors.Differentiator;
 import org.converger.framework.visitors.Evaluator;
 import org.converger.framework.visitors.LatexPrinter;
 import org.converger.framework.visitors.RationalSimplifier;
-import org.converger.framework.visitors.Simplifier;
+import org.converger.framework.visitors.AlgebraicSimplifier;
 import org.converger.framework.visitors.Substitutor;
 import org.converger.framework.visitors.TreeLeveler;
 import org.converger.framework.visitors.TreeSorter;
@@ -43,7 +44,7 @@ public final class CasFrameworkImpl implements CasFramework {
 	public static CasFramework getSingleton() {
 		return CasFrameworkImpl.SINGLETON;
 	}
-	
+
 	@Override
 	public Expression parse(final String input) {
 		final Tokenizer tokenizer = new Tokenizer(input);
@@ -67,18 +68,17 @@ public final class CasFrameworkImpl implements CasFramework {
 		Expression current = input;
 		Expression previous;
 		
-		int steps = 0;
 		//Iterative simplification: the process is repeated until the tree no longer changes
 		do {
 			previous = current;
-			current = new Simplifier().visit(current);
 			current = new TreeLeveler().visit(current);
+			current = new AlgebraicSimplifier().visit(current);
 			current = new RationalSimplifier().visit(current);
 			current = new Collector().visit(current);
+			current = new ConstantFolder().visit(current);
 			current = new TreeSorter().visit(current);
-			steps++;
 		} while (!previous.equals(current));
-		System.out.println("Simplified in " + steps + " steps.");
+		
 		return current;
 	}
 

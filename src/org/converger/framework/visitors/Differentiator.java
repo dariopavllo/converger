@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.converger.framework.Expression;
-import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.Function;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
@@ -74,9 +74,12 @@ public class Differentiator implements
 	 * Binary operators
 	 *-----------------*/
 	
+	/**
+	 * Differentiates a division operation using the quotient rule.
+	 * [f(x)/g(x)]' = (f'(x)*g(x) - f(x)*g'(x))/g^2(x)
+	 */
 	@Override
 	public Expression visitDivision(final Expression f, final Expression g) {
-		//Derivative of division: [f(x)/g(x)]' = (f'(x)*g(x) - f(x)*g'(x))/g^2(x)
 		return new BinaryOperation(
 			BinaryOperator.DIVISION,
 			new NAryOperation(
@@ -101,6 +104,10 @@ public class Differentiator implements
 		);
 	}
 
+	/**
+	 * Differentiates an exponentiation operation. The base and the exponent can be
+	 * either constants or complex expressions, as the general case is handled.
+	 */
 	@Override
 	public Expression visitPower(final Expression f, final Expression g) {
 		//If g is a constant: [f(x)^g]' = g*f(x)^(g-1)
@@ -135,9 +142,12 @@ public class Differentiator implements
 	 * N-ary operators
 	 *-----------------*/
 	
+	/**
+	 * Differentiates an addition operation using the sum rule.
+	 * (f1 + f2 + ... + fn)' = f1' + f2' + ... + fn'
+	 */
 	@Override
 	public Expression visitAddition(final List<Expression> operands) {
-		//Derivative of addition: (f1 + f2 + ... + fn)' = f1' + f2' + ... + fn'
 		final List<Expression> filtered = operands
 			.stream()
 			.map(x -> this.visit(x))
@@ -146,12 +156,14 @@ public class Differentiator implements
 		return new NAryOperation(NAryOperator.ADDITION, filtered);
 	}
 
+	/**
+	 * Differentiates a product operation using the product rule.
+	 * The latter is generalized to any number of factors.
+	 * (f1 * f2 * ... * fn)' = (f1' * f2 * ... * fn) + (f1 * f2' * ... * fn)
+	 * + ... + (f1 * f2 * ... * fn')
+	 */
 	@Override
 	public Expression visitProduct(final List<Expression> operands) {
-		/* Derivative of product (generalized to any number of factors):
-		 * (f1 * f2 * ... * fn)' = (f1' * f2 * ... * fn) + (f1 * f2' * ... * fn)
-		 * + ... + (f1 * f2 * ... * fn')
-		 */
 		final List<Expression> addends = new ArrayList<>(operands.size());
 		for (int i = 0; i < operands.size(); i++) {
 			final List<Expression> factors = new ArrayList<>(operands.size());
@@ -180,7 +192,7 @@ public class Differentiator implements
 	@Override
 	public Expression visitCos(final Expression arg) {
 		//Derivative of cos(x) = -sin(x)
-		return MathUtils.negate(new FunctionOperation(Function.SIN, arg));
+		return ExpressionFactory.negate(new FunctionOperation(Function.SIN, arg));
 	}
 	
 	@Override

@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.converger.framework.core.CasFrameworkImpl;
+
 /**
  * This interface defines the operations which can be done on this CAS.
  * @author Dario Pavllo
@@ -36,7 +38,7 @@ public interface CasFramework {
 	/**
 	 * Substitutes the supplied variables with the corresponding subexpressions.
 	 * @param input the target expression
-	 * @param subexpressions a Variable->Subexpression map
+	 * @param subexpressions a Variable-Subexpression map
 	 * @return the processed expression
 	 */
 	Expression substitute(Expression input, Map<String, Expression> subexpressions);

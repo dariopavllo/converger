@@ -6,18 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.converger.framework.Expression;
-import org.converger.framework.MathUtils;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
 import org.converger.framework.core.BinaryOperator;
 
 /**
- * This is a specific type of simplifier that reorders multiplication
- * and division nodes to satisfy some rational rules.<br />
- * (x/y)/z becomes x/(yz), x/(y/z) becomes (xz)/y,
- * x * (y/z) becomes (xy)/z.
+ * This visitor applies some algebraic properties to an expression by
+ * collecting like terms where possible, and returns a simplified version of it.
  * @author Dario Pavllo
  */
 public class Collector extends AbstractExpressionVisitor
@@ -42,11 +40,16 @@ public class Collector extends AbstractExpressionVisitor
 			return sv;
 		}
 	}
-	
-	/*------------------
-	 * Binary operators
+
+	/*-----------------
+	 * N-ary operators
 	 *-----------------*/
 	
+	/*
+	 * Builds a map of exponentiation operations, using the base as the key and the
+	 * exponent as the value. Nodes sharing the same base are added in the same record,
+	 * appending the exponent to the respective list.
+	 */
 	private Map<Expression, List<Expression>> buildBasesMap(final List<Expression> operands) {
 		final Map<Expression, List<Expression>> bases = new HashMap<>();
 		for (final Expression child : operands) {
@@ -66,59 +69,6 @@ public class Collector extends AbstractExpressionVisitor
 		}
 		return bases;
 	}
-	
-	/*private List<Expression> getFactorList(final Expression o) {
-		if (o instanceof NAryOperation) {
-			final NAryOperation op = (NAryOperation) o;
-			//If the expression is a multiplication node, return its factors
-			if (op.getOperator() == NAryOperator.PRODUCT) {
-				return op.getOperands();
-			}
-		}
-		//There's only a single factor, so a one-element list is returned
-		final List<Expression> factorList = new ArrayList<>();
-		factorList.add(o);
-		return factorList;
-	}
-	
-	@Override
-	public Expression visitDivision(final Expression o1, final Expression o2) {
-		final Map<Expression, List<Expression>> numeratorMap =
-				this.buildBasesMap(this.getFactorList(o1));
-		
-		final Map<Expression, List<Expression>> denominatorMap =
-				this.buildBasesMap(this.getFactorList(o2));
-		
-		//Merges the denominator terms with the numerator terms
-		denominatorMap.forEach((base, exponents) -> {
-			numeratorMap.putIfAbsent(base, new ArrayList<>());
-			//The exponent is negated ( e.g. 1/x^2 = x^(-2) )
-			exponents.forEach(e -> numeratorMap.get(base).add(MathUtils.negate(e)));
-		});
-		
-		final List<Expression> result = new ArrayList<>();
-		numeratorMap.forEach((base, exponents) -> {
-			Expression e;
-			if (exponents.size() == 1 && exponents.get(0).equals(Constant.ONE)) {
-				//If the term has an exponent equal to one, the latter is removed
-				e = base;
-			} else {
-				//The result's exponent is the sum of all exponents
-				e = new BinaryOperation(
-					BinaryOperator.POWER,
-					base,
-					MathUtils.implode(NAryOperator.ADDITION, exponents)
-				);
-			}
-			result.add(e);
-		});
-		
-		return MathUtils.implode(NAryOperator.PRODUCT, result);
-	}*/
-
-	/*-----------------
-	 * N-ary operators
-	 *-----------------*/
 	
 	/**
 	 * This method collects power operations that share the same base (under a product operation).
@@ -140,21 +90,21 @@ public class Collector extends AbstractExpressionVisitor
 				e = new BinaryOperation(
 					BinaryOperator.POWER,
 					base,
-					MathUtils.implode(NAryOperator.ADDITION, exponents)
+					ExpressionFactory.implode(NAryOperator.ADDITION, exponents)
 				);
 			}
 			result.add(e);
 		});
 		
-		return MathUtils.implode(NAryOperator.PRODUCT, result);
+		return ExpressionFactory.implode(NAryOperator.PRODUCT, result);
 	}
 	
 	/**
-	 * Collects common terms under an addition node. For example, x + x becomes 2x,
+	 * Collects like terms under an addition node. For example, x + x becomes 2x,
 	 * 2x + 3x becomes 5x. It also handles non-numeric coefficients
 	 * ( e.g. x*sin(x) + y*sin(x) = (x + y)*sin(x) ).
 	 * Note that, for complexity reasons, the current implementation does not handle
-	 * multiplication nodes with more than two terms, and only the former is used as a coefficient.
+	 * multiplication nodes with more than two terms, and only the first is used as a coefficient.
 	 */
 	@Override
 	public Expression visitAddition(final List<Expression> operands) {
@@ -183,16 +133,16 @@ public class Collector extends AbstractExpressionVisitor
 				//If the term has a coefficient equal to one, the latter is removed
 				e = term;
 			} else {
-				//The result's coefficient is the sum of all coefficients
+				//The result's coefficient is the sum of all the coefficients
 				e = new NAryOperation(
 					NAryOperator.PRODUCT,
-					MathUtils.implode(NAryOperator.ADDITION, coefficients),
+					ExpressionFactory.implode(NAryOperator.ADDITION, coefficients),
 					term
 				);
 			}
 			result.add(e);
 		});
 		
-		return MathUtils.implode(NAryOperator.ADDITION, result);
+		return ExpressionFactory.implode(NAryOperator.ADDITION, result);
 	}
 }
