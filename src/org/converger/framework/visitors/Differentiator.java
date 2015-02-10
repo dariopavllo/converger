@@ -190,9 +190,73 @@ public class Differentiator implements
 	}
 	
 	@Override
+	public Expression visitArcsin(final Expression arg) {
+		//Derivative of asin(x) = 1/sqrt(1 - x^2)
+		return new BinaryOperation(
+			BinaryOperator.DIVISION,
+			Constant.ONE,
+			new FunctionOperation(
+					Function.SQRT,
+					new NAryOperation(
+						NAryOperator.ADDITION, //1 - x^2
+						Constant.ONE,
+						ExpressionFactory.negate(
+							new BinaryOperation(
+								BinaryOperator.POWER,
+								arg,
+								Constant.valueOf(2)
+							)
+						)
+					)
+				)
+			);
+	}
+	
+	@Override
 	public Expression visitCos(final Expression arg) {
 		//Derivative of cos(x) = -sin(x)
 		return ExpressionFactory.negate(new FunctionOperation(Function.SIN, arg));
+	}
+	
+	@Override
+	public Expression visitArccos(final Expression arg) {
+		//Derivative of cos(x) = -1/sqrt(1 - x^2)
+		return ExpressionFactory.negate(this.visitArcsin(arg)); //That was easy...
+	}
+	
+	@Override
+	public Expression visitTan(final Expression arg) {
+		//Derivative of tan(x) = 1/cos(x)^2
+		return new BinaryOperation(
+			BinaryOperator.DIVISION,
+			Constant.ONE,
+				new BinaryOperation(
+					BinaryOperator.POWER,
+					new FunctionOperation(
+						Function.COS,
+						arg
+					),
+					Constant.valueOf(2)
+				)
+			);
+	}
+	
+	@Override
+	public Expression visitArctan(final Expression arg) {
+		//Derivative of atan(x) = 1/(1 + x^2)
+		return new BinaryOperation(
+			BinaryOperator.DIVISION,
+			Constant.ONE,
+				new NAryOperation(
+					NAryOperator.ADDITION, //1 + x^2
+					Constant.ONE,
+					new BinaryOperation(
+						BinaryOperator.POWER,
+						arg,
+						Constant.valueOf(2)
+					)
+				)
+			);
 	}
 	
 	@Override

@@ -139,11 +139,43 @@ public class AlgebraicSimplifier extends AbstractExpressionVisitor implements
 	}
 	
 	@Override
+	public Expression visitArcsin(final Expression arg) {
+		if (arg.equals(Constant.ZERO)) {
+			return Constant.ZERO;
+		}
+		return new FunctionOperation(Function.ARCSIN, arg);
+	}
+	
+	@Override
 	public Expression visitCos(final Expression arg) {
 		if (arg.equals(Constant.ZERO)) {
 			return Constant.ONE;
 		}
 		return new FunctionOperation(Function.COS, arg);
+	}
+	
+	@Override
+	public Expression visitArccos(final Expression arg) {
+		if (arg.equals(Constant.ONE)) {
+			return Constant.ZERO;
+		}
+		return new FunctionOperation(Function.ARCCOS, arg);
+	}
+	
+	@Override
+	public Expression visitTan(final Expression arg) {
+		if (arg.equals(Constant.ZERO)) {
+			return Constant.ZERO;
+		}
+		return new FunctionOperation(Function.TAN, arg);
+	}
+	
+	@Override
+	public Expression visitArctan(final Expression arg) {
+		if (arg.equals(Constant.ZERO)) {
+			return Constant.ZERO;
+		}
+		return new FunctionOperation(Function.ARCTAN, arg);
 	}
 	
 	@Override

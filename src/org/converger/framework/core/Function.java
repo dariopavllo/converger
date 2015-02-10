@@ -13,11 +13,39 @@ public enum Function {
 			return v.visitSin(arg);
 		}
 	},
+	/** Inverse sine function (arc sine). */
+	ARCSIN("asin") {
+		@Override
+		public <X> X accept(final Visitor<X> v, final X arg) {
+			return v.visitArcsin(arg);
+		}
+	},
 	/** Cosine function. */
 	COS("cos") {
 		@Override
 		public <X> X accept(final Visitor<X> v, final X arg) {
 			return v.visitCos(arg);
+		}
+	},
+	/** Inverse cosine function (arc cosine). */
+	ARCCOS("acos") {
+		@Override
+		public <X> X accept(final Visitor<X> v, final X arg) {
+			return v.visitArccos(arg);
+		}
+	},
+	/** Tangent function. */
+	TAN("tan") {
+		@Override
+		public <X> X accept(final Visitor<X> v, final X arg) {
+			return v.visitTan(arg);
+		}
+	},
+	/** Inverse tangent function (arc tangent). */
+	ARCTAN("atan") {
+		@Override
+		public <X> X accept(final Visitor<X> v, final X arg) {
+			return v.visitArctan(arg);
 		}
 	},
 	/** Natural logarithm (base e). */
@@ -93,11 +121,47 @@ public enum Function {
 		}
 		
 		/**
+		 * Action to do on the arc sine function.
+		 * @param arg the function argument
+		 * @return an implementation-dependent value
+		 */
+		default X visitArcsin(final X arg) {
+			return this.visitDefaultFunction(arg);
+		}
+		
+		/**
 		 * Action to do on the cosine function.
 		 * @param arg the function argument
 		 * @return an implementation-dependent value
 		 */
 		default X visitCos(final X arg) {
+			return this.visitDefaultFunction(arg);
+		}
+		
+		/**
+		 * Action to do on the arc cosine function.
+		 * @param arg the function argument
+		 * @return an implementation-dependent value
+		 */
+		default X visitArccos(final X arg) {
+			return this.visitDefaultFunction(arg);
+		}
+		
+		/**
+		 * Action to do on the tangent function.
+		 * @param arg the function argument
+		 * @return an implementation-dependent value
+		 */
+		default X visitTan(final X arg) {
+			return this.visitDefaultFunction(arg);
+		}
+		
+		/**
+		 * Action to do on the arc tangent function.
+		 * @param arg the function argument
+		 * @return an implementation-dependent value
+		 */
+		default X visitArctan(final X arg) {
 			return this.visitDefaultFunction(arg);
 		}
 		
