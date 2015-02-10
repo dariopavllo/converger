@@ -114,8 +114,28 @@ public class Evaluator implements
 	}
 	
 	@Override
+	public Double visitArcsin(final Double arg) {
+		return Math.asin(arg);
+	}
+	
+	@Override
 	public Double visitCos(final Double arg) {
 		return Math.cos(arg);
+	}
+	
+	@Override
+	public Double visitArccos(final Double arg) {
+		return Math.acos(arg);
+	}
+	
+	@Override
+	public Double visitTan(final Double arg) {
+		return Math.tan(arg);
+	}
+	
+	@Override
+	public Double visitArctan(final Double arg) {
+		return Math.atan(arg);
 	}
 	
 	@Override

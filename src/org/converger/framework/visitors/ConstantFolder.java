@@ -84,7 +84,7 @@ public class ConstantFolder extends AbstractExpressionVisitor
 			}
 		}
 		
-		if (constantTerm != 1) { //NOPMD
+		if (constantTerm != 1 || factors.isEmpty()) { //NOPMD
 			factors.add(Constant.valueOf(constantTerm));
 		}
 		
