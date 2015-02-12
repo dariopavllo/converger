@@ -21,8 +21,7 @@ import org.converger.framework.core.Variable;
  * The output expression must be simplified afterwards.
  * @author Dario Pavllo
  */
-public class Differentiator implements
-		Expression.Visitor<Expression>,
+public class Differentiator extends AbstractExpressionVisitor implements
 		BinaryOperator.Visitor<Expression>,
 		NAryOperator.Visitor<Expression>,
 		Function.Visitor<Expression> {
@@ -68,7 +67,6 @@ public class Differentiator implements
 			this.visit(v.getArgument()) // g'(x)
 		);
 	}
-
 
 	/*------------------
 	 * Binary operators

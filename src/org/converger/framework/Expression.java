@@ -2,6 +2,7 @@ package org.converger.framework;
 
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.Equation;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.Variable;
@@ -69,6 +70,13 @@ public interface Expression {
 		 * @return an implementation-dependent value
 		 */
 		X visit(NAryOperation v);
+		
+		/**
+		 * Visits an equation (first node).
+		 * @param v the equation to visit
+		 * @return an implementation-dependent value
+		 */
+		X visit(Equation v);
 		
 	}
 	

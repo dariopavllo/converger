@@ -8,6 +8,7 @@ import org.converger.framework.Environment;
 import org.converger.framework.Expression;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.Equation;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.Variable;
@@ -68,4 +69,10 @@ public class VariableEnumerator implements Expression.Visitor<Void> {
 		return null;
 	}
 	
+	@Override
+	public Void visit(final Equation v) {
+		this.visit(v.getFirstMember());
+		this.visit(v.getSecondMember());
+		return null;
+	}
 }

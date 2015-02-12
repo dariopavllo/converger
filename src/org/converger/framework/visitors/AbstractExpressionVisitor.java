@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.converger.framework.Expression;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.Equation;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.Variable;
@@ -48,6 +49,13 @@ public abstract class AbstractExpressionVisitor implements Expression.Visitor<Ex
 			.collect(Collectors.toList());
 		
 		return new NAryOperation(v.getOperator(), visited);
+	}
+	
+	@Override
+	public Expression visit(final Equation v) {
+		return new Equation(
+			this.visit(v.getFirstMember()),
+			this.visit(v.getSecondMember()));
 	}
 	
 }

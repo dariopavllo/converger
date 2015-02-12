@@ -10,6 +10,7 @@ import org.converger.framework.Expression;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.Equation;
 import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
@@ -175,6 +176,11 @@ public abstract class AbstractPrinter implements Expression.Visitor<String> {
 		final String result = this.printFunction(v);
 		this.parentStack.pop();
 		return result;
+	}
+	
+	@Override
+	public final String visit(final Equation v) {
+		return this.visit(v.getFirstMember()) + " = " + this.visit(v.getSecondMember());
 	}
 	
 	/**

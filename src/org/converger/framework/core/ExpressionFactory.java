@@ -3,6 +3,10 @@ package org.converger.framework.core;
 import java.util.List;
 
 import org.converger.framework.Expression;
+import org.converger.framework.parser.ShuntingYardParser;
+import org.converger.framework.parser.Token;
+import org.converger.framework.parser.Tokenizer;
+import org.converger.framework.parser.TreeBuilder;
 
 /**
  * A static factory class that provides some
@@ -12,6 +16,33 @@ import org.converger.framework.Expression;
 public final class ExpressionFactory {
 
 	private ExpressionFactory() {
+	}
+	
+	/**
+	 * Builds a raw expression from the given string.
+	 * @param str the input expression
+	 * @return a syntax tree representing the expression
+	 */
+	public static Expression build(final String str) {
+		final String[] parts = str.split("=");
+		switch (parts.length) {
+		case 1:
+			//Single expression
+			final Tokenizer tokenizer = new Tokenizer(parts[0]);
+			final ShuntingYardParser parser = new ShuntingYardParser();
+			
+			parser.parse(tokenizer);
+			final List<Token> tokens = parser.getOutputList();
+			final TreeBuilder tb = new TreeBuilder(tokens);
+			return tb.build();
+			
+		case 2:
+			//Equation
+			return new Equation(build(parts[0]), build(parts[1])); //Recursive
+			
+		default:
+			throw new IllegalArgumentException("Invalid equation");
+		}
 	}
 	
 	/**

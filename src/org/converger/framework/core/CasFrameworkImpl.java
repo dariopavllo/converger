@@ -3,16 +3,11 @@ package org.converger.framework.core;
 
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.converger.framework.CasFramework;
 import org.converger.framework.Expression;
-import org.converger.framework.parser.ShuntingYardParser;
-import org.converger.framework.parser.Token;
-import org.converger.framework.parser.Tokenizer;
-import org.converger.framework.parser.TreeBuilder;
 import org.converger.framework.visitors.BasicPrinter;
 import org.converger.framework.visitors.Collector;
 import org.converger.framework.visitors.ConstantFolder;
@@ -47,16 +42,16 @@ public final class CasFrameworkImpl implements CasFramework {
 
 	@Override
 	public Expression parse(final String input) {
-		final Tokenizer tokenizer = new Tokenizer(input);
-		final ShuntingYardParser parser = new ShuntingYardParser();
 		try {
-			parser.parse(tokenizer);
-			final List<Token> result = parser.getOutputList();
-			final TreeBuilder tb = new TreeBuilder(result);
-			return tb.build();
+			final Expression result = ExpressionFactory.build(input);
+			
+			//The tree is leveled in one pass to compress redundant operations
+			return new TreeLeveler().visit(result);
+			
 		} catch (final IllegalArgumentException e) {
 			//Rethrow
 			throw new IllegalArgumentException(e.getMessage(), e);
+			
 		} catch (final EmptyStackException e) {
 			//Unexpected error
 			throw new IllegalArgumentException("Syntax error", e);

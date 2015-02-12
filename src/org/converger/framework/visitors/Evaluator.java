@@ -10,6 +10,7 @@ import org.converger.framework.Expression;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.Equation;
 import org.converger.framework.core.Function;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
@@ -74,6 +75,11 @@ public class Evaluator implements
 	public Double visit(final FunctionOperation v) {
 		return v.getFunction().accept(this,
 				this.visit(v.getArgument()));
+	}
+	
+	@Override
+	public Double visit(final Equation v) {
+		throw new UnsupportedOperationException("Cannot evaluate an equation");
 	}
 
 	/*------------------
