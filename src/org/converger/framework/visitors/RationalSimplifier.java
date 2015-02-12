@@ -12,7 +12,7 @@ import org.converger.framework.core.BinaryOperator;
 
 /**
  * This is a specific type of simplifier that reorders multiplication
- * and division nodes to satisfy some rational rules.<br />
+ * and division nodes to satisfy some rational rules.
  * (x/y)/z becomes x/(yz), x/(y/z) becomes (xz)/y,
  * x * (y/z) becomes (xy)/z.
  * @author Dario Pavllo
