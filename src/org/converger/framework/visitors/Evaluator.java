@@ -21,7 +21,7 @@ import org.converger.framework.core.Variable;
  * using a supplied map of variables-values.
  * The expression is evaluated numerically, not algebraically,
  * and the result is a real value.
- * @throws NoSuchElementException if a variable with no mapped value is found.
+ * Throws {@link java.util.NoSuchElementException} if a variable with no mapped value is found.
  * @author Dario Pavllo
  */
 public class Evaluator implements
@@ -33,7 +33,7 @@ public class Evaluator implements
 	private final Map<Variable, Double> values;
 	
 	/**
-	 * @param valueMap a variable->value map
+	 * @param valueMap a variable-value map
 	 */
 	public Evaluator(final Map<Variable, Double> valueMap) {
 		//Defensive copy

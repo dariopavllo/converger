@@ -8,15 +8,19 @@ import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.FunctionOperation;
 import org.converger.framework.core.NAryOperation;
 import org.converger.framework.core.NAryOperator;
+import org.converger.framework.core.SpecialConstant;
 import org.converger.framework.core.Variable;
+import org.converger.framework.core.Function;
 
 /**
- * This visitor implements a basic printer,
- * which converts an expression to plain text.
+ * This visitor implements a LaTeX printer,
+ * It returns a string in LaTeX language, which can be rendered subsequently.
  * @author Dario Pavllo
  */
-public class LatexPrinter extends AbstractPrinter
-	implements BinaryOperator.Visitor<String>, NAryOperator.Visitor<String> {
+public class LatexPrinter extends AbstractPrinter implements
+	BinaryOperator.Visitor<String>,
+	NAryOperator.Visitor<String>,
+	Function.Visitor<String> {
 	
 	/**
 	 * Instantiates this printer.
@@ -33,6 +37,10 @@ public class LatexPrinter extends AbstractPrinter
 	
 	@Override
 	public String visit(final Variable v) {
+		if (v.equals(SpecialConstant.PI.getAsVariable())) {
+			//Prints "pi" in an aesthetically pleasing manner
+			return "\\pi";
+		}
 		return "\\mathit{" + super.visit(v) + "}";
 	}
 
@@ -67,18 +75,39 @@ public class LatexPrinter extends AbstractPrinter
 	
 	@Override
 	protected String printFunction(final FunctionOperation v) {
-		return "\\mathrm{" + v.getFunction().getName() + "}"
-				+ this.parenthesize(this.visit(v.getArgument()));
+		try {
+			//Special syntax (if present)
+			return v.getFunction().accept(this, this.visit(v.getArgument()));
+		} catch (final UnsupportedOperationException e) {
+			//Fallback
+			return "\\mathrm{" + v.getFunction().getName() + "}"
+					+ this.parenthesize(this.visit(v.getArgument()));
+		}
+		
 	}
 
 	@Override
 	public String visitDivision(final String o1, final String o2) {
-		return "\\frac{" + o1 + "}{" + o2 + "}";
+		return "\\dfrac{" + o1 + "}{" + o2 + "}";
 	}
 
 	@Override
 	public String visitProduct(final List<String> operands) {
 		return operands.stream().collect(Collectors.joining("{\\,}"));
+	}
+	
+	/*-------------------
+	 * Function overrides
+	 *-------------------*/
+	
+	@Override
+	public String visitSqrt(final String arg) {
+		return "\\sqrt{ " + arg + "}";
+	}
+	
+	@Override
+	public String visitAbs(final String arg) {
+		return "|" + arg + "|";
 	}
 	
 }

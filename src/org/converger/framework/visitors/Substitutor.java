@@ -16,7 +16,7 @@ public class Substitutor extends AbstractExpressionVisitor {
 	private final Map<Variable, Expression> substitutionMap;
 	
 	/**
-	 * Initializes this substitutor using the supplied map of variables -> subexpressions.
+	 * Initializes this substitutor using the supplied map of variables-subexpressions.
 	 * @param substitution the substitution map
 	 */
 	public Substitutor(final Map<Variable, Expression> substitution) {
