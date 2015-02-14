@@ -22,6 +22,7 @@ public class ShuntingYardParser implements Parser {
 	private final Stack<Token> output;
 	private final Stack<Token> stack;
 	private boolean expectUnaryMinus;
+	private boolean expectImplicitMultiplication;
 	
 	/**
 	 * Initializes this parser.
@@ -30,6 +31,9 @@ public class ShuntingYardParser implements Parser {
 		this.output = new Stack<>();
 		this.stack = new Stack<>();
 		this.expectUnaryMinus = true;
+		
+		//Tells whether implicit multiplication is allowed for the next token (e.g. coefficients)
+		this.expectImplicitMultiplication = false;
 	}
 	
 	/**
@@ -43,34 +47,27 @@ public class ShuntingYardParser implements Parser {
 	
 	@Override
 	public void parse(final Iterable<String> input) {
-		//Tells whether implicit multiplication is allowed for the next token (coefficients)
-		boolean expectImplicitMultiplication = false;
-		
+
 		for (final String token : input) {
 			if (ShuntingYardParser.isNumber(token)) {
 				//Number: push it on the output stack
+				this.applyImplicitMultiplication();
 				this.output.push(new Token(token, Token.Type.NUMBER));
-				expectImplicitMultiplication = true;
+				this.expectImplicitMultiplication = true;
 				this.expectUnaryMinus = false;
 				
 			} else if (ShuntingYardParser.isName(token)) {
 				//Function or variable
-				
-				if (expectImplicitMultiplication) {
-					/* If the previous token was a coefficient (number), a multiplication
-					 * operation is implicitly added (e.g. 3x^2 = 3*x^2).
-					 * This applies for more complex cases as well (e.g 5x cos(x) sin(x)). */
-					this.pushOperator(NAryOperator.PRODUCT);
-				}
+				this.applyImplicitMultiplication();
 				
 				if (Environment.getSingleton().hasFunction(token)) {
 					this.stack.push(new Token(token, Token.Type.FUNCTION));
-					expectImplicitMultiplication = false;
+					this.expectImplicitMultiplication = false;
 				} else {
 					//If there is no function with the given name,
 					//it is treated as a variable
 					this.output.push(new Token(token, Token.Type.VARIABLE));
-					expectImplicitMultiplication = true;
+					this.expectImplicitMultiplication = true;
 				}
 				this.expectUnaryMinus = false;
 				
@@ -78,12 +75,9 @@ public class ShuntingYardParser implements Parser {
 				//It can be either a parenthesis, or an operator
 				if (token.equals(Token.LEFT_PARENTHESIS.getContent())) {
 					//If it's a left parenthesis, push it on the operator stack
-					if (expectImplicitMultiplication) {
-						//Same as before (e.g. 5(...) = 5*(...) )
-						this.pushOperator(NAryOperator.PRODUCT);
-					}
+					this.applyImplicitMultiplication();
 					this.stack.push(Token.LEFT_PARENTHESIS);
-					expectImplicitMultiplication = false;
+					this.expectImplicitMultiplication = false;
 					this.expectUnaryMinus = true;
 				} else if (token.equals(Token.RIGHT_PARENTHESIS.getContent())) {
 					try {
@@ -103,13 +97,13 @@ public class ShuntingYardParser implements Parser {
 							&& this.stack.peek().getType() == Token.Type.FUNCTION) {
 						this.output.push(this.stack.pop());
 					}
-					expectImplicitMultiplication = true;
+					this.expectImplicitMultiplication = true;
 					this.expectUnaryMinus = false;
 					
 				} else {
 					//If it's not a parenthesis, it's an operator
 					this.pushOperator(this.getOperator(token));
-					expectImplicitMultiplication = false;
+					this.expectImplicitMultiplication = false;
 					this.expectUnaryMinus = false;
 				}
 				
@@ -118,6 +112,16 @@ public class ShuntingYardParser implements Parser {
 			}
 		}
 		this.complete();
+	}
+	
+	private void applyImplicitMultiplication() {
+		if (this.expectImplicitMultiplication) {
+			/* If the previous token was a coefficient (number) or a token
+			 * that allows implicit multiplication, a multiplication
+			 * operation is implicitly added (e.g. 3x^2 = 3*x^2).
+			 * This applies for more complex cases as well (e.g 5x cos(x) sin(x)). */
+			this.pushOperator(NAryOperator.PRODUCT);
+		}
 	}
 	
 	private void pushOperator(final Operator o) {

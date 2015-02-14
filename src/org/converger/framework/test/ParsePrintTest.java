@@ -1,7 +1,9 @@
 package org.converger.framework.test;
 
 import org.converger.framework.CasFramework;
+import org.converger.framework.CasManager;
 import org.converger.framework.Expression;
+import org.converger.framework.SyntaxErrorException;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -13,23 +15,29 @@ import org.junit.Assert;
  */
 public class ParsePrintTest {
 	
-	//CHECKSTYLE:OFF
+	private final CasFramework cas = CasManager.getSingleton().createFramework();
 	
-	private void test(final String expression) {
-		final Expression e = CasFramework.getSingleton().parse(expression);
-		final String outStr = CasFramework.getSingleton().toPlainText(e);
-		final Expression e2 = CasFramework.getSingleton().parse(outStr);
-		Assert.assertEquals(e, e2);
+	private void run(final String expression) {
+		try {
+			final Expression e = cas.parse(expression);
+			final String outStr = cas.toPlainText(e);
+			final Expression e2 = cas.parse(outStr);
+			Assert.assertEquals(e, e2);
+		} catch (SyntaxErrorException e) {
+			Assert.fail(e.getMessage());
+		}
 	}
+	
+	//CHECKSTYLE:OFF
 	
 	@Test
 	public void testEnumeration() {
-		this.test("x + y + z");
-		this.test("x + y - z");
-		this.test("2x + 3y - 3x");
-		this.test("sin(x) + cos(x)/2");
-		this.test("ln(sin(x))*2cos(x) - x - y");
-		this.test("1 + 2 + 3 / 2 - 1 ^ 3 ^ 4 ^ 5 ^ 5");
+		this.run("x + y + z");
+		this.run("x + y - z");
+		this.run("2x + 3y - 3x");
+		this.run("sin(x) + cos(x)/2");
+		this.run("ln(sin(x))*2cos(x) - x - y");
+		this.run("1 + 2 + 3 / 2 - 1 ^ 3 ^ 4 ^ 5 ^ 5");
 	}
 	
 	//CHECKSTYLE:ON

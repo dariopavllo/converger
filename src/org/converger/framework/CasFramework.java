@@ -4,29 +4,19 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.converger.framework.core.CasFrameworkImpl;
-
 /**
  * This interface defines the operations which can be done on this CAS.
  * @author Dario Pavllo
  */
 public interface CasFramework {
-
-	/**
-	 * Returns the framework's implementation.
-	 * @return a singleton instance of CasFramework
-	 */
-	static CasFramework getSingleton() {
-		return CasFrameworkImpl.getSingleton();
-	}
 	
 	/**
 	 * Parses an expression and returns its internal representation.
 	 * @param input	the expression string in infix notation
 	 * @return the parsed expression tree
-	 * @throws IllegalArgumentException if the expression contains syntax errors
+	 * @throws SyntaxErrorException if the expression contains syntax errors
 	 */
-	Expression parse(String input);
+	Expression parse(String input) throws SyntaxErrorException;
 	
 	/**
 	 * Simplifies (algebraically) the supplied expression.
@@ -80,5 +70,13 @@ public interface CasFramework {
 	 * @return a string in LaTeX language
 	 */
 	String toLatexText(Expression input);
+	
+	
+	/**
+	 * Aborts the current running operation (if there is one) on this framework instance.
+	 * This method, which is thread-safe, has to be called from another thread,
+	 * and causes the main thread to throw a {@link org.converger.framework.AbortedException}.
+	 */
+	void abort();
 	
 }

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.converger.framework.CasFramework;
+import org.converger.framework.CasManager;
 import org.converger.framework.Expression;
+import org.converger.framework.SyntaxErrorException;
 
 /**
  * Console test class.
@@ -22,7 +24,7 @@ public final class ConsoleTest {
 	 */
 	public static void main(final String... args) {
 		final BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-		final CasFramework cas = CasFramework.getSingleton();
+		final CasFramework cas = CasManager.getSingleton().createFramework();
 		try {
 			final Expression exp = cas.parse(console.readLine());
 			System.out.println(cas.toPlainText(exp));
@@ -38,6 +40,8 @@ public final class ConsoleTest {
 		} catch (final IOException e) {
 			//Should never happen
 			System.err.println("I/O Exception");
+		} catch (final SyntaxErrorException e) {
+			System.err.println("Syntax error: " + e.getMessage());
 		}
 	}
 }
