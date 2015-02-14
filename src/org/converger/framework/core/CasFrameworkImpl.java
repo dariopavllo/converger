@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.converger.framework.AbortedException;
 import org.converger.framework.CasFramework;
 import org.converger.framework.Expression;
+import org.converger.framework.SyntaxErrorException;
 import org.converger.framework.visitors.BasicPrinter;
 import org.converger.framework.visitors.Collector;
 import org.converger.framework.visitors.ConstantFolder;
@@ -22,26 +24,22 @@ import org.converger.framework.visitors.TreeSorter;
 import org.converger.framework.visitors.VariableEnumerator;
 
 /**
- * Actual implementation of the CAS framework.
+ * Actual implementation of the Converger framework.
  * @author Dario Pavllo
  */
 public final class CasFrameworkImpl implements CasFramework {
 
-	private static final CasFramework SINGLETON = new CasFrameworkImpl();
+	private volatile boolean aborted = false; //NOPMD
 	
-	private CasFrameworkImpl() {
+	private void interruptionCheck() {
+		if (this.aborted) {
+			aborted = false;
+			throw new AbortedException();
+		}
 	}
 	
-	/**
-	 * Returns the unique instance of this class.
-	 * @return a CasFramework singleton
-	 */
-	public static CasFramework getSingleton() {
-		return CasFrameworkImpl.SINGLETON;
-	}
-
 	@Override
-	public Expression parse(final String input) {
+	public Expression parse(final String input) throws SyntaxErrorException {
 		try {
 			final Expression result = ExpressionFactory.build(input);
 			
@@ -50,11 +48,11 @@ public final class CasFrameworkImpl implements CasFramework {
 			
 		} catch (final IllegalArgumentException e) {
 			//Rethrow
-			throw new IllegalArgumentException(e.getMessage(), e);
+			throw new SyntaxErrorException(e.getMessage(), input, e);
 			
 		} catch (final EmptyStackException e) {
 			//Unexpected error
-			throw new IllegalArgumentException("Syntax error", e);
+			throw new SyntaxErrorException("Syntax error", input, e);
 		}
 	}
 
@@ -72,6 +70,7 @@ public final class CasFrameworkImpl implements CasFramework {
 			current = new Collector().visit(current);
 			current = new ConstantFolder().visit(current);
 			current = new TreeSorter().visit(current);
+			this.interruptionCheck();
 		} while (!previous.equals(current));
 		
 		return current;
@@ -102,7 +101,7 @@ public final class CasFrameworkImpl implements CasFramework {
 		for (final SpecialConstant c : SpecialConstant.values()) {
 			finalMap.put(c.getAsVariable(), c.getValue());
 		}
-		
+		this.interruptionCheck();
 		return new Evaluator(finalMap).visit(input);
 	}
 
@@ -121,6 +120,11 @@ public final class CasFrameworkImpl implements CasFramework {
 		final VariableEnumerator enumerator = new VariableEnumerator();
 		enumerator.visit(input);
 		return enumerator.getVariables();
+	}
+
+	@Override
+	public void abort() {
+		this.aborted = true;
 	}
 
 }

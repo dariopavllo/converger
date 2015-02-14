@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.converger.framework.CasFramework;
+import org.converger.framework.CasManager;
 import org.converger.framework.Expression;
+import org.converger.framework.SyntaxErrorException;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -15,22 +17,28 @@ import org.junit.Assert;
  */
 public class EnumerationTest {
 	
-	//CHECKSTYLE:OFF
+	private final CasFramework cas = CasManager.getSingleton().createFramework();
 	
-	private void test(final String expression, final String... expected) {
-		final Expression e = CasFramework.getSingleton().parse(expression);
-		final Set<String> set = new HashSet<>(Arrays.asList(expected));
-		Assert.assertEquals(set, CasFramework.getSingleton().enumerateVariables(e));
+	private void run(final String expression, final String... expected) {
+		try {
+			final Expression e = cas.parse(expression);
+			final Set<String> set = new HashSet<>(Arrays.asList(expected));
+			Assert.assertEquals(set, cas.enumerateVariables(e));
+		} catch (SyntaxErrorException e) {
+			Assert.fail(e.getMessage());
+		}
 	}
+	
+	//CHECKSTYLE:OFF
 	
 	@Test
 	public void testEnumeration() {
-		this.test("x + y + z", "x", "y", "z");
-		this.test("pi");
-		this.test("pi + e");
-		this.test("pi + e * x + 2", "x");
-		this.test("sin(x) + x", "x");
-		this.test("ln(x) + test + x*cos(y)", "x", "test", "y");
+		this.run("x + y + z", "x", "y", "z");
+		this.run("pi");
+		this.run("pi + e");
+		this.run("pi + e * x + 2", "x");
+		this.run("sin(x) + x", "x");
+		this.run("ln(x) + test + x*cos(y)", "x", "test", "y");
 	}
 	
 	//CHECKSTYLE:ON
