@@ -59,12 +59,25 @@ public interface CasFramework {
 	
 	
 	/**
-	 * Solves numerically the given equation.
+	 * Solves numerically the given equation. It must contain
+	 * only one variable, and it is deduced automatically.
 	 * @param input the equation to solve
 	 * @return a set containing the solutions of the equation
-	 * @throws IllegalArgumentException if the expression is not an equation
+	 * @throws IllegalArgumentException either if the expression is not an equation
+	 * or does not contain only one variable
 	 */
 	Set<Double> solveNumerically(Expression input);
+	
+	/**
+	 * Integrates numerically the given function. It must contain
+	 * only one variable, and it is deduced automatically.
+	 * @param input the function to integrate
+	 * @param lowerBound the lower bound of the integral
+	 * @param upperBound the upper bound of the integral
+	 * @return the approximate definite integral of the function
+	 * @throws IllegalArgumentException if the function does not contain only one variable
+	 */
+	double integrateNumerically(Expression input, double lowerBound, double upperBound);
 	
 	/**
 	 * Converts an expression to simple plain text.
