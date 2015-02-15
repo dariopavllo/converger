@@ -52,6 +52,7 @@ public class ConstantFolder extends AbstractExpressionVisitor
 	public Expression visitDivision(final Expression o1, final Expression o2) {
 		Expression res1 = o1;
 		Expression res2 = o2;
+		
 		if (o1 instanceof Constant && o2 instanceof Constant && !o2.equals(Constant.ZERO)) {
 			final long numerator = ((Constant) o1).getValue();
 			final long denominator = ((Constant) o2).getValue();

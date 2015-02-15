@@ -266,6 +266,29 @@ public abstract class AbstractPrinter implements Expression.Visitor<String> {
 					return Optional.of(Constant.valueOf(-c.getValue()));
 				}
 			}
+			
+			//Checks for fractions
+			if (e instanceof BinaryOperation) {
+				final BinaryOperation bOp = (BinaryOperation) e;
+				if (bOp.getOperator() == BinaryOperator.DIVISION) {
+					//Recursive
+					final Optional<Expression> numerator = this.unNegate(bOp.getFirstOperand());
+					final Optional<Expression> denominator = this.unNegate(bOp.getSecondOperand());
+					
+					//If they have different signs
+					if (numerator.isPresent() != denominator.isPresent()) {
+						final Expression num = numerator.isPresent()
+							? numerator.get()
+							: bOp.getFirstOperand();
+						final Expression denom = denominator.isPresent()
+							? denominator.get()
+							: bOp.getSecondOperand();
+						//Strips the sign from the fraction
+						return Optional.of(
+							new BinaryOperation(BinaryOperator.DIVISION, num, denom));
+					}
+				}
+			}
 			return Optional.empty();
 		}
 		

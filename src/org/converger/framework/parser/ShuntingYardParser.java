@@ -193,7 +193,7 @@ public class ShuntingYardParser implements Parser {
 	}
 	
 	private static boolean isName(final String str) {
-		return str.matches("[a-zA-Z]+");
+		return str.matches("[a-zA-Z']+");
 	}
 	
 	private static boolean isSymbol(final String str) {

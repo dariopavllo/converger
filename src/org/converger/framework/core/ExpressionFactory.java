@@ -59,6 +59,20 @@ public final class ExpressionFactory {
 	}
 	
 	/**
+	 * Subtracts an expression from another (e1 - e2).
+	 * @param e1 the first expression
+	 * @param e2 the second expression
+	 * @return e1 - e2
+	 */
+	public static Expression subtract(final Expression e1, final Expression e2) {
+		return new NAryOperation(
+			NAryOperator.ADDITION,
+			e1,
+			ExpressionFactory.negate(e2)
+		);
+	}
+	
+	/**
 	 * Builds a rational (fractional) number.
 	 * If the denominator is equal to 1, only the numerator is returned.
 	 * @param x the numerator

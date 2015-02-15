@@ -12,6 +12,7 @@ import org.converger.framework.Expression;
 import org.converger.framework.SyntaxErrorException;
 import org.converger.framework.algorithms.NumericalIntegrator;
 import org.converger.framework.algorithms.NumericalSolver;
+import org.converger.framework.algorithms.TaylorSeries;
 import org.converger.framework.visitors.BasicPrinter;
 import org.converger.framework.visitors.Collector;
 import org.converger.framework.visitors.ConstantFolder;
@@ -118,6 +119,13 @@ public final class CasFrameworkImpl implements CasFramework {
 			final double lowerBound, final double upperBound) {
 		final NumericalIntegrator integrator = new NumericalIntegrator(this, input);
 		return integrator.integrate(lowerBound, upperBound);
+	}
+	
+	@Override
+	public Expression taylorSeries(final Expression input, final String variable,
+			final Expression point, final int order) {
+		final TaylorSeries taylor = new TaylorSeries(this, input);
+		return taylor.expand(variable, point, order);
 	}
 
 	@Override
