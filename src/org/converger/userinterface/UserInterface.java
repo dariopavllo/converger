@@ -2,6 +2,8 @@ package org.converger.userinterface;
 
 import java.util.Optional;
 
+import org.converger.controller.exception.NoElementSelectedException;
+
 /**
  * This interface represent the user interface of the CAS software. 
  * The controller can call only the functions of this interface. 
@@ -51,8 +53,9 @@ public interface UserInterface {
 	/**
 	 * Return an integer value which represent the index of the selected expression.
 	 * @return the index of the selected expression.
+	 * @throws NoElementSelectedException if no expression is selected.
 	 */
-	int getSelectedExpression();
+	int getSelectedExpression() throws NoElementSelectedException;
 	
 	/**
 	 * Manages the selection of a variable if the expression has 2 or more variables.
