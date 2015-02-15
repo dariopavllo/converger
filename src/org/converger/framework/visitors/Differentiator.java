@@ -8,6 +8,7 @@ import org.converger.framework.Expression;
 import org.converger.framework.core.BinaryOperation;
 import org.converger.framework.core.BinaryOperator;
 import org.converger.framework.core.Constant;
+import org.converger.framework.core.Equation;
 import org.converger.framework.core.ExpressionFactory;
 import org.converger.framework.core.Function;
 import org.converger.framework.core.FunctionOperation;
@@ -66,6 +67,18 @@ public class Differentiator extends AbstractExpressionVisitor implements
 			v.getFunction().accept(this, v.getArgument()), // f'(g(x))
 			this.visit(v.getArgument()) // g'(x)
 		);
+	}
+	
+	@Override
+	public Expression visit(final Equation v) {
+		if (v.getFirstMember() instanceof Variable
+			&& !v.getFirstMember().equals(this.target)) {
+			//If we have a function in the form y = f(x), it becomes y' = f'(x)
+			return new Equation(
+				new Variable(((Variable) v.getFirstMember()).getName() + "'"),
+				this.visit(v.getSecondMember()));
+		}
+		return super.visit(v);
 	}
 
 	/*------------------

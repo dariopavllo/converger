@@ -80,6 +80,16 @@ public interface CasFramework {
 	double integrateNumerically(Expression input, double lowerBound, double upperBound);
 	
 	/**
+	 * Computes the Taylor series of the given function.
+	 * @param input the input function
+	 * @param variable the independent variable
+	 * @param point the point of expansion
+	 * @param order the order of expansion
+	 * @return the Taylor series of the function
+	 */
+	Expression taylorSeries(Expression input, String variable, Expression point, int order);
+	
+	/**
 	 * Converts an expression to simple plain text.
 	 * @param input the expression to convert
 	 * @return a string representation of the expression

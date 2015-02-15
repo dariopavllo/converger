@@ -10,6 +10,7 @@ import org.converger.framework.CasManager;
 import org.converger.framework.Expression;
 import org.converger.framework.SyntaxErrorException;
 import org.converger.framework.algorithms.NumericalSolver;
+import org.converger.framework.core.Constant;
 
 /**
  * Console test class.
@@ -46,6 +47,10 @@ public final class ConsoleTest {
 			} catch (IllegalArgumentException e) {
 				System.err.println("Unsolvable");
 			}
+			System.out.println("----Taylor series----");
+			final Expression taylor = cas.taylorSeries(exp, "x", Constant.ONE, 5);
+			System.out.println(cas.toPlainText(taylor));
+			System.out.println(cas.toLatexText(taylor));
 		} catch (final IOException e) {
 			//Should never happen
 			System.err.println("I/O Exception");

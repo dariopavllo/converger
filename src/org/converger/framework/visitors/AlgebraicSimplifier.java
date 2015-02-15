@@ -180,7 +180,12 @@ public class AlgebraicSimplifier extends AbstractExpressionVisitor implements
 	
 	@Override
 	public Expression visitLn(final Expression arg) {
+		if (arg.equals(Constant.ONE)) {
+			//ln(1) = 0
+			return Constant.ZERO;
+		}
 		if (arg.equals(SpecialConstant.E.getAsVariable())) {
+			//ln(e) = 1
 			return Constant.ONE;
 		}
 		return new FunctionOperation(Function.LN, arg);
