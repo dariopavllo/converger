@@ -26,9 +26,9 @@ public final class Test {
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("errore visualizzazione gui");
 		}
 		
-		new Controller();
+		Controller.getController().showUI();
 	}
 }
