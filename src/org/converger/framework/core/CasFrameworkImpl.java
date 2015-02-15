@@ -10,6 +10,7 @@ import org.converger.framework.AbortedException;
 import org.converger.framework.CasFramework;
 import org.converger.framework.Expression;
 import org.converger.framework.SyntaxErrorException;
+import org.converger.framework.algorithms.NumericalSolver;
 import org.converger.framework.visitors.BasicPrinter;
 import org.converger.framework.visitors.Collector;
 import org.converger.framework.visitors.ConstantFolder;
@@ -103,6 +104,12 @@ public final class CasFrameworkImpl implements CasFramework {
 		}
 		this.interruptionCheck();
 		return new Evaluator(finalMap).visit(input);
+	}
+	
+	@Override
+	public Set<Double> solveNumerically(final Expression input) {
+		final NumericalSolver solver = new NumericalSolver(this, input);
+		return solver.solve();
 	}
 
 	@Override

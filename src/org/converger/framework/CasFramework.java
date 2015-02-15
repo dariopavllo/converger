@@ -57,6 +57,15 @@ public interface CasFramework {
 	 */
 	double evaluate(Expression input, Map<String, Double> values);
 	
+	
+	/**
+	 * Solves numerically the given equation.
+	 * @param input the equation to solve
+	 * @return a set containing the solutions of the equation
+	 * @throws IllegalArgumentException if the expression is not an equation
+	 */
+	Set<Double> solveNumerically(Expression input);
+	
 	/**
 	 * Converts an expression to simple plain text.
 	 * @param input the expression to convert
@@ -75,7 +84,7 @@ public interface CasFramework {
 	/**
 	 * Aborts the current running operation (if there is one) on this framework instance.
 	 * This method, which is thread-safe, has to be called from another thread,
-	 * and causes the main thread to throw a {@link org.converger.framework.AbortedException}.
+	 * and causes the main thread to throw an {@link AbortedException}.
 	 */
 	void abort();
 	

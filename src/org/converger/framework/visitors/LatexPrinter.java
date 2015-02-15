@@ -90,6 +90,11 @@ public class LatexPrinter extends AbstractPrinter implements
 	public String visitDivision(final String o1, final String o2) {
 		return "\\dfrac{" + o1 + "}{" + o2 + "}";
 	}
+	
+	@Override
+	public String visitPower(final String o1, final String o2) {
+		return "{" + o1 + "}^{" + o2 + "}";
+	}
 
 	@Override
 	public String visitProduct(final List<String> operands) {
