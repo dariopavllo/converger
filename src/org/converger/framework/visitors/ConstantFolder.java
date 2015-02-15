@@ -19,7 +19,7 @@ import org.converger.framework.core.BinaryOperator;
  */
 public class ConstantFolder extends AbstractExpressionVisitor
 	implements NAryOperator.Visitor<Expression>, BinaryOperator.Visitor<Expression> {
-
+	
 	@Override
 	public Expression visit(final BinaryOperation v) {
 		final BinaryOperation sv = (BinaryOperation) super.visit(v); //Simplified
