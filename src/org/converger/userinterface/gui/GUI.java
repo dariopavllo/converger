@@ -7,7 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.converger.controller.exception.NoElementSelectedException;
 import org.converger.userinterface.UserInterface;
+import org.converger.userinterface.gui.dialog.ErrorDialog;
 import org.converger.userinterface.utility.EObserver;
 
 /**
@@ -44,21 +46,6 @@ public class GUI implements UserInterface {
 		this.buildGUI();
 	}
 	
-	private void buildGUI() {
-		this.frame.setJMenuBar(new Menu(this.observer).getMenu());
-		final JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout(GUIConstants.getDefaultMargin(), 
-				GUIConstants.getDefaultMargin()));
-		mainPanel.setBorder(new EmptyBorder(GUIConstants.getDefaultBorder(), GUIConstants.getDefaultBorder(), 
-				GUIConstants.getDefaultBorder(), GUIConstants.getDefaultBorder()));
-		
-		mainPanel.add(this.header.getMainPanel(), BorderLayout.NORTH);
-		mainPanel.add(this.body.getMainPanel(), BorderLayout.CENTER);
-		mainPanel.add(this.footer.getMainPanel(), BorderLayout.SOUTH);
-		
-		this.frame.getContentPane().add(mainPanel);
-	}
-	
 	@Override
 	public void show() {
 		this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Full screen
@@ -68,14 +55,12 @@ public class GUI implements UserInterface {
 
 	@Override
 	public void printExpression(final String exp) {
-		// TODO Auto-generated method stub
-		
+		this.body.drawNewExpression(exp);
 	}
 
 	@Override
 	public void error(final String description) {
-		// TODO Auto-generated method stub
-		
+		new ErrorDialog(this.frame, description);
 	}
 
 	@Override
@@ -97,14 +82,28 @@ public class GUI implements UserInterface {
 	}
 
 	@Override
-	public int getSelectedExpression() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getSelectedExpression() throws NoElementSelectedException {
+		return this.body.getSelected();
 	}
 
 	@Override
 	public Optional<String> selectVariable() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void buildGUI() {
+		this.frame.setJMenuBar(new Menu(this.observer).getMenu());
+		final JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout(GUIConstants.getDefaultMargin(), 
+				GUIConstants.getDefaultMargin()));
+		mainPanel.setBorder(new EmptyBorder(GUIConstants.getDefaultBorder(), GUIConstants.getDefaultBorder(), 
+				GUIConstants.getDefaultBorder(), GUIConstants.getDefaultBorder()));
+		
+		mainPanel.add(this.header.getMainPanel(), BorderLayout.NORTH);
+		mainPanel.add(this.body.getMainPanel(), BorderLayout.CENTER);
+		mainPanel.add(this.footer.getMainPanel(), BorderLayout.SOUTH);
+		
+		this.frame.getContentPane().add(mainPanel);
 	}
 }

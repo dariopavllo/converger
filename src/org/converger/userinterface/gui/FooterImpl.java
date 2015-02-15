@@ -20,6 +20,7 @@ import java.awt.Font;
 
 import javax.swing.JSeparator;
 
+import org.converger.controller.Controller;
 import org.converger.userinterface.utility.EObserver;
 import org.converger.userinterface.utility.ESource;
 
@@ -62,9 +63,8 @@ public class FooterImpl extends ESource<String> implements Footer {
 		
 		final JButton inputButton = new JButton(">");
 		/* ************************************************** EVENTO OBSERVER ************************************************************************ */
-		inputButton.addActionListener(e -> this.notifyEObservers(this.inputLine.getText()));
+		inputButton.addActionListener(e -> Controller.getController().addExpression(this.inputLine.getText()));
 		inputPanel.add(inputButton, gbc);
-		
 		gbc.gridx++;
 		
 		final JButton clearButton = new JButton("X");
