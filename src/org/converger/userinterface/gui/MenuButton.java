@@ -56,7 +56,7 @@ public enum MenuButton {
 		String getMessage();
 	}
 	
-	private enum FileItem implements MenuItem {
+	public enum FileItem implements MenuItem {
 		NEW("New", "Nuovo File"), 
 		OPEN("Open", "Apri File"), 
 		SAVE("Save", "Salva File"),
@@ -82,7 +82,7 @@ public enum MenuButton {
 		
 	}
 	
-	private enum EditItem implements MenuItem {
+	public enum EditItem implements MenuItem {
 		EDITEXP("Edit expression", "Modifica expr"), 
 		DELETEEXP("Delete expression", "Cancella expr");
 
@@ -106,7 +106,7 @@ public enum MenuButton {
 		
 	}
 	
-	private enum SolveItem implements MenuItem {
+	public enum SolveItem implements MenuItem {
 		VARIABLESUB("Variable substitution", "Sostituisci variabile"), 
 		SOLVE("Solve equation", "risolvi equazione"),
 		APPROXIMATE("Approximate", "Approssima");
@@ -131,7 +131,7 @@ public enum MenuButton {
 		
 	}
 	
-	private enum CalculusItem implements MenuItem {
+	public enum CalculusItem implements MenuItem {
 		DERIVE("Differenziate", "Deriva"), 
 		DEFINT("Integrate", "Integrale definito");
 
@@ -155,7 +155,7 @@ public enum MenuButton {
 		
 	}
 	
-	private enum HelpItem implements MenuItem {
+	public enum HelpItem implements MenuItem {
 		GUIDE("Guide", "Guida"), 
 		ABOUTUS("About us", "Su di noi, nemmeno una nuvolaa");
 
