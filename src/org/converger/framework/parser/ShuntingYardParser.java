@@ -21,7 +21,7 @@ public class ShuntingYardParser implements Parser {
 	
 	private final Stack<Token> output;
 	private final Stack<Token> stack;
-	private boolean expectUnaryMinus;
+	private boolean expectUnarySign;
 	private boolean expectImplicitMultiplication;
 	
 	/**
@@ -30,7 +30,7 @@ public class ShuntingYardParser implements Parser {
 	public ShuntingYardParser() {
 		this.output = new Stack<>();
 		this.stack = new Stack<>();
-		this.expectUnaryMinus = true;
+		this.expectUnarySign = true;
 		
 		//Tells whether implicit multiplication is allowed for the next token (e.g. coefficients)
 		this.expectImplicitMultiplication = false;
@@ -54,7 +54,7 @@ public class ShuntingYardParser implements Parser {
 				this.applyImplicitMultiplication();
 				this.output.push(new Token(token, Token.Type.NUMBER));
 				this.expectImplicitMultiplication = true;
-				this.expectUnaryMinus = false;
+				this.expectUnarySign = false;
 				
 			} else if (ShuntingYardParser.isName(token)) {
 				//Function or variable
@@ -69,7 +69,7 @@ public class ShuntingYardParser implements Parser {
 					this.output.push(new Token(token, Token.Type.VARIABLE));
 					this.expectImplicitMultiplication = true;
 				}
-				this.expectUnaryMinus = false;
+				this.expectUnarySign = false;
 				
 			} else if (ShuntingYardParser.isSymbol(token)) {
 				//It can be either a parenthesis, or an operator
@@ -78,7 +78,7 @@ public class ShuntingYardParser implements Parser {
 					this.applyImplicitMultiplication();
 					this.stack.push(Token.LEFT_PARENTHESIS);
 					this.expectImplicitMultiplication = false;
-					this.expectUnaryMinus = true;
+					this.expectUnarySign = true;
 				} else if (token.equals(Token.RIGHT_PARENTHESIS.getContent())) {
 					try {
 						//Pops tokens from the operator stack until a left
@@ -98,13 +98,13 @@ public class ShuntingYardParser implements Parser {
 						this.output.push(this.stack.pop());
 					}
 					this.expectImplicitMultiplication = true;
-					this.expectUnaryMinus = false;
+					this.expectUnarySign = false;
 					
 				} else {
 					//If it's not a parenthesis, it's an operator
 					this.pushOperator(this.getOperator(token));
 					this.expectImplicitMultiplication = false;
-					this.expectUnaryMinus = false;
+					this.expectUnarySign = false;
 				}
 				
 			} else {
@@ -126,12 +126,14 @@ public class ShuntingYardParser implements Parser {
 	
 	private void pushOperator(final Operator o) {
 		//Checks for unary minus
-		if (this.expectUnaryMinus && o.equals(BinaryOperator.SUBTRACTION)) {
+		if (this.expectUnarySign && o.equals(BinaryOperator.SUBTRACTION)) {
 			//Unary minus found: the next token is negated
 			this.output.push(new Token("-1", Token.Type.NUMBER));
 			this.stack.push(new Token(NAryOperator.PRODUCT.getSymbol(), Token.Type.OPERATOR));
-			
-		} else {
+		
+		} else if (!this.expectUnarySign
+			//Unary addition is simply ignored
+			|| this.expectUnarySign && !o.equals(NAryOperator.ADDITION)) {
 			//Ordinary binary operation
 			
 			//Tells whether there's an operator onto the top of the stack

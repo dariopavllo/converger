@@ -4,7 +4,9 @@ import java.util.Set;
 
 import org.converger.controller.exception.NoElementSelectedException;
 import org.converger.framework.CasFramework;
+import org.converger.framework.CasManager;
 import org.converger.framework.Expression;
+import org.converger.framework.SyntaxErrorException;
 import org.converger.userinterface.UserInterface;
 import org.converger.userinterface.gui.GUI;
 import org.converger.userinterface.utility.EObserver;
@@ -24,7 +26,7 @@ public class Controller implements IController, EObserver<String> {
 	
 	private Controller() {
 		this.ui = new GUI("Converger", this);
-		this.framework = CasFramework.getSingleton();
+		this.framework = CasManager.getSingleton().createFramework();
 		this.currentEnvironment = new Environment();
 	}
 	
@@ -43,7 +45,7 @@ public class Controller implements IController, EObserver<String> {
 			final String latexText = this.framework.toLatexText(expr);
 			this.currentEnvironment.add(new Record(plainText, latexText, expr));
 			this.ui.printExpression(latexText);
-		} catch (IllegalArgumentException e) {
+		} catch (SyntaxErrorException e) {
 			this.ui.error(e.getMessage());
 		}
 	}
