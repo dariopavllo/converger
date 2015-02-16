@@ -20,6 +20,7 @@ import java.awt.Font;
 
 import javax.swing.JSeparator;
 
+import org.converger.controller.Controller;
 import org.converger.userinterface.utility.EObserver;
 import org.converger.userinterface.utility.ESource;
 
@@ -42,30 +43,30 @@ public class FooterImpl extends ESource<String> implements Footer {
 		this.addEObserver(obs);
 		
 		this.mainPanel = new JPanel();
-		this.mainPanel.setLayout(new BorderLayout(GUIConstants.getDefaultMargin(), 
-				GUIConstants.getDefaultMargin()));
+		this.mainPanel.setLayout(new BorderLayout(GUIConstants.DEFAULT_MARGIN, 
+				GUIConstants.DEFAULT_MARGIN));
 		this.mainPanel.setBorder(new EtchedBorder());
 		final JPanel inputPanel = new JPanel();
 		this.mainPanel.add(inputPanel, BorderLayout.NORTH);
 		final GridBagLayout gbl = new GridBagLayout();
-		gbl.columnWeights = new double[]{Double.MIN_VALUE, Double.MIN_VALUE, 1.0};
+		gbl.columnWeights = new double[]{Double.MIN_VALUE, Double.MIN_VALUE, 1.0}; // the last column is full screen
 		inputPanel.setLayout(gbl);
 		
 		
 		final GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(GUIConstants.getDefaultMargin(), GUIConstants.getDefaultMargin(), 
-				GUIConstants.getDefaultMargin(), GUIConstants.getDefaultMargin());
+		gbc.fill = GridBagConstraints.HORIZONTAL; // components fill the cell in horizontal
+		gbc.anchor = GridBagConstraints.WEST; 
+		gbc.insets = new Insets(GUIConstants.DEFAULT_MARGIN, GUIConstants.DEFAULT_MARGIN, 
+				GUIConstants.DEFAULT_MARGIN, GUIConstants.DEFAULT_MARGIN);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		
 		final JButton inputButton = new JButton(">");
 		/* ************************************************** EVENTO OBSERVER ************************************************************************ */
-		inputButton.addActionListener(e -> this.notifyEObservers(this.inputLine.getText()));
+		inputButton.addActionListener(e -> Controller.getController().addExpression(this.inputLine.getText()));
 		inputPanel.add(inputButton, gbc);
 		
-		gbc.gridx++;
+		gbc.gridx++; // next row
 		
 		final JButton clearButton = new JButton("X");
 		inputPanel.add(clearButton, gbc);
@@ -75,19 +76,14 @@ public class FooterImpl extends ESource<String> implements Footer {
 		gbc.gridx++;
 		
 		this.inputLine = new JTextField();
-		this.inputLine.setFont(new Font(GUIConstants.getInputFont(), Font.PLAIN, GUIConstants.getInputFontSize()));
+		this.inputLine.setFont(new Font(GUIConstants.INPUT_FONT, Font.PLAIN, GUIConstants.INPUT_FONT_SIZE));
 		inputPanel.add(inputLine, gbc);
 		this.inputLine.setColumns(10);
 		this.inputLine.getDocument().addDocumentListener(new DocumentListener() {
-
 			@Override
 			public void changedUpdate(final DocumentEvent arg0) {
-				clearButton.setEnabled(true);
-				if (inputLine.getText().equals("")) {
-					clearButton.setEnabled(false);
-				}
+				// not required
 			}
-
 			@Override
 			public void insertUpdate(final DocumentEvent arg0) {
 				clearButton.setEnabled(true);
@@ -96,7 +92,6 @@ public class FooterImpl extends ESource<String> implements Footer {
 				}
 				
 			}
-
 			@Override
 			public void removeUpdate(final DocumentEvent arg0) {
 				clearButton.setEnabled(true);
@@ -107,8 +102,8 @@ public class FooterImpl extends ESource<String> implements Footer {
 		});
 		
 		final JPanel btnPanel = new JPanel();
-		btnPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GUIConstants.getDefaultMargin(), 
-				GUIConstants.getDefaultMargin()));
+		btnPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GUIConstants.DEFAULT_MARGIN, 
+				GUIConstants.DEFAULT_MARGIN));
 		this.mainPanel.add(btnPanel, BorderLayout.SOUTH);
 		
 		final JSeparator separator = new JSeparator();
@@ -128,7 +123,6 @@ public class FooterImpl extends ESource<String> implements Footer {
 
 	}
 	
-
 	@Override
 	public JPanel getMainPanel() {
 		return this.mainPanel;
