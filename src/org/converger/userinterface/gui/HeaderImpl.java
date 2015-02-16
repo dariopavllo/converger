@@ -33,7 +33,9 @@ public class HeaderImpl extends ESource<String> implements Header {
 		
 		for (final HeaderButtons b : HeaderButtons.values()) {
 			buttons[b.ordinal()] = new JButton(b.getName());
+			/* ************************************************** EVENTO OBSERVER ************************************************************************ */
 			buttons[b.ordinal()].addActionListener(e -> this.notifyEObservers(b.getMessage()));
+			//buttons[b.ordinal()].addActionListener(e -> b.clickEvent(gui));
 			this.mainPanel.add(buttons[b.ordinal()]);
 		}
 	}

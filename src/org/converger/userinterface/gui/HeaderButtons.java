@@ -1,5 +1,7 @@
 package org.converger.userinterface.gui;
 
+import org.converger.controller.FrameworkOperation;
+
 /**
  * An enum of buttons placed in the header section of the GUI.
  * Every button has its own event.
@@ -20,7 +22,13 @@ public enum HeaderButtons {
 	/** Evaluate a given expression in a given point. */
 	EVALUATE("Valuta", "Valuta espressione"),
 	/** Derive a given expression. */
-	DERIVE("Derivata", "Deriva espressione"),
+	DERIVE("Derivata", "Deriva") /*{
+		@Override
+		public void clickEvent(GUI gui) {
+			MenuButton.CalculusItem.DERIVE.clickEvent()
+			this.executeFrameworkOperation(gui, FrameworkOperation.DIFFERENTIATE);
+		}
+	}*/,
 	/** Plot a given expression. */
 	PLOT("Grafica", "Grafica"),
 	/** Help request. */
@@ -33,6 +41,17 @@ public enum HeaderButtons {
 		this.name = btnName;
 		this.message = btnMessage;
 	}
+	
+	/*private executeFrameworkOperation(GUI gui, FrameworkOperation op) {
+		List<Field> fields = op.requestFields(Controller.getSingleton().getSelectedRow());
+		if (fields.isEmpty()) {
+			Controller.getSingleton().execute(op, fields);
+		} else {
+			gui.showDialog(fields);
+		}
+	}
+	
+	public abstract void clickEvent(GUI gui);*/
 	
 	/**
 	 * Returns the name of the button given in string format.
