@@ -61,5 +61,11 @@ public interface UserInterface {
 	 * Manages the selection of a variable if the expression has 2 or more variables.
 	 * @return the selected variable, or Optional.empty if no variable is selected.
 	 */
-	Optional<String> selectVariable();	
+	Optional<String> selectVariable();
+	
+	/**
+	 * Remove the selected expression from the user interface.
+	 * @param index the index of the expression to be removed.
+	 */
+	void removeExpression(int index);
 }

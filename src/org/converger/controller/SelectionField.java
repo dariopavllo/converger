@@ -2,6 +2,7 @@ package org.converger.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a selection field, a field used by the user interface to allows the user choosing 
@@ -12,7 +13,7 @@ import java.util.List;
 public class SelectionField implements Field {
 
 	private final String name;
-	private final List<String> vars;
+	private final Set<String> vars;
 	private String value;
 	
 	/**
@@ -20,7 +21,7 @@ public class SelectionField implements Field {
 	 * @param fieldName the name of the selection field
 	 * @param variables the set of options, in string format
 	 */
-	public SelectionField(final String fieldName, final List<String> variables) {
+	public SelectionField(final String fieldName, final Set<String> variables) {
 		this.name = fieldName;
 		this.vars = variables;
 		this.value = "";

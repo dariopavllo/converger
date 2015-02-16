@@ -53,21 +53,53 @@ public enum MenuButton {
 		 * Return the message of a menu item, the message is the way which the menu can communicate user selections.
 		 * @return a string representing the message of the menu item.
 		 */
-		String getMessage();
+		String getIconPath();
 	}
 	
 	public enum FileItem implements MenuItem {
-		NEW("New", "Nuovo File"), 
-		OPEN("Open", "Apri File"), 
-		SAVE("Save", "Salva File"),
-		EXIT("Exit", "Exit");
+		NEW("New", "Nuovo File") {
+
+			@Override
+			public void clickEvent(GUI gui) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		}, 
+		OPEN("Open", "Apri File") {
+
+			@Override
+			public void clickEvent(GUI gui) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		}, 
+		SAVE("Save", "Salva File") {
+
+			@Override
+			public void clickEvent(GUI gui) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		},
+		EXIT("Exit", "Exit") {
+
+			@Override
+			public void clickEvent(GUI gui) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
 
 		private String name;
-		private String message;
+		private String iconPath;
 		
-		private FileItem(final String itemName, final String itemMessage) {
+		private FileItem(final String itemName, final String itemIconPath) {
 			this.name = itemName;
-			this.message = itemMessage;
+			this.iconPath = itemIconPath;
 		}
 		
 		@Override
@@ -76,9 +108,11 @@ public enum MenuButton {
 		}
 
 		@Override
-		public String getMessage() {
-			return this.message;
+		public String getIconPath() {
+			return this.iconPath;
 		}
+		
+		public abstract void clickEvent(GUI gui);
 		
 	}
 	
@@ -87,11 +121,11 @@ public enum MenuButton {
 		DELETEEXP("Delete expression", "Cancella expr");
 
 		private String name;
-		private String message;
+		private String iconPath;
 		
-		private EditItem(final String itemName, final String itemMessage) {
+		private EditItem(final String itemName, final String itemIconPath) {
 			this.name = itemName;
-			this.message = itemMessage;
+			this.iconPath = itemIconPath;
 		}
 		
 		@Override
@@ -100,8 +134,8 @@ public enum MenuButton {
 		}
 
 		@Override
-		public String getMessage() {
-			return this.message;
+		public String getIconPath() {
+			return this.iconPath;
 		}
 		
 	}
@@ -112,11 +146,11 @@ public enum MenuButton {
 		APPROXIMATE("Approximate", "Approssima");
 
 		private String name;
-		private String message;
+		private String iconPath;
 		
-		private SolveItem(final String itemName, final String itemMessage) {
+		private SolveItem(final String itemName, final String itemIconPath) {
 			this.name = itemName;
-			this.message = itemMessage;
+			this.iconPath = itemIconPath;
 		}
 		
 		@Override
@@ -125,8 +159,8 @@ public enum MenuButton {
 		}
 
 		@Override
-		public String getMessage() {
-			return this.message;
+		public String getIconPath() {
+			return this.iconPath;
 		}
 		
 	}
@@ -136,11 +170,11 @@ public enum MenuButton {
 		DEFINT("Integrate", "Integrale definito");
 
 		private String name;
-		private String message;
+		private String iconPath;
 		
-		private CalculusItem(final String itemName, final String itemMessage) {
+		private CalculusItem(final String itemName, final String itemIconPath) {
 			this.name = itemName;
-			this.message = itemMessage;
+			this.iconPath = itemIconPath;
 		}
 		
 		@Override
@@ -149,8 +183,8 @@ public enum MenuButton {
 		}
 
 		@Override
-		public String getMessage() {
-			return this.message;
+		public String getIconPath() {
+			return this.iconPath;
 		}
 		
 	}
@@ -160,11 +194,11 @@ public enum MenuButton {
 		ABOUTUS("About us", "Su di noi, nemmeno una nuvolaa");
 
 		private String name;
-		private String message;
+		private String iconPath;
 		
-		private HelpItem(final String itemName, final String itemMessage) {
+		private HelpItem(final String itemName, final String itemIconPath) {
 			this.name = itemName;
-			this.message = itemMessage;
+			this.iconPath = itemIconPath;
 		}
 		
 		@Override
@@ -173,8 +207,8 @@ public enum MenuButton {
 		}
 
 		@Override
-		public String getMessage() {
-			return this.message;
+		public String getIconPath() {
+			return this.iconPath;
 		}
 		
 	}

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.converger.framework.Expression;
-
 /**
  * Represent a a list of {@link Record}.
  * Its list represents the current environment of the application: all the mathematical 
@@ -82,12 +80,10 @@ public class Environment {
 	 * Modifies a record selected by its index. The function required a new expression plain text, a new expression latex text 
 	 * and the new expression Expression.
 	 * @param index the index of the expression to be modified
-	 * @param plainText the plain text of the new expression.
-	 * @param latexText the latex text of the new expression.
-	 * @param exp the new expression
+	 * @param newExpression the new record which substitutes the record at the given index. 
 	 */
-	public void modifyExpression(final int index, final String plainText, final String latexText, final Expression exp) {
-		this.recordList.get(index).modify(plainText, latexText, exp);
+	public void modifyExpression(final int index, final Record newExpression) {
+		this.recordList.set(index, newExpression);
 		this.modified();
 	}
 	

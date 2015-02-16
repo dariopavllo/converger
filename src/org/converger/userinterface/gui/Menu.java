@@ -4,6 +4,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import org.converger.controller.Controller;
 import org.converger.userinterface.gui.MenuButton.MenuItem;
 import org.converger.userinterface.utility.EObserver;
 import org.converger.userinterface.utility.ESource;
@@ -29,7 +30,7 @@ public class Menu extends ESource<String> {
 			for (final MenuItem i : b.getItems()) {
 				final JMenuItem tmp2 = new JMenuItem(i.getName());
 				/* ************************************************** EVENTO OBSERVER ************************************************************************ */
-				tmp2.addActionListener(e -> this.notifyEObservers(i.getMessage()));
+				tmp2.addActionListener(e -> Controller.getController().deleteExpression());
 				tmp.add(tmp2);
 			}
 		}
