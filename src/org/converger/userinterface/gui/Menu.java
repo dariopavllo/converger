@@ -28,6 +28,7 @@ public class Menu extends ESource<String> {
 			this.menuBar.add(tmp);
 			for (final MenuItem i : b.getItems()) {
 				final JMenuItem tmp2 = new JMenuItem(i.getName());
+				/* ************************************************** EVENTO OBSERVER ************************************************************************ */
 				tmp2.addActionListener(e -> this.notifyEObservers(i.getMessage()));
 				tmp.add(tmp2);
 			}
