@@ -25,8 +25,8 @@ public class HeaderImpl extends ESource<String> implements Header {
 		this.addEObserver(obs);
 		
 		this.mainPanel = new JPanel();
-		this.mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GUIConstants.getDefaultMargin(), 
-				GUIConstants.getDefaultMargin()));
+		this.mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GUIConstants.DEFAULT_MARGIN, 
+				GUIConstants.DEFAULT_MARGIN));
 		this.mainPanel.setBorder(new EtchedBorder());
 		
 		final JButton[] buttons = new JButton[HeaderButtons.values().length];

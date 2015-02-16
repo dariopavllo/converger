@@ -43,7 +43,7 @@ public class BodyImpl implements Body {
 		
 		scrollPanel = new JPanel();
 		scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.Y_AXIS));
-		scrollPanel.setBackground(Color.WHITE);
+		scrollPanel.setBackground(GUIConstants.BACKGROUND_COLOR);
 
 		final JScrollPane scroll = new JScrollPane(scrollPanel);
 		this.mainPanel.add(scroll, BorderLayout.CENTER);
@@ -100,7 +100,7 @@ public class BodyImpl implements Body {
 		final JLabel jl = new JLabel();
 		jl.setForeground(new Color(0, 0, 0));
 		icon.paintIcon(jl, g2, 0, 0);
-		
+		// now create the panel which contains the latex rendering
 		@SuppressWarnings("serial")
 		final JPanel panel = new JPanel() {
 			@Override
@@ -109,22 +109,22 @@ public class BodyImpl implements Body {
                 g.drawImage(image, 0, 0, null);
             }
         };
-        if (index < this.panelList.size()) {
+        if (index < this.panelList.size()) { // if it isn't a new equation
         	this.panelList.remove(index);
         }
         this.panelList.add(index, panel);
         panel.addMouseListener(new MouseAdapter() {
         	@Override
-        	public void mouseClicked(final MouseEvent e) {
+        	public void mouseClicked(final MouseEvent e) { // click on the panel
         		for (final JPanel p : panelList) {
-        			p.setBackground(Color.WHITE);
+        			p.setBackground(GUIConstants.BACKGROUND_COLOR);
         		}
-        		panel.setBackground(Color.CYAN);
+        		panel.setBackground(GUIConstants.SELECTION_COLOR);
         		setSelected(panelList.indexOf(panel));
         		//System.out.println(getSelected());
         	}
         });
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(GUIConstants.BACKGROUND_COLOR);
         panel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
         panel.setMinimumSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
 		return panel;
@@ -134,13 +134,17 @@ public class BodyImpl implements Body {
 		final JPanel rowPanel = new JPanel(new BorderLayout());
 		rowPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		final JLabel rowNumberLabel = new JLabel("#" + Integer.toString(this.panelList.indexOf(latexPanel) + 1));
-		rowNumberLabel.setPreferredSize(new Dimension(50, rowNumberLabel.getPreferredSize().height + 20));
+		rowNumberLabel.setPreferredSize(new Dimension(GUIConstants.ROW_BOX_WIDTH, 
+				rowNumberLabel.getPreferredSize().height + (GUIConstants.DEFAULT_BORDER * 2))); // top and bottom border 
 		rowPanel.add(rowNumberLabel, BorderLayout.WEST);
-		rowPanel.add(latexPanel);
-		rowPanel.setBackground(Color.WHITE);
-		rowPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		rowPanel.setMaximumSize(new Dimension(rowPanel.getMaximumSize().width, latexPanel.getPreferredSize().height + 20));
-		rowPanel.setPreferredSize(new Dimension(rowPanel.getPreferredSize().width, latexPanel.getPreferredSize().height + 20));
+		rowPanel.add(latexPanel, BorderLayout.CENTER);
+		rowPanel.setBackground(GUIConstants.BACKGROUND_COLOR);
+		rowPanel.setBorder(new EmptyBorder(GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER,
+				GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER));
+		rowPanel.setMaximumSize(new Dimension(rowPanel.getMaximumSize().width, 
+				latexPanel.getPreferredSize().height + (GUIConstants.DEFAULT_BORDER * 2)));
+		rowPanel.setPreferredSize(new Dimension(rowPanel.getPreferredSize().width, 
+				latexPanel.getPreferredSize().height + (GUIConstants.DEFAULT_BORDER * 2)));
         this.scrollPanel.add(rowPanel);
 	}
 	
@@ -153,5 +157,7 @@ public class BodyImpl implements Body {
 		for (final JPanel p : this.panelList) {
 			this.newRow(p);
 		}
+		this.scrollPanel.revalidate();
+		this.scrollPanel.repaint();
 	}
 }
