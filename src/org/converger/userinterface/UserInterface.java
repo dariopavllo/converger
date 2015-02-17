@@ -1,7 +1,10 @@
 package org.converger.userinterface;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.converger.controller.Field;
+import org.converger.controller.FrameworkOperation;
 import org.converger.controller.exception.NoElementSelectedException;
 
 /**
@@ -35,6 +38,17 @@ public interface UserInterface {
 	 * @return the answer to the question, true is yes and false is no.
 	 */
 	boolean yesNoQuestion();
+	
+	/**
+	 * Manage the request of a dialog between the framework and the user when 
+	 * a FrameworkOperation is called. 
+	 * It requires the selected operation and a list of field.
+	 * Every field in the list represent a single request form the framework to the user. 
+	 * @param operation the selected operation.
+	 * @param fields a list of field.
+	 * @param index the index of the expression.
+	 */
+	void showDialog(FrameworkOperation operation, List<Field> fields, int index);
 	
 	/**
 	 * Manage a save request when the file path is not specified.

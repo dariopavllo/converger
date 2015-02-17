@@ -1,16 +1,19 @@
 package org.converger.userinterface.gui;
 
 import java.awt.BorderLayout;
+import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.converger.controller.Field;
+import org.converger.controller.FrameworkOperation;
 import org.converger.controller.exception.NoElementSelectedException;
 import org.converger.userinterface.UserInterface;
+import org.converger.userinterface.gui.dialog.Dialog;
 import org.converger.userinterface.gui.dialog.ErrorDialog;
-import org.converger.userinterface.utility.EObserver;
 
 /**
  * Represent a graphical user interface for the application.
@@ -27,18 +30,15 @@ public class GUI implements UserInterface {
 	private final Header header;
 	private final Body body;
 	private final Footer footer;
-	private final EObserver<String> observer;
 	
 	/**
 	 * Construct a new graphic user interface.
 	 * @param name the name shown in the title bar.
-	 * @param obs the observer of the ui.
 	 */
-	public GUI(final String name, final EObserver<String> obs) {
-		this.observer = obs;
-		this.header = new HeaderImpl(this.observer);
+	public GUI(final String name) {
+		this.header = new HeaderImpl();
 		this.body = new BodyImpl();
-		this.footer = new FooterImpl(this.observer);
+		this.footer = new FooterImpl();
 		
 		this.frame = new JFrame(name);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,8 +97,13 @@ public class GUI implements UserInterface {
 		this.body.deleteExpression(index);
 	}
 	
+	@Override
+	public void showDialog(final FrameworkOperation operation, final List<Field> fields, final int index) {
+		new Dialog(this.frame, operation, fields, index);
+	}
+	
 	private void buildGUI() {
-		this.frame.setJMenuBar(new Menu(this.observer).getMenu());
+		this.frame.setJMenuBar(new Menu(this).getMenu());
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout(GUIConstants.DEFAULT_MARGIN, 
 				GUIConstants.DEFAULT_MARGIN));

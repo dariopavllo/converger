@@ -4,34 +4,28 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import org.converger.controller.Controller;
 import org.converger.userinterface.gui.MenuButton.MenuItem;
-import org.converger.userinterface.utility.EObserver;
-import org.converger.userinterface.utility.ESource;
 
 /** 
  * Builds a menu for the application gui.
  * @author Gabriele Graffieti
  */
-public class Menu extends ESource<String> {
+public class Menu {
 	
 	private final JMenuBar menuBar = new JMenuBar();
 	
 	/**
 	 * Constructs a new menu.
-	 * @param obs the observer of the menu.
+	 * @param gui the gui related to this menu.
 	 */
-	public Menu(final EObserver<String> obs) {
-		this.addEObserver(obs);
-	
+	public Menu(final GUI gui) {
 		for (final MenuButton b : MenuButton.values()) {
-			final JMenu tmp = new JMenu(b.getName());
-			this.menuBar.add(tmp);
+			final JMenu menuButton = new JMenu(b.getName());
+			this.menuBar.add(menuButton);
 			for (final MenuItem i : b.getItems()) {
-				final JMenuItem tmp2 = new JMenuItem(i.getName());
-				/* ************************************************** EVENTO OBSERVER ************************************************************************ */
-				tmp2.addActionListener(e -> Controller.getController().deleteExpression());
-				tmp.add(tmp2);
+				final JMenuItem menuItem = new JMenuItem(i.getName());
+				menuItem.addActionListener(e -> i.clickEvent(gui));
+				menuButton.add(menuItem);
 			}
 		}
 	

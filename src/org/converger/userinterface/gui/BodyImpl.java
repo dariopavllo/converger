@@ -91,7 +91,7 @@ public class BodyImpl implements Body {
 	
 	private JPanel createLatexPanel(final String latexString, final int index) {
 		final TeXFormula formula = new TeXFormula(latexString);
-		final TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
+		final TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 22);
 		// now create an actual image of the rendered equation
 		final BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D g2 = image.createGraphics();
