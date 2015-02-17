@@ -9,6 +9,8 @@ public final class DialogConstants {
 	public static final int TEXT_FIELD_WIDTH = 20;
 	/** the default width of a DialogSpinner. */
 	public static final int SPINNER_WIDTH = 40;
+	/** the default border between dialog's components. */
+	public static final int DEFAULT_BORDER = 20;
 	
 	private DialogConstants() {
 		

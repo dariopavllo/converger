@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -16,16 +17,30 @@ import org.converger.controller.Field;
 import org.converger.controller.FrameworkOperation;
 import org.converger.controller.SelectionField;
 
+/**
+ * A dialog form used by the application to communicate with the user.
+ * A dialog requires a list of field, every field represents a single request from the 
+ * application to the user. The dialog is built automatically according to the number and the type of fields 
+ * passed to the constructor method.
+ * @author Gabriele Graffieti
+ */
+@SuppressWarnings("serial")
 public class Dialog extends JDialog {
 	
 	private final Map<Field, DialogComponent> map = new HashMap<>();
 	
-	public Dialog(final JFrame frame, final FrameworkOperation operation, final List<Field> fields) {
+	/**
+	 * Constructs dynamically the dialog, according to the type and the number of fields.
+	 * @param frame the parent frame of the dialog
+	 * @param operation the operation required by the user.
+	 * @param fields a list of field used to construct the dialog
+	 * @param index the index of the selected expression
+	 */
+	public Dialog(final JFrame frame, final FrameworkOperation operation, final List<Field> fields, final int index) {
 		super(frame, true);
-		this.setTitle(operation.getName());
+		this.setTitle(operation.getName() + " #" + (index + 1));
 		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		// set dimension ??
-		this.getContentPane().setLayout(new BorderLayout(20, 20));
+		this.getContentPane().setLayout(new BorderLayout(DialogConstants.DEFAULT_BORDER, DialogConstants.DEFAULT_BORDER));
 		
 		final JPanel contentPanel = new JPanel(new GridLayout(0, 2));
 		this.getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -34,8 +49,31 @@ public class Dialog extends JDialog {
 			map.put(f, createComponent(f));
 			contentPanel.add(wrapperPanel(map.get(f), FlowLayout.LEFT));
 		});
+		
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		this.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+		
+		final JButton okButton = new JButton("Ok");
+		okButton.addActionListener(e -> {
+			map.forEach((f, c) -> f.setValue(c.getComponentValue()));
+			try {
+				operation.execute(index, fields);
+				this.dispose();
+			} catch (Exception ex) {
+				new ErrorDialog(frame, ex.getMessage());
+			}
+		});
+		buttonsPanel.add(okButton);
+		
+		final JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(e-> {
+			this.dispose();
+		});
+		buttonsPanel.add(cancelButton);
+		
 		this.setResizable(false);
 		this.pack();
+		this.setLocationRelativeTo(frame);
 		this.setVisible(true);
 	}
 	

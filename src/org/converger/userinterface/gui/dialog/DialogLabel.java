@@ -1,6 +1,10 @@
 package org.converger.userinterface.gui.dialog;
 
+import java.awt.Font;
+
 import javax.swing.JLabel;
+
+import org.converger.userinterface.gui.GUIConstants;
 
 /**
  * Extends a JLabel and implements the DialogComponent interface.
@@ -17,6 +21,7 @@ public class DialogLabel extends JLabel implements DialogComponent {
 	 */
 	public DialogLabel(final String text) {
 		super(text);
+		this.setFont(new Font(this.getFont().getFontName(), Font.PLAIN, GUIConstants.INPUT_FONT_SIZE));
 	}
 	
 	@Override
