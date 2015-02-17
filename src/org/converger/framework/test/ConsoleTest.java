@@ -48,7 +48,7 @@ public final class ConsoleTest {
 				System.err.println("Unsolvable");
 			}
 			System.out.println("----Taylor series----");
-			final Expression taylor = cas.taylorSeries(exp, "x", Constant.ONE, 5);
+			final Expression taylor = cas.taylorSeries(exp, "x", Constant.ZERO, 5);
 			System.out.println(cas.toPlainText(taylor));
 			System.out.println(cas.toLatexText(taylor));
 		} catch (final IOException e) {

@@ -83,6 +83,10 @@ public class AlgebraicSimplifier extends AbstractExpressionVisitor implements
 		if (o2.equals(Constant.ONE)) {
 			return visit(o1);
 		}
+		//1^x = 1
+		if (o1.equals(Constant.ONE)) {
+			return Constant.ONE;
+		}
 		
 		//If the operands are constants, the result can be calculated
 		if (o1 instanceof Constant && o2 instanceof Constant) {
