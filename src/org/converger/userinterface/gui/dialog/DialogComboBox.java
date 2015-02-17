@@ -23,7 +23,11 @@ public class DialogComboBox extends JComboBox<String> implements DialogComponent
 	
 	@Override
 	public String getComponentValue() {
-		return this.getSelectedItem().toString();
+		if (this.getItemCount() > 0) {
+			return this.getSelectedItem().toString();
+		} else {
+			return "";
+		}
 	}
 
 }
