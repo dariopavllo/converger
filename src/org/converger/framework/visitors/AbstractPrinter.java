@@ -161,8 +161,17 @@ public abstract class AbstractPrinter implements Expression.Visitor<String> {
 				.map(o -> new Addend(o))
 				.collect(Collectors.toList()));
 		} else {
-			//Visits the n-ary operation according to the subclass implementation
-			result = this.printNAry(v);
+			//Creates a single term addend (to strip the sign)
+			final Addend a = new Addend(v);
+			if (a.isPositive()) {
+				//Visits the n-ary operation according to the subclass implementation
+				result = this.printNAry(v);
+			} else {
+				//Prints the term as an addend (to show its sign)
+				final List<Addend> monoAddend = new ArrayList<>();
+				monoAddend.add(a);
+				result = this.printAddition(monoAddend);
+			}
 		}
 		
 		result = this.parenthesizeIfNeeded(result);
@@ -186,7 +195,7 @@ public abstract class AbstractPrinter implements Expression.Visitor<String> {
 	/**
 	 * This class models an addend, storing its sign and its absolute value.
 	 * The purpose of this class is to provide a way to print subtraction operators
-	 * where possible, in order to produce human-friendly expressions.
+	 * where possible, in order to produce human-friendly expression outputs.
 	 */
 	protected class Addend {
 		

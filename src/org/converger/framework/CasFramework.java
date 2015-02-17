@@ -86,6 +86,7 @@ public interface CasFramework {
 	 * @param point the point of expansion
 	 * @param order the order of expansion
 	 * @return the Taylor series of the function
+	 * @throws IllegalArgumentException if the input expression is an equation
 	 */
 	Expression taylorSeries(Expression input, String variable, Expression point, int order);
 	
