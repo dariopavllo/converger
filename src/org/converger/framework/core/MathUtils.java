@@ -20,7 +20,7 @@ public final class MathUtils {
 	 */
 	public static long integerPower(final long base, final long exponent) {
 		//Base cases
-		if (base == 0) {
+		if (exponent == 0) {
 			return 1;
 		}
 		if (exponent == 1) { //NOPMD
