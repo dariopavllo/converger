@@ -21,8 +21,6 @@ import java.awt.Font;
 import javax.swing.JSeparator;
 
 import org.converger.controller.Controller;
-import org.converger.userinterface.utility.EObserver;
-import org.converger.userinterface.utility.ESource;
 
 import java.awt.SystemColor;
 
@@ -30,18 +28,15 @@ import java.awt.SystemColor;
  * Creates the bottom part of the gui, with utility buttons and the line input.
  * @author Gabriele Graffieti
  */
-public class FooterImpl extends ESource<String> implements Footer {
+public class FooterImpl implements Footer {
 	private final JPanel mainPanel;
 	private final JTextField inputLine;
 	
 	
 	/**
 	 * Create the footer.
-	 * @param obs the observer of the footer.
 	 */
-	public FooterImpl(final EObserver<String> obs) {
-		this.addEObserver(obs);
-		
+	public FooterImpl() {
 		this.mainPanel = new JPanel();
 		this.mainPanel.setLayout(new BorderLayout(GUIConstants.DEFAULT_MARGIN, 
 				GUIConstants.DEFAULT_MARGIN));
