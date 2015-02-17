@@ -1,8 +1,8 @@
 package org.converger.framework.visitors;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.converger.framework.Environment;
 import org.converger.framework.Expression;
@@ -33,7 +33,7 @@ public class VariableEnumerator implements Expression.Visitor<Void> {
 	 * @return a set of variables
 	 */
 	public Set<String> getVariables() {
-		return Collections.unmodifiableSet(this.variables);
+		return new TreeSet<>(this.variables);
 	}
 
 	@Override
