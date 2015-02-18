@@ -1,14 +1,7 @@
 package org.converger.userinterface.gui;
 
-
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.converger.controller.Controller;
-import org.converger.controller.Field;
 import org.converger.controller.FrameworkOperation;
-import org.converger.controller.exception.NoElementSelectedException;
-import org.converger.framework.SyntaxErrorException;
 
 /**
  * Represents all the application menu voices, with its names and items.
@@ -70,6 +63,8 @@ public enum MenuButton {
 		 * @param gui the parent GUI of the menu item.
 		 */
 		void clickEvent(GUI gui);
+		
+		
 	}
 	
 	/**
@@ -145,14 +140,13 @@ public enum MenuButton {
 	 * Represents a collection of menu item placed in the edit voice.
 	 * @author Gabriele Graffieti
 	 */
-	public enum EditItem implements MenuItem {
+	public enum EditItem implements FrameworkOperationMenuItem {
 		
 		/** Edit an expression. */
 		EDITEXP("Edit expression", "") {
 			@Override
 			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
+				this.executeFrameworkOperation(gui, FrameworkOperation.EDIT);
 			}
 		}, 
 		/** Delete an expression. */
@@ -182,15 +176,14 @@ public enum MenuButton {
 		}
 		
 		@Override
-		public abstract void clickEvent(final GUI gui);
-		
+		public abstract void clickEvent(final GUI gui);		
 	}
 	
 	/**
 	 * Represents a collection of menu item placed in the solve voice.
 	 * @author Gabriele Graffieti
 	 */
-	public enum SolveItem implements MenuItem {
+	public enum SolveItem implements FrameworkOperationMenuItem {
 		/** Variable substitution. */
 		VARIABLESUB("Variable substitution", "") {
 			@Override
@@ -242,33 +235,14 @@ public enum MenuButton {
 		}
 		
 		@Override
-		public abstract void clickEvent(final GUI gui);
-		
-		protected void executeFrameworkOperation(final GUI gui, final FrameworkOperation op) {
-			try {
-				final int index = Controller.getController().getSelectedExpressionIndex();
-				final List<Field> fields = op.requestFields(index);
-				if (fields.isEmpty()) {
-					try {
-						op.execute(index, fields);
-					} catch (SyntaxErrorException | NoSuchElementException | IllegalArgumentException e) {
-						gui.error(e.getMessage());
-					}
-				} else {
-					gui.showDialog(op, fields, index);
-				}
-			} catch (NoElementSelectedException e) {
-				gui.error(e.getMessage());
-			}
-		}
-		
+		public abstract void clickEvent(final GUI gui);		
 	}
 	
 	/**
 	 * Represents a collection of menu item placed in the calculus voice.
 	 * @author Gabriele Graffieti
 	 */
-	public enum CalculusItem implements MenuItem {
+	public enum CalculusItem implements FrameworkOperationMenuItem {
 		/** Find the derivative of an expression. */
 		DIFFERENTIATE("Differentiate", "") {
 			@Override
@@ -314,25 +288,6 @@ public enum MenuButton {
 		
 		@Override
 		public abstract void clickEvent(final GUI gui);
-		
-		protected void executeFrameworkOperation(final GUI gui, final FrameworkOperation op) {
-			try {
-				final int index = Controller.getController().getSelectedExpressionIndex();
-				final List<Field> fields = op.requestFields(index);
-				if (fields.isEmpty()) {
-					try {
-						op.execute(index, fields);
-					} catch (SyntaxErrorException | NoSuchElementException | IllegalArgumentException e) {
-						gui.error(e.getMessage());
-					}
-				} else {
-					gui.showDialog(op, fields, index);
-				}
-			} catch (NoElementSelectedException e) {
-				gui.error(e.getMessage());
-			}
-		}
-		
 	}
 	
 	/**

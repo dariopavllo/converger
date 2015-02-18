@@ -24,6 +24,15 @@ public class DialogTextField extends JTextField implements DialogComponent {
 		this.setColumns(DialogConstants.TEXT_FIELD_WIDTH);
 	}
 	
+	/**
+	 * Create a DialogTextField width a text set.
+	 * @param text the text to be set into the text field.
+	 */
+	public DialogTextField(final String text) {
+		this();
+		this.setText(text);
+	}
+	
 	@Override
 	public String getComponentValue() {
 		return this.getText();

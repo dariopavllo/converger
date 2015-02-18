@@ -31,13 +31,13 @@ public class Dialog extends JDialog {
 	
 	/**
 	 * Constructs dynamically the dialog, according to the type and the number of fields.
-	 * @param frame the parent frame of the dialog
+	 * @param parent the parent frame of the dialog
 	 * @param operation the operation required by the user.
 	 * @param fields a list of field used to construct the dialog
 	 * @param index the index of the selected expression
 	 */
-	public Dialog(final JFrame frame, final FrameworkOperation operation, final List<Field> fields, final int index) {
-		super(frame, true);
+	public Dialog(final JFrame parent, final FrameworkOperation operation, final List<Field> fields, final int index) {
+		super(parent, true);
 		this.setTitle(operation.getName() + " #" + (index + 1));
 		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		this.getContentPane().setLayout(new BorderLayout(DialogConstants.DEFAULT_BORDER, DialogConstants.DEFAULT_BORDER));
@@ -60,26 +60,24 @@ public class Dialog extends JDialog {
 				operation.execute(index, fields);
 				this.dispose();
 			} catch (Exception ex) {
-				new ErrorDialog(frame, ex.getMessage());
+				new ErrorDialog(parent, ex.getMessage());
 			}
 		});
 		buttonsPanel.add(okButton);
 		
 		final JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(e-> {
-			this.dispose();
-		});
+		cancelButton.addActionListener(e->this.dispose());
 		buttonsPanel.add(cancelButton);
 		
 		this.setResizable(false);
 		this.pack();
-		this.setLocationRelativeTo(frame);
+		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
 	}
 	
 	private static DialogComponent createComponent(final Field field) {
 		switch (field.getType()) {
-			case EXPRESSION : return new DialogTextField();
+			case EXPRESSION : return new DialogTextField(field.getValue());
 			case NUMERICAL : return new DialogSpinner();
 			case SELECTION : return new DialogComboBox(((SelectionField) field).getAllowedValues());
 			default : return null;

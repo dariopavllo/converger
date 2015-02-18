@@ -36,7 +36,7 @@ public class GUI implements UserInterface {
 	 * @param name the name shown in the title bar.
 	 */
 	public GUI(final String name) {
-		this.header = new HeaderImpl();
+		this.header = new HeaderImpl(this);
 		this.body = new BodyImpl();
 		this.footer = new FooterImpl();
 		
@@ -95,6 +95,11 @@ public class GUI implements UserInterface {
 	@Override
 	public void removeExpression(final int index) {
 		this.body.deleteExpression(index);
+	}
+	
+	@Override
+	public void editExpression(final int index, final String newExpression) {
+		this.body.editExpression(index, newExpression);
 	}
 	
 	@Override

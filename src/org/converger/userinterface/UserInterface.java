@@ -82,4 +82,11 @@ public interface UserInterface {
 	 * @param index the index of the expression to be removed.
 	 */
 	void removeExpression(int index);
+	
+	/**
+	 * Substitute the expression at the given index with the new expression passed.
+	 * @param index the index of the expression to be edited.
+	 * @param exp the new expression.
+	 */
+	void editExpression(int index, String exp);
 }

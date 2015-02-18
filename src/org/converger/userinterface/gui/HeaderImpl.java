@@ -16,8 +16,9 @@ public class HeaderImpl implements Header {
 	private final JPanel mainPanel;
 	/**
 	 * Construct the header.
+	 * @param gui the parent gui of the header
 	 */
-	public HeaderImpl() {
+	public HeaderImpl(final GUI gui) {
 		this.mainPanel = new JPanel();
 		this.mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, GUIConstants.DEFAULT_MARGIN, 
 				GUIConstants.DEFAULT_MARGIN));
@@ -27,9 +28,7 @@ public class HeaderImpl implements Header {
 		
 		for (final HeaderButtons b : HeaderButtons.values()) {
 			buttons[b.ordinal()] = new JButton(b.getName());
-			/* ************************************************** EVENTO OBSERVER ************************************************************************ */
-			//buttons[b.ordinal()].addActionListener(e -> this.notifyEObservers(b.getMessage()));
-			//buttons[b.ordinal()].addActionListener(e -> b.clickEvent(gui));
+			buttons[b.ordinal()].addActionListener(e -> b.clickEvent(gui));
 			this.mainPanel.add(buttons[b.ordinal()]);
 		}
 	}

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.converger.framework.CasFramework;
 import org.converger.framework.Expression;
@@ -13,13 +14,34 @@ import org.converger.framework.SyntaxErrorException;
 
 /**
  * Represents an operation which requires the framework intervention.
- * A framework operation's method requestFields return to the caller a list of Field which are used for communicate with
+ * A framework operation's method requestFields return to the caller a list of Field which are used for communicate to
  * the user interface.
- * @author User
+ * @author Gabriele Graffieti
  *
  */
 public enum FrameworkOperation {
 		
+	/**
+	 * Represents the editing of an expression.
+	 */
+	EDIT("Edit") {
+		@Override
+		public List<Field> requestFields(final int index) {
+			final List<Field> listField = new ArrayList<>();
+			final ExpressionField expField = new ExpressionField("Edit", "edit");
+			expField.setValue(Controller.getController().getFramework().toPlainText(Controller.getController().getExpressionAt(index)));
+			listField.add(expField);
+			return listField;
+		}
+
+		@Override
+		public void execute(final int index, final List<Field> fields) throws SyntaxErrorException {
+			final String newExpression = fields.get(0).getValue(); // .get(0) because I know that the field list contains only one field
+			final Expression exp = Controller.getController().getFramework().parse(newExpression);
+			Controller.getController().editExpression(index, exp);
+		}
+	},
+	
 	/** 
 	 * Represents an operation of mathematical expression simplification.  
 	 */
@@ -70,7 +92,7 @@ public enum FrameworkOperation {
 	},
 	
 	/**
-	 * Represents an operation of evaluation of a mathematical expression.
+	 * Represents the evaluation of a mathematical expression.
 	 * An evaluation calculate the arithmetic value of an expression, so no variables are admitted.
 	 */
 	EVALUATE("Evaluate") {
@@ -88,7 +110,7 @@ public enum FrameworkOperation {
 		public void execute(final int index, final List<Field> fields) throws SyntaxErrorException {
 			final Expression exp = Controller.getController().getExpressionAt(index);
 			final Map<String, Double> map = new HashMap<>();
-			final Map<String, Double> tmpMap = Collections.emptyMap();
+			final Map<String, Double> tmpMap = Collections.emptyMap(); // map used for check if given expressions not have variables.
 			final CasFramework cas = Controller.getController().getFramework();
 			try {
 				for (final Field f : fields) {
@@ -110,14 +132,18 @@ public enum FrameworkOperation {
 
 		@Override
 		public List<Field> requestFields(final int index) {
-			// TODO Auto-generated method stub
-			return null;
+			return Collections.emptyList();
 		}
 
 		@Override
 		public void execute(final int index, final List<Field> fields) {
-			// TODO Auto-generated method stub
-			
+			final Expression exp = Controller.getController().getExpressionAt(index);
+			try {
+				final Set<Double> res = Controller.getController().getFramework().solveNumerically(exp);
+				res.forEach(d->Controller.getController().addNumericalExpression(d));
+			} catch (IllegalArgumentException e) { //NOPMD
+				throw e;
+			}
 		}
 		
 	},
@@ -125,7 +151,7 @@ public enum FrameworkOperation {
 	/**
 	 * Represents the derivative of a mathematical expression. Its derivative is calculated 
 	 * algebraically, so the expression can be two or more variables. In this case the function calculate 
-	 * the partial derivative in one selected variable.
+	 * the partial derivative in the selected variable.
 	 */
 	DIFFERENTIATE("Differentiate") {
 		@Override
@@ -162,14 +188,32 @@ public enum FrameworkOperation {
 	INTEGRATE("Integrate") {
 		@Override
 		public List<Field> requestFields(final int index) {
-			// TODO
-			return null;
+			final List<Field> listField = new ArrayList<>();
+			listField.add(new ExpressionField("Lower bound", "lb"));
+			listField.add(new ExpressionField("Upper bound", "ub"));
+			return listField;
 		}
 
 		@Override
-		public void execute(final int index, final List<Field> fields) {
-			// TODO Auto-generated method stub
-			
+		public void execute(final int index, final List<Field> fields) throws SyntaxErrorException {
+			final Expression exp = Controller.getController().getExpressionAt(index);
+			final CasFramework cas = Controller.getController().getFramework();
+			final Map<String, Double> tmpMap = Collections.emptyMap(); // map used for check if given expressions not have variables.
+			try { 
+				double lb = 0;
+				double ub = 0;
+				for (final Field f : fields) {
+					if (((ExpressionField) f).getMappedObject().equals("lb")) {
+						lb = cas.evaluate(cas.parse(f.getValue()), tmpMap);
+					} else {
+						ub = cas.evaluate(cas.parse(f.getValue()), tmpMap);
+					}
+				}
+				final double res = cas.integrateNumerically(exp, lb, ub);
+				Controller.getController().addNumericalExpression(res);
+			} catch (IllegalArgumentException | NoSuchElementException e) { //NOPMD
+				throw e;
+			}
 		}
 	},
 	
@@ -214,10 +258,11 @@ public enum FrameworkOperation {
 	/**
 	 * Execute the framework operation.
 	 * @param index the index of the selected expression 
-	 * @param fields a list of fields, every field's value was set by the user.
+	 * @param fields a list of fields, every field contains information, set by the user,
+	 * for execute the operation.
 	 * @throws SyntaxErrorException if a field value contains syntax errors.
 	 * @throws NoSuchElementException in the evaluate operation, when a field value contains
-	 * an expression with at least one variable.
+	 * an expression with variables.
 	 * @throws IllegalArgumentException in the integration or solve equation operation, when the 
 	 * selected expression does not contain only one variable. 
 	 */
