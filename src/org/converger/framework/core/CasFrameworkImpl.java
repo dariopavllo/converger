@@ -34,13 +34,6 @@ public final class CasFrameworkImpl implements CasFramework {
 
 	private volatile boolean aborted = false; //NOPMD
 	
-	private void interruptionCheck() {
-		if (this.aborted) {
-			aborted = false;
-			throw new AbortedException();
-		}
-	}
-	
 	@Override
 	public Expression parse(final String input) throws SyntaxErrorException {
 		try {
@@ -148,6 +141,17 @@ public final class CasFrameworkImpl implements CasFramework {
 	@Override
 	public void abort() {
 		this.aborted = true;
+	}
+	
+	/**
+	 * Checks if abort has been called.
+	 * If so, terminates the current operation.
+	 */
+	private void interruptionCheck() {
+		if (this.aborted) {
+			aborted = false;
+			throw new AbortedException();
+		}
 	}
 
 }
