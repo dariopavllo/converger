@@ -46,6 +46,7 @@ public class BodyImpl implements Body {
 		scrollPanel.setBackground(GUIConstants.BACKGROUND_COLOR);
 
 		final JScrollPane scroll = new JScrollPane(scrollPanel);
+		scroll.getVerticalScrollBar().addAdjustmentListener(e->e.getAdjustable().setValue(e.getAdjustable().getMaximum()));
 		this.mainPanel.add(scroll, BorderLayout.CENTER);
 	}
 
@@ -121,7 +122,6 @@ public class BodyImpl implements Body {
         		}
         		panel.setBackground(GUIConstants.SELECTION_COLOR);
         		setSelected(panelList.indexOf(panel));
-        		//System.out.println(getSelected());
         	}
         });
         panel.setBackground(GUIConstants.BACKGROUND_COLOR);

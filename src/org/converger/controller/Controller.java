@@ -113,6 +113,17 @@ public final class Controller {
 	}
 	
 	/**
+	 * Substitute the expression at the given index with the new expression passed, and 
+	 * notify it at the user interface.
+	 * @param index the index of the expression to be edited
+	 * @param newExpression the new expression.
+	 */
+	public void editExpression(final int index, final Expression newExpression)  {
+		this.currentEnvironment.modifyExpression(index, this.getRecordFromExpression(newExpression));
+		this.ui.editExpression(index, this.framework.toLatexText(newExpression));
+	}
+	
+	/**
 	 * Delete an expression from the current environment and sequentially from the user interface.
 	 */
 	public void deleteExpression() {
