@@ -119,11 +119,24 @@ public class ConstantFolder extends AbstractExpressionVisitor
 		}
 		
 		//Calculates the least common multiple of the denominator factors
-		final long lcm = fractionalAddends.stream()
+		long lcm;
+		try {
+			lcm = fractionalAddends.stream()
 			.map(e -> ((BinaryOperation) e).getSecondOperand())
-			.mapToLong(e -> ((Constant) e).getValue())
+			.mapToLong(e -> {
+				final long val = ((Constant) e).getValue();
+				if (val == 0) {
+					throw new IllegalArgumentException();
+				}
+				return val;
+			})
 			.reduce(1, (x, y) -> MathUtils.lcm(x, y));
+		} catch (final IllegalArgumentException e) {
+			//The expression contains a division by 0: it is left unsimplified
+			return new NAryOperation(NAryOperator.ADDITION, operands);
+		}
 		
+		//Simplify everything
 		final long sum = fractionalAddends.stream()
 			.map(e -> (BinaryOperation) e)
 			.mapToLong(e -> ((Constant) e.getFirstOperand()).getValue()
@@ -134,7 +147,7 @@ public class ConstantFolder extends AbstractExpressionVisitor
 		if (sum != 0) {
 			otherAddends.add(ExpressionFactory.makeRational(sum, lcm));
 		}
-		
+	
 		return ExpressionFactory.implode(NAryOperator.ADDITION, otherAddends);
 	}
 	
