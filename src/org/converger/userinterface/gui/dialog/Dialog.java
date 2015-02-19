@@ -57,8 +57,8 @@ public class Dialog extends JDialog {
 		okButton.addActionListener(e -> {
 			map.forEach((f, c) -> f.setValue(c.getComponentValue()));
 			try {
-				operation.execute(index, fields);
 				this.dispose();
+				operation.execute(index, fields);
 			} catch (Exception ex) {
 				new ErrorDialog(parent, ex.getMessage());
 			}
@@ -72,6 +72,7 @@ public class Dialog extends JDialog {
 		this.setResizable(false);
 		this.pack();
 		this.setLocationRelativeTo(parent);
+		this.getRootPane().setDefaultButton(okButton);
 		this.setVisible(true);
 	}
 	
