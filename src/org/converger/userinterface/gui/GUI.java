@@ -1,6 +1,9 @@
 package org.converger.userinterface.gui;
 
 import java.awt.BorderLayout;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +14,9 @@ import javax.swing.border.EmptyBorder;
 import org.converger.controller.Field;
 import org.converger.controller.FrameworkOperation;
 import org.converger.controller.exception.NoElementSelectedException;
+import org.converger.controller.utility.EObserver;
+import org.converger.controller.utility.ESource;
+import org.converger.controller.utility.KeyboardEvent;
 import org.converger.userinterface.UserInterface;
 import org.converger.userinterface.gui.dialog.Dialog;
 import org.converger.userinterface.gui.dialog.ErrorDialog;
@@ -34,8 +40,9 @@ public class GUI implements UserInterface {
 	/**
 	 * Construct a new graphic user interface.
 	 * @param name the name shown in the title bar.
+	 * @param obs the observer of the keyboard events of the gui
 	 */
-	public GUI(final String name) {
+	public GUI(final String name, final EObserver<KeyboardEvent> obs) {
 		this.header = new HeaderImpl(this);
 		this.body = new BodyImpl();
 		this.footer = new FooterImpl();
@@ -43,6 +50,9 @@ public class GUI implements UserInterface {
 		this.frame = new JFrame(name);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.setSize(GUIConstants.PREFERRED_WIDTH, GUIConstants.PREFERRED_HEIGHT);
+		
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyboardDispatcher(obs));
+		
 		this.buildGUI();
 	}
 	
@@ -54,8 +64,8 @@ public class GUI implements UserInterface {
 	}
 
 	@Override
-	public void printExpression(final String exp) {
-		this.body.drawNewExpression(exp);
+	public void printExpression(final String exp, final Optional<String> op) {
+		this.body.drawNewExpression(exp, op);
 	}
 
 	@Override
@@ -84,12 +94,6 @@ public class GUI implements UserInterface {
 	@Override
 	public int getSelectedExpression() throws NoElementSelectedException {
 		return this.body.getSelected();
-	}
-
-	@Override
-	public Optional<String> selectVariable() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	@Override
@@ -121,4 +125,25 @@ public class GUI implements UserInterface {
 		
 		this.frame.getContentPane().add(mainPanel);
 	}
+	
+    private static class KeyboardDispatcher extends ESource<KeyboardEvent> implements KeyEventDispatcher {
+    	
+//        StringSelection selection = new StringSelection("CIAO");
+//        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+    	
+        public KeyboardDispatcher(final EObserver<KeyboardEvent> obs) {
+        	this.addEObserver(obs);
+        }
+        
+        @Override
+        public boolean dispatchKeyEvent(final KeyEvent e) {
+        	if (e.getID() == KeyEvent.KEY_PRESSED) {
+	        	if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_C) { // ctrl + c NOPMD
+	        	    //clipboard.setContents(selection, selection);
+	        		this.notifyEObservers(KeyboardEvent.COPY);
+	        	}
+        	}
+            return false;
+        }
+    }
 }

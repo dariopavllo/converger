@@ -57,7 +57,6 @@ public class FooterImpl implements Footer {
 		gbc.gridy = 0;
 		
 		final JButton inputButton = new JButton(">");
-		/* ************************************************** EVENTO OBSERVER ************************************************************************ */
 		inputButton.addActionListener(e -> Controller.getController().addExpression(this.inputLine.getText()));
 		inputPanel.add(inputButton, gbc);
 		
@@ -74,6 +73,7 @@ public class FooterImpl implements Footer {
 		this.inputLine.setFont(new Font(GUIConstants.INPUT_FONT, Font.PLAIN, GUIConstants.INPUT_FONT_SIZE));
 		inputPanel.add(inputLine, gbc);
 		this.inputLine.setColumns(10);
+		this.inputLine.addActionListener(e -> Controller.getController().addExpression(this.inputLine.getText()));
 		this.inputLine.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void changedUpdate(final DocumentEvent arg0) {
