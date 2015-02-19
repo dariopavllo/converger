@@ -57,8 +57,8 @@ public class Dialog extends JDialog {
 		okButton.addActionListener(e -> {
 			map.forEach((f, c) -> f.setValue(c.getComponentValue()));
 			try {
-				this.dispose();
 				operation.execute(index, fields);
+				this.dispose();
 			} catch (Exception ex) {
 				new ErrorDialog(parent, ex.getMessage());
 			}
