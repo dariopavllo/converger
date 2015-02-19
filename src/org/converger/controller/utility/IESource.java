@@ -1,4 +1,4 @@
-package org.converger.userinterface.utility;
+package org.converger.controller.utility;
 
 /**
  * An interface representing a single source of events in the observer design pattern.
