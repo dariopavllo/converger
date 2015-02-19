@@ -24,8 +24,9 @@ public interface UserInterface {
 	/**
 	 * Print in the user interface the given expression.
 	 * @param exp the mathematical expression provided by the cas framework.
+	 * @param op the operation which generated the expression to be added.
 	 */
-	void printExpression(String exp);
+	void printExpression(String exp, Optional<String> op);
 	
 	/**
 	 * Manage an error throws by the framework, for example an invalid expression or an invalid symbol.
@@ -70,12 +71,6 @@ public interface UserInterface {
 	 * @throws NoElementSelectedException if no expression is selected.
 	 */
 	int getSelectedExpression() throws NoElementSelectedException;
-	
-	/**
-	 * Manages the selection of a variable if the expression has 2 or more variables.
-	 * @return the selected variable, or Optional.empty if no variable is selected.
-	 */
-	Optional<String> selectVariable();
 	
 	/**
 	 * Remove the selected expression from the user interface.

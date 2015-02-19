@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import org.converger.framework.CasFramework;
@@ -56,7 +57,7 @@ public enum FrameworkOperation {
 		public void execute(final int index, final List<Field> fields) {
 			final Expression exp = Controller.getController().getExpressionAt(index);
 			final Expression simplifiedExpression = Controller.getController().getFramework().simplify(exp);
-			Controller.getController().addExpression(simplifiedExpression);
+			Controller.getController().addExpression(simplifiedExpression, Optional.of(this.getName()));
 		}
 	},
 	
@@ -86,7 +87,7 @@ public enum FrameworkOperation {
 			}
 			if (!map.isEmpty()) {
 				final Expression newExpression = cas.substitute(exp, map);
-				Controller.getController().addExpression(newExpression);
+				Controller.getController().addExpression(newExpression, Optional.of(this.getName()));
 			}
 		}
 	},
@@ -112,15 +113,11 @@ public enum FrameworkOperation {
 			final Map<String, Double> map = new HashMap<>();
 			final Map<String, Double> tmpMap = Collections.emptyMap(); // map used for check if given expressions not have variables.
 			final CasFramework cas = Controller.getController().getFramework();
-			try {
-				for (final Field f : fields) {
-					map.put(((ExpressionField) f).getMappedObject(), cas.evaluate(cas.parse(f.getValue()), tmpMap));
-				}
-				final Double result = cas.evaluate(exp, map);
-				Controller.getController().addNumericalExpression(result);
-			} catch (NoSuchElementException e) { // NOPMD
-				throw e;
+			for (final Field f : fields) {
+				map.put(((ExpressionField) f).getMappedObject(), cas.evaluate(cas.parse(f.getValue()), tmpMap));
 			}
+			final Double result = cas.evaluate(exp, map);
+			Controller.getController().addNumericalExpression(result, Optional.of(this.getName()));
 		}
 	},
 	
@@ -138,12 +135,8 @@ public enum FrameworkOperation {
 		@Override
 		public void execute(final int index, final List<Field> fields) {
 			final Expression exp = Controller.getController().getExpressionAt(index);
-			try {
-				final Set<Double> res = Controller.getController().getFramework().solveNumerically(exp);
-				res.forEach(d->Controller.getController().addNumericalExpression(d));
-			} catch (IllegalArgumentException e) { //NOPMD
-				throw e;
-			}
+			final Set<Double> res = Controller.getController().getFramework().solveNumerically(exp);
+			res.forEach(d->Controller.getController().addNumericalExpression(d, Optional.of(this.getName())));
 		}
 		
 	},
@@ -178,7 +171,7 @@ public enum FrameworkOperation {
 			for (int i = 1; i < order; i++) { 
 				newExpression = Controller.getController().getFramework().differentiate(newExpression, variable);
 			}
-			Controller.getController().addExpression(newExpression);
+			Controller.getController().addExpression(newExpression, Optional.of(this.getName()));
 		}
 	},
 	
@@ -199,21 +192,17 @@ public enum FrameworkOperation {
 			final Expression exp = Controller.getController().getExpressionAt(index);
 			final CasFramework cas = Controller.getController().getFramework();
 			final Map<String, Double> tmpMap = Collections.emptyMap(); // map used for check if given expressions not have variables.
-			try { 
-				double lb = 0;
-				double ub = 0;
-				for (final Field f : fields) {
-					if (((ExpressionField) f).getMappedObject().equals("lb")) {
-						lb = cas.evaluate(cas.parse(f.getValue()), tmpMap);
-					} else {
-						ub = cas.evaluate(cas.parse(f.getValue()), tmpMap);
-					}
+			double lb = 0;
+			double ub = 0;
+			for (final Field f : fields) {
+				if (((ExpressionField) f).getMappedObject().equals("lb")) {
+					lb = cas.evaluate(cas.parse(f.getValue()), tmpMap);
+				} else {
+					ub = cas.evaluate(cas.parse(f.getValue()), tmpMap);
 				}
-				final double res = cas.integrateNumerically(exp, lb, ub);
-				Controller.getController().addNumericalExpression(res);
-			} catch (IllegalArgumentException | NoSuchElementException e) { //NOPMD
-				throw e;
 			}
+			final double res = cas.integrateNumerically(exp, lb, ub);
+			Controller.getController().addNumericalExpression(res, Optional.of(this.getName()));
 		}
 	},
 	
@@ -224,14 +213,33 @@ public enum FrameworkOperation {
 
 		@Override
 		public List<Field> requestFields(final int index) {
-			// TODO Auto-generated method stub
-			return null;
+			final List<Field> listField = new ArrayList<>();
+			listField.add(new ExpressionField("Expansion point", "ep"));
+			listField.add(new SelectionField("Select variable", Controller.getController().getVariables(index)));
+			listField.add(new NumericalField("Order"));
+			return listField;
 		}
 
 		@Override
-		public void execute(final int index, final List<Field> fields) {
-			// TODO Auto-generated method stub
-			
+		public void execute(final int index, final List<Field> fields) throws SyntaxErrorException {
+			final Expression exp = Controller.getController().getExpressionAt(index);
+			final CasFramework cas = Controller.getController().getFramework();
+			String point = "";
+			int order = 1;
+			String variable = "";
+			for (final Field f : fields) {
+				switch (f.getType()) {
+					case NUMERICAL: order = Integer.parseInt(f.getValue());
+					break;
+					case SELECTION: variable = f.getValue();
+					break;
+					case EXPRESSION: point = f.getValue();
+					break;
+					default:
+				}
+			}
+			final Expression series = cas.taylorSeries(exp, variable, cas.parse(point), order);
+			Controller.getController().addExpression(series, Optional.of(this.getName()));
 		}
 		
 	};

@@ -1,5 +1,7 @@
 package org.converger.userinterface.gui;
 
+import java.util.Optional;
+
 import org.converger.controller.exception.NoElementSelectedException;
 
 /**
@@ -17,8 +19,9 @@ public interface Body extends GUIComponent {
 	/**
 	 * Draws a new expression to the screen. The expression is placed in the bottom of the expressions list.
 	 * @param latexExpression the expression to draw in latex string format
+	 * @param op the operation which generated the new expression to be drawn
 	 */
-	void drawNewExpression(final String latexExpression);
+	void drawNewExpression(final String latexExpression, Optional<String> op);
 	
 	/**
 	 * Edits the expression at the given index and substitute it with the latex string given in input.

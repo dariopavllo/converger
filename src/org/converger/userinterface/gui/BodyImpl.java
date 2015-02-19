@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Creates the middle part of the gui, with the latex text visualizer.
@@ -32,6 +33,7 @@ public class BodyImpl implements Body {
 	private final JPanel scrollPanel;
 	private int panelSelected;
 	private final List<JPanel> panelList = new ArrayList<>();
+	private final List<Optional<String>> opList = new ArrayList<>();
 	
 	/**
 	 * Create the body.
@@ -65,32 +67,34 @@ public class BodyImpl implements Body {
 	}
 	
 	@Override
-	public void drawNewExpression(final String latexExpression) {
-		this.newRow(this.createLatexPanel(latexExpression, this.panelList.size()));
+	public void drawNewExpression(final String latexExpression, final Optional<String> op) {
+		this.newRow(this.createLatexPanel(latexExpression, this.panelList.size(), op), op);
 		this.mainPanel.validate();
 	}
 	
 	@Override
 	public void editExpression(final int index, final String latexExpression) {
-		this.createLatexPanel(latexExpression, index);
+		this.createLatexPanel(latexExpression, index, Optional.empty());
 		this.redraw();
 	}
 	
 	@Override
 	public void deleteExpression(final int index) {
 		this.panelList.remove(index);
-		this.setSelected(-1);
+		this.opList.remove(index);
+		this.setSelected(index - 1);
 		this.redraw();
 	}
 	
 	@Override
 	public void deleteAll() {
 		this.panelList.clear();
+		this.opList.clear();
 		this.setSelected(-1);
 		this.redraw();
 	}
 	
-	private JPanel createLatexPanel(final String latexString, final int index) {
+	private JPanel createLatexPanel(final String latexString, final int index, final Optional<String> op) {
 		final TeXFormula formula = new TeXFormula(latexString);
 		final TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 22);
 		// now create an actual image of the rendered equation
@@ -112,32 +116,35 @@ public class BodyImpl implements Body {
         };
         if (index < this.panelList.size()) { // if it isn't a new equation
         	this.panelList.remove(index);
+        	this.opList.remove(index);
         }
         this.panelList.add(index, panel);
+        this.opList.add(index, op);
         panel.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(final MouseEvent e) { // click on the panel
-        		for (final JPanel p : panelList) {
-        			p.setBackground(GUIConstants.BACKGROUND_COLOR);
-        		}
-        		panel.setBackground(GUIConstants.SELECTION_COLOR);
         		setSelected(panelList.indexOf(panel));
         	}
         });
-        panel.setBackground(GUIConstants.BACKGROUND_COLOR);
+        this.setSelected(panelList.indexOf(panel));
         panel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
         panel.setMinimumSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
 		return panel;
 	}
 	
-	private void newRow(final JPanel latexPanel) {
-		final JPanel rowPanel = new JPanel(new BorderLayout());
+	private void newRow(final JPanel latexPanel, final Optional<String> op) {
+		final JPanel rowPanel = new JPanel(new BorderLayout(GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER));
 		rowPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		final JLabel rowNumberLabel = new JLabel("#" + Integer.toString(this.panelList.indexOf(latexPanel) + 1));
 		rowNumberLabel.setPreferredSize(new Dimension(GUIConstants.ROW_BOX_WIDTH, 
 				rowNumberLabel.getPreferredSize().height + (GUIConstants.DEFAULT_BORDER * 2))); // top and bottom border 
 		rowPanel.add(rowNumberLabel, BorderLayout.WEST);
 		rowPanel.add(latexPanel, BorderLayout.CENTER);
+		if (op.isPresent()) {
+			final JLabel opLabel = new JLabel(op.get());
+			rowPanel.add(opLabel, BorderLayout.EAST);
+			rowNumberLabel.setForeground(Color.BLUE);
+		}
 		rowPanel.setBackground(GUIConstants.BACKGROUND_COLOR);
 		rowPanel.setBorder(new EmptyBorder(GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER,
 				GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER));
@@ -150,12 +157,16 @@ public class BodyImpl implements Body {
 	
 	private void setSelected(final int index) {
 		this.panelSelected = index;
+		this.panelList.forEach(p->p.setBackground(GUIConstants.BACKGROUND_COLOR));
+		if (index >= 0) {
+			this.panelList.get(index).setBackground(GUIConstants.SELECTION_COLOR);
+		}
 	}
 	
 	private void redraw() {
 		this.scrollPanel.removeAll();
 		for (final JPanel p : this.panelList) {
-			this.newRow(p);
+			this.newRow(p, this.opList.get(this.panelList.indexOf(p)));
 		}
 		this.scrollPanel.revalidate();
 		this.scrollPanel.repaint();
