@@ -1,38 +1,99 @@
 package org.converger.userinterface.gui;
 
-import org.converger.controller.FrameworkOperation;
 
 /**
- * An enum of buttons placed in the header section of the GUI.
+ * An enumeration of buttons placed in the header section of the GUI.
  * Every button has its own event.
  * @author Gabriele Graffieti
  *
  */
 public enum HeaderButtons {
 	/** New file request. */
-	NEW("Nuovo", "Nuovo"),
-	/** Open file request. */
-	OPEN("Apri", "Apri"), 
-	/** Save the current file request. */
-	SAVE("Salva", "Salva"), 
-	/** Simplify a given expression. */
-	SIMPLIFY("Semplifica", "Semplifica espressione"),
-	/** Substitute variables in a given expression. */
-	SUBSTITUTE("Sostituisci", "Sostituisci espressione"),
-	/** Evaluate a given expression in a given point. */
-	EVALUATE("Valuta", "Valuta espressione"),
-	/** Derive a given expression. */
-	DERIVE("Derivata", "Deriva") /*{
+	NEW("Nuovo", "Nuovo") {
+
 		@Override
-		public void clickEvent(GUI gui) {
-			MenuButton.CalculusItem.DERIVE.clickEvent()
-			this.executeFrameworkOperation(gui, FrameworkOperation.DIFFERENTIATE);
+		public void clickEvent(final GUI gui) {
+			// TODO
 		}
-	}*/,
+	},
+	/** Open file request. */
+	OPEN("Apri", "Apri") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			// TODO Auto-generated method stub
+			
+		}
+	}, 
+	/** Save the current file request. */
+	SAVE("Salva", "Salva") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			// TODO Auto-generated method stub
+			
+		}
+	}, 
+	
+	/** Delete the selected expression. */
+	DELETE("Delete", "Delete") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			MenuButton.EditItem.DELETEEXP.clickEvent(gui);
+		}
+	},
+	
+	/** Simplify a given expression. */
+	SIMPLIFY("Semplifica", "Semplifica espressione") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			MenuButton.SolveItem.SIMPLIFY.clickEvent(gui);
+		}
+	},
+	/** Substitute variables in a given expression. */
+	SUBSTITUTE("Sostituisci", "Sostituisci espressione") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			MenuButton.SolveItem.VARIABLESUB.clickEvent(gui);
+		}
+	},
+	/** Evaluate a given expression in a given point. */
+	EVALUATE("Valuta", "Valuta espressione") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			MenuButton.SolveItem.EVALUATE.clickEvent(gui);
+		}
+	},
+	/** Derive a given expression. */
+	DIFFERENTIATE("Derivata", "Deriva") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			MenuButton.CalculusItem.DIFFERENTIATE.clickEvent(gui);
+		}
+	},
 	/** Plot a given expression. */
-	PLOT("Grafica", "Grafica"),
+	PLOT("Grafica", "Grafica") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			// TODO Auto-generated method stub
+			
+		}
+	},
 	/** Help request. */
-	HELP("Aiuto", "Aiuto");
+	HELP("Aiuto", "Aiuto") {
+
+		@Override
+		public void clickEvent(final GUI gui) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 	
 	private final String name;
 	private final String message;
@@ -41,17 +102,6 @@ public enum HeaderButtons {
 		this.name = btnName;
 		this.message = btnMessage;
 	}
-	
-	/*private executeFrameworkOperation(GUI gui, FrameworkOperation op) {
-		List<Field> fields = op.requestFields(Controller.getSingleton().getSelectedRow());
-		if (fields.isEmpty()) {
-			Controller.getSingleton().execute(op, fields);
-		} else {
-			gui.showDialog(fields);
-		}
-	}
-	
-	public abstract void clickEvent(GUI gui);*/
 	
 	/**
 	 * Returns the name of the button given in string format.
@@ -68,5 +118,11 @@ public enum HeaderButtons {
 	public String getMessage() {
 		return this.message;
 	}
+	
+	/**
+	 * The method called when the button is clicked.
+	 * @param gui the parent GUI of the button.
+	 */
+	public abstract void clickEvent(GUI gui);
 	
 }

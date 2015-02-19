@@ -12,7 +12,7 @@ public class ExpressionField implements Field {
 
 	private final String name;
 	private final String mappedObj;
-	private String value;
+	private String value = "";
 	
 	/**
 	 * Constructs a new Expression field.

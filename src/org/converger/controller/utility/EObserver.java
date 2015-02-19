@@ -1,4 +1,4 @@
-package org.converger.userinterface.utility;
+package org.converger.controller.utility;
 
 /**
  * A representation of an event observer in the observer design pattern.
@@ -9,7 +9,7 @@ public interface EObserver<T> {
 	/**
 	 * Update the observer with a message from the source.
 	 * @param s the source which send the event message
-	 * @param message the event message from the source object
+	 * @param arg the event message from the source object
  	 */
-	void update(ESource<? extends T> s, T message);
+	void update(ESource<? extends T> s, T arg);
 }

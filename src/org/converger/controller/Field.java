@@ -35,6 +35,11 @@ public interface Field {
 	 *
 	 */
 	enum Type {
-		SELECTION, NUMERICAL, EXPRESSION;
+		/** A selectionField, a field where the user can select from a range of values. */
+		SELECTION, 
+		/** A numerical field, a fild where the user can choose from a range of numbers. */
+		NUMERICAL, 
+		/** An expression field, a field where the user can write an expression. */
+		EXPRESSION;
 	}
 }

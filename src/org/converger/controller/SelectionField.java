@@ -1,7 +1,6 @@
 package org.converger.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -39,11 +38,7 @@ public class SelectionField implements Field {
 
 	@Override
 	public void setValue(final String newValue) {
-		if (this.vars.contains(newValue)) {
-			this.value = newValue;
-		} else {
-			// manda errore
-		}
+		this.value = newValue;
 	}
 
 	@Override
@@ -52,7 +47,7 @@ public class SelectionField implements Field {
 	}
 	
 	/** @return An ArrayList of the options. */
-	public List<String> getAllowedValues() {
-		return new ArrayList<>(this.vars);
+	public Set<String> getAllowedValues() {
+		return new HashSet<>(this.vars);
 	}
 }

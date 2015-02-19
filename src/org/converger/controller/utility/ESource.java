@@ -1,10 +1,10 @@
-package org.converger.userinterface.utility;
+package org.converger.controller.utility;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Implementation of the IESource interface. 
+ * Implementation of the IESource interface, with generic message. 
  * @author Gabriele Graffieti
  * @param <T> the type of the event notification
  * */
