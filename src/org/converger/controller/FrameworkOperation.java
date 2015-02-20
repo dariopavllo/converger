@@ -30,7 +30,7 @@ public enum FrameworkOperation {
 		public List<Field> requestFields(final int index) {
 			final List<Field> listField = new ArrayList<>();
 			final ExpressionField expField = new ExpressionField("Edit", "edit");
-			expField.setValue(Controller.getController().getFramework().toPlainText(Controller.getController().getExpressionAt(index)));
+			expField.setValue(Controller.getController().getEnvironment().getRecordList().get(index).getPlainText());
 			listField.add(expField);
 			return listField;
 		}

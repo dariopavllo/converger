@@ -2,6 +2,7 @@ package org.converger.controller;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.converger.userinterface.gui.GUI;
 public final class Controller implements EObserver<KeyboardEvent> {
 
 	private static final Controller SINGLETON = new Controller(); 
+	private static final int DECIMALS = 7;
 	
 	private final UserInterface ui;
 	private final CasFramework framework;
@@ -74,6 +76,14 @@ public final class Controller implements EObserver<KeyboardEvent> {
 	}
 	
 	/**
+	 * Returns the current environment.
+	 * @return the current environment
+	 */
+	public Environment getEnvironment() {
+		return this.currentEnvironment;
+	}
+	
+	/**
 	 * Show the user interface to the screen.
 	 */
 	public void showUI() {
@@ -114,8 +124,9 @@ public final class Controller implements EObserver<KeyboardEvent> {
 	public void addNumericalExpression(final Double number, final Optional<String> op) {
 		try {
 			final Expression exp = this.framework.parse(Double.toString(number));
-			this.currentEnvironment.add(new Record(Double.toString(number), Double.toString(number), exp, op));
-			this.ui.printExpression(Double.toString(number), op);
+			final String num = new BigDecimal(String.valueOf(number)).setScale(DECIMALS, BigDecimal.ROUND_HALF_UP).toPlainString();
+			this.currentEnvironment.add(new Record(num, num, exp, op));
+			this.ui.printExpression(num, op);
 		} catch (SyntaxErrorException e) {
 			this.ui.error(e.getMessage());
 		}

@@ -3,6 +3,7 @@ package org.converger.userinterface.gui;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
@@ -34,6 +35,7 @@ public class BodyImpl implements Body {
 	private int panelSelected;
 	private final List<JPanel> panelList = new ArrayList<>();
 	private final List<Optional<String>> opList = new ArrayList<>();
+	private final JScrollBar scrollBar;
 	
 	/**
 	 * Create the body.
@@ -48,7 +50,9 @@ public class BodyImpl implements Body {
 		scrollPanel.setBackground(GUIConstants.BACKGROUND_COLOR);
 
 		final JScrollPane scroll = new JScrollPane(scrollPanel);
-		scroll.getVerticalScrollBar().addAdjustmentListener(e->e.getAdjustable().setValue(e.getAdjustable().getMaximum()));
+		//scroll.getVerticalScrollBar().addAdjustmentListener(e->e.getAdjustable().setValue(e.getAdjustable().getMaximum()));
+		this.scrollBar = scroll.getVerticalScrollBar();
+		
 		this.mainPanel.add(scroll, BorderLayout.CENTER);
 	}
 
@@ -70,6 +74,7 @@ public class BodyImpl implements Body {
 	public void drawNewExpression(final String latexExpression, final Optional<String> op) {
 		this.newRow(this.createLatexPanel(latexExpression, this.panelList.size(), op), op);
 		this.mainPanel.validate();
+		this.scrollBar.setValue(scrollBar.getMaximum());
 	}
 	
 	@Override
