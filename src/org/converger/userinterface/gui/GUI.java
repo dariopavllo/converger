@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,9 @@ import org.converger.controller.utility.KeyboardEvent;
 import org.converger.userinterface.UserInterface;
 import org.converger.userinterface.gui.dialog.Dialog;
 import org.converger.userinterface.gui.dialog.ErrorDialog;
+import org.converger.userinterface.gui.dialog.OpenDialog;
+import org.converger.userinterface.gui.dialog.SaveDialog;
+import org.converger.userinterface.gui.dialog.YesNoDialog;
 
 /**
  * Represent a graphical user interface for the application.
@@ -48,9 +53,15 @@ public class GUI implements UserInterface {
 		this.footer = new FooterImpl();
 		
 		this.frame = new JFrame(name);
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.frame.setSize(GUIConstants.PREFERRED_WIDTH, GUIConstants.PREFERRED_HEIGHT);
-		
+		frame.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(final WindowEvent windowEvent) {
+		       MenuButton.FileItem.EXIT.clickEvent(GUI.this);
+		    }
+		});
+	
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyboardDispatcher(obs));
 		
 		this.buildGUI();
@@ -74,21 +85,18 @@ public class GUI implements UserInterface {
 	}
 
 	@Override
-	public boolean yesNoQuestion() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean yesNoQuestion(final String message) {
+		return new YesNoDialog(this.frame, message).response();
 	}
 
 	@Override
-	public Optional<String> save() {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<String> saveDialog() {
+		return new SaveDialog(this.frame).getPath();
 	}
 
 	@Override
-	public Optional<String> open() {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<String> openDialog() {
+		return new OpenDialog(this.frame).getPath();
 	}
 
 	@Override
@@ -99,6 +107,11 @@ public class GUI implements UserInterface {
 	@Override
 	public void removeExpression(final int index) {
 		this.body.deleteExpression(index);
+	}
+	
+	@Override
+	public void removeAll() {
+		this.body.deleteAll();
 	}
 	
 	@Override
@@ -127,9 +140,6 @@ public class GUI implements UserInterface {
 	}
 	
     private static class KeyboardDispatcher extends ESource<KeyboardEvent> implements KeyEventDispatcher {
-    	
-//        StringSelection selection = new StringSelection("CIAO");
-//        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     	
         public KeyboardDispatcher(final EObserver<KeyboardEvent> obs) {
         	this.addEObserver(obs);
