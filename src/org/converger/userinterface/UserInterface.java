@@ -36,9 +36,10 @@ public interface UserInterface {
 	
 	/**
 	 * Manage a yes/no question.
+	 * @param message the message to be shown at the user
 	 * @return the answer to the question, true is yes and false is no.
 	 */
-	boolean yesNoQuestion();
+	boolean yesNoQuestion(String message);
 	
 	/**
 	 * Manage the request of a dialog between the framework and the user when 
@@ -56,14 +57,14 @@ public interface UserInterface {
 	 * It allows the user to select a directory where the file will be saved.
 	 * @return the path of the selected directory, or Optional.empty if no path is selected.
 	 */
-	Optional<String> save();
+	Optional<String> saveDialog();
 	
 	/**
 	 * Manage an open file request.
 	 * It allows the user to select an expressions file and it will be opened in the user interface.
 	 * @return the path of the selected file, or Optional.empty if no file is selected.
 	 */
-	Optional<String> open();
+	Optional<String> openDialog();
 	
 	/**
 	 * Return an integer value which represent the index of the selected expression.
@@ -84,4 +85,9 @@ public interface UserInterface {
 	 * @param exp the new expression.
 	 */
 	void editExpression(int index, String exp);
+	
+	/**
+	 * Removes all the expression from the user interface.
+	 */
+	void removeAll();
 }

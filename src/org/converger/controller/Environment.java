@@ -49,6 +49,14 @@ public class Environment {
 	public void setFilePath(final String path) {
 		this.filePath = Optional.ofNullable(path);
 	}
+	
+	/**
+	 * Set the edited value of the environment. If is true the environment has modification not saved.
+	 * @param edit a boolean indicates if the environment is edited or not.
+	 */
+	public void setEdited(final boolean edit) {
+		this.mod = edit;
+	}
 
 	/**
 	 * Add a new record to the list.
@@ -71,9 +79,10 @@ public class Environment {
 	/**
 	 * delete all the expression in the current environment.
 	 */
-	public void deleteAll() {
+	public void reset() {
 		this.recordList.clear();
-		this.modified();
+		this.filePath = Optional.empty();
+		this.mod = false;
 	}
 	
 	/**
