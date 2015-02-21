@@ -55,17 +55,20 @@ public class NumericalIntegrator {
 		//Integrates
 		double integral = 0;
 		final Map<String, Double> values = new HashMap<>();
-		for (int i = 0; i < subdivisions; i++) {
-			//Trapezoidal rule
-			final double a = lowerBound + i * increment;
-			final double b = lowerBound + (i + 1) * increment;
+		
+		//First evaluation
+		values.put(this.variable, lowerBound);
+		double fA = this.cas.evaluate(this.function, values);
+		
+		for (int i = 1; i <= subdivisions; i++) {
+			//Optimized trapezoidal rule
+			final double b = lowerBound + i * increment;
 			
-			values.put(this.variable, a);
-			final double fA = this.cas.evaluate(this.function, values);
 			values.put(this.variable, b);
 			final double fB = this.cas.evaluate(this.function, values);
 			
 			integral += fA + fB;
+			fA = fB;
 		}
 		
 		integral *= increment / 2;
