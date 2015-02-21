@@ -13,7 +13,7 @@ public enum HeaderButtons {
 
 		@Override
 		public void clickEvent(final GUI gui) {
-			// TODO
+			MenuButton.FileItem.NEW.clickEvent(gui);
 		}
 	},
 	/** Open file request. */
@@ -21,8 +21,7 @@ public enum HeaderButtons {
 
 		@Override
 		public void clickEvent(final GUI gui) {
-			// TODO Auto-generated method stub
-			
+			MenuButton.FileItem.OPEN.clickEvent(gui);
 		}
 	}, 
 	/** Save the current file request. */
@@ -30,8 +29,7 @@ public enum HeaderButtons {
 
 		@Override
 		public void clickEvent(final GUI gui) {
-			// TODO Auto-generated method stub
-			
+			MenuButton.FileItem.SAVE.clickEvent(gui);
 		}
 	}, 
 	

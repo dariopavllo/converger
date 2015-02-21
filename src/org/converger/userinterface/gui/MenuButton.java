@@ -77,8 +77,7 @@ public enum MenuButton {
 
 			@Override
 			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
+				Controller.getController().newEnvironment();
 			}
 			
 		}, 
@@ -87,8 +86,7 @@ public enum MenuButton {
 
 			@Override
 			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
+				Controller.getController().open();
 			}
 			
 		}, 
@@ -97,8 +95,7 @@ public enum MenuButton {
 
 			@Override
 			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
+				Controller.getController().save();
 			}
 			
 		},
@@ -107,8 +104,7 @@ public enum MenuButton {
 
 			@Override
 			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
+				Controller.getController().close();
 			}
 			
 		};
