@@ -18,6 +18,7 @@ import org.converger.framework.core.Variable;
 /**
  * This class approximates the solutions of an equation using Newton's method.
  * @author Dario Pavllo
+ * @author Gabriele Graffieti
  */
 public class NumericalSolver {
 
@@ -28,7 +29,9 @@ public class NumericalSolver {
 	/** The maximum iteration count. */
 	private static final int MAX_ITERATIONS = 100;
 	/** The number of error increments before divergence is declared */
-	private static final int MAX_DIVERGENCE_COUNT = 5;
+	private static final int MAX_DIVERGENCE_COUNT = 20;
+	/** The maximum range of a solution [-x, x], to prevent floating-point errors */
+	private static final double MAX_RANGE = 1e10;
 	
 	private final CasFramework cas;
 	private final String variable;
@@ -140,7 +143,14 @@ public class NumericalSolver {
 				prevError = error;
 			}
 			if (!diverged) {
-				this.addSolution(x0, currentSolutionIndex++);
+				if (Math.abs(x0) <= NumericalSolver.MAX_RANGE) {
+					//Adds the solution
+					this.addSolution(x0, currentSolutionIndex++);
+				} else {
+					//The solution is too big
+					diverged = true;
+				}
+				
 			}
 		}
 		this.values.remove(this.variable); //Removes the temporary variable x0
