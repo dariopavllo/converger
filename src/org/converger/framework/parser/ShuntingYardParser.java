@@ -19,6 +19,10 @@ import org.converger.framework.core.Operator;
  */
 public class ShuntingYardParser implements Parser {
 	
+	private static final String NUMBER_REGEX = "[0-9\\.]+";
+	private static final String TEXT_REGEX = "[a-zA-Z']+";
+	private static final String SYMBOL_REGEX = ".";
+	
 	private final Stack<Token> output;
 	private final Stack<Token> stack;
 	private boolean expectUnarySign;
@@ -186,19 +190,14 @@ public class ShuntingYardParser implements Parser {
 	}
 	
 	private static boolean isNumber(final String str) {
-		try {
-			Double.parseDouble(str);
-			return true;
-		} catch (final NumberFormatException e) {
-			return false;
-		}
+		return str.matches(ShuntingYardParser.NUMBER_REGEX);
 	}
 	
 	private static boolean isName(final String str) {
-		return str.matches("[a-zA-Z']+");
+		return str.matches(ShuntingYardParser.TEXT_REGEX);
 	}
 	
 	private static boolean isSymbol(final String str) {
-		return str.length() == 1; //NOPMD
+		return str.matches(ShuntingYardParser.SYMBOL_REGEX);
 	}
 }
