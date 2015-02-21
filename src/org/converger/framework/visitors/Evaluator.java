@@ -1,6 +1,5 @@
 package org.converger.framework.visitors;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -37,8 +36,8 @@ public class Evaluator implements
 	 * @param valueMap a variable-value map
 	 */
 	public Evaluator(final Map<Variable, Double> valueMap) {
-		//Defensive copy
-		this.values = new HashMap<>(valueMap);
+		//No defensive copy (for performance reasons)
+		this.values = valueMap;
 	}
 	
 	@Override
