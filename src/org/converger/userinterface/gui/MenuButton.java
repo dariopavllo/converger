@@ -15,9 +15,7 @@ public enum MenuButton {
 	/** Solve voice on menu, it contains equations functions. */
 	SOLVE("Solve", SolveItem.values()),
 	/** Calculus voice on menu it contains calculus functions. */
-	CALCULUS("Calculus", CalculusItem.values()),
-	/** Help voice on menu. */
-	HELP("Help", HelpItem.values());
+	CALCULUS("Calculus", CalculusItem.values());
 	
 	private final String name;
 	private final MenuItem[] items;
@@ -284,51 +282,5 @@ public enum MenuButton {
 		
 		@Override
 		public abstract void clickEvent(final GUI gui);
-	}
-	
-	/**
-	 * Represents a collection of menu item placed in the help voice.
-	 * @author Gabriele Graffieti
-	 */
-	public enum HelpItem implements MenuItem {
-		/** Open the guide of the application. */
-		GUIDE("Guide", "") {
-			@Override
-			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
-			}
-		}, 
-		
-		/** Open the about us page. */
-		ABOUTUS("About us", "") {
-			@Override
-			public void clickEvent(final GUI gui) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-
-		private String name;
-		private String iconPath;
-		
-		private HelpItem(final String itemName, final String itemIconPath) {
-			this.name = itemName;
-			this.iconPath = itemIconPath;
-		}
-		
-		@Override
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public String getIconPath() {
-			return this.iconPath;
-		}
-		
-		@Override
-		public abstract void clickEvent(final GUI gui);
-		
 	}
 }

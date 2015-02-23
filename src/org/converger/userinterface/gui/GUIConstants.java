@@ -23,7 +23,7 @@ public final class GUIConstants {
 	/** the default background color of the latex visualizer. */
 	public static final Color BACKGROUND_COLOR = Color.WHITE;
 	/** the default color for an expression selected. */
-	public static final Color SELECTION_COLOR = Color.CYAN;
+	public static final Color SELECTION_COLOR = new Color(201, 240, 240);
 	/** the default width of the row number box. */
 	public static final int ROW_BOX_WIDTH = 50;
 	

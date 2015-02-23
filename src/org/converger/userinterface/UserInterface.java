@@ -2,6 +2,7 @@ package org.converger.userinterface;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleFunction;
 
 import org.converger.controller.Field;
 import org.converger.controller.FrameworkOperation;
@@ -90,4 +91,10 @@ public interface UserInterface {
 	 * Removes all the expression from the user interface.
 	 */
 	void removeAll();
+	
+	/**
+	 * Show the graph window.
+	 * @param function the function to be plotted in the graph.
+	 */
+	void showGraph(DoubleFunction<Double> function);
 }

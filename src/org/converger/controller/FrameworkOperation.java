@@ -69,7 +69,7 @@ public enum FrameworkOperation {
 		@Override
 		public List<Field> requestFields(final int index) {
 			final List<Field> listField = new ArrayList<>();
-			for (final String v : Controller.getController().getVariables(index)) {
+			for (final String v : Controller.getController().getFramework().enumerateVariables(Controller.getController().getExpressionAt(index))) {
 				listField.add(new ExpressionField("Substitute " + v, v));
 			}
 			return listField;
@@ -101,7 +101,7 @@ public enum FrameworkOperation {
 		@Override
 		public List<Field> requestFields(final int index) {
 			final List<Field> listField = new ArrayList<>();
-			for (final String v : Controller.getController().getVariables(index)) {
+			for (final String v : Controller.getController().getFramework().enumerateVariables(Controller.getController().getExpressionAt(index))) {
 				listField.add(new ExpressionField("Substitute " + v, v));
 			}
 			return listField;
@@ -150,7 +150,8 @@ public enum FrameworkOperation {
 		@Override
 		public List<Field> requestFields(final int index) {
 			final List<Field> listField = new ArrayList<>();
-			listField.add(new SelectionField("Select Variable", Controller.getController().getVariables(index)));
+			listField.add(new SelectionField("Select Variable", 
+					Controller.getController().getFramework().enumerateVariables(Controller.getController().getExpressionAt(index))));
 			listField.add(new NumericalField("Order"));
 			return listField;
 		}
@@ -215,7 +216,8 @@ public enum FrameworkOperation {
 		public List<Field> requestFields(final int index) {
 			final List<Field> listField = new ArrayList<>();
 			listField.add(new ExpressionField("Expansion point", "ep"));
-			listField.add(new SelectionField("Select variable", Controller.getController().getVariables(index)));
+			listField.add(new SelectionField("Select variable", 
+					Controller.getController().getFramework().enumerateVariables(Controller.getController().getExpressionAt(index))));
 			listField.add(new NumericalField("Order"));
 			return listField;
 		}

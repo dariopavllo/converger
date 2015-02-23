@@ -1,4 +1,4 @@
-package org.converger.controller;
+package org.converger.controller; // NOPMD
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -129,7 +131,8 @@ public final class Controller implements EObserver<KeyboardEvent> {
 	public void addNumericalExpression(final Double number, final Optional<String> op) {
 		try {
 			final Expression exp = this.framework.parse(Double.toString(number));
-			final String num = new BigDecimal(String.valueOf(number)).setScale(DECIMALS, BigDecimal.ROUND_HALF_UP).toPlainString();
+			final String num = Double.isNaN(number) || Double.isInfinite(number) ? Double.toString(number) 
+					: new BigDecimal(String.valueOf(number)).setScale(DECIMALS, BigDecimal.ROUND_HALF_UP).toPlainString();
 			this.currentEnvironment.add(new Record(num, num, exp, op));
 			this.ui.printExpression(num, op);
 		} catch (SyntaxErrorException e) {
@@ -160,14 +163,7 @@ public final class Controller implements EObserver<KeyboardEvent> {
 			this.ui.error(e.getMessage());
 		}
 	}
-	/**
-	 * Returns the set of variables of the expression in the given index.
-	 * @param index the index of the expression
-	 * @return The set of variables of the expression at the given index 
-	 */
-	public Set<String> getVariables(final int index) {
-		return this.framework.enumerateVariables(this.currentEnvironment.getRecordList().get(index).getExpression());
-	}
+
 	
 	@Override
 	public void update(final ESource<? extends KeyboardEvent> s, final KeyboardEvent event) {
@@ -263,6 +259,29 @@ public final class Controller implements EObserver<KeyboardEvent> {
 			this.save();
 		}
 		System.exit(0);
+	}
+	
+	/**
+	 * Plot the graph of the selected expression, if its has only one variable.
+	 */
+	public void plot() {
+		try {
+			final Expression exp = this.getExpressionAt(this.getSelectedExpressionIndex());
+			final Set<String> vars = this.framework.enumerateVariables(exp);
+			if (vars.size() > 1) { //NOPMD
+				throw new IllegalArgumentException("The expression has too many variables");
+			}
+			final Map<String, Double> map = new HashMap<>();
+			this.ui.showGraph(x-> {
+				if (vars.size() == 1) { //NOPMD  only one variable
+					vars.forEach(v->map.put(v, x));
+				}
+				return this.framework.evaluate(exp, map);
+			});
+			
+		} catch (NoElementSelectedException | IllegalArgumentException e) {
+			this.ui.error(e.getMessage());
+		}
 	}
 	
 	private void saveAction() {

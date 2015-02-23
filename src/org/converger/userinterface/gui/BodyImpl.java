@@ -127,7 +127,7 @@ public class BodyImpl implements Body {
         this.opList.add(index, op);
         panel.addMouseListener(new MouseAdapter() {
         	@Override
-        	public void mouseClicked(final MouseEvent e) { // click on the panel
+        	public void mousePressed(final MouseEvent e) { // click on the panel
         		setSelected(panelList.indexOf(panel));
         	}
         });

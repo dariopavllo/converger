@@ -1,5 +1,7 @@
 package org.converger.userinterface.gui;
 
+import org.converger.controller.Controller;
+
 
 /**
  * An enumeration of buttons placed in the header section of the GUI.
@@ -79,17 +81,7 @@ public enum HeaderButtons {
 
 		@Override
 		public void clickEvent(final GUI gui) {
-			// TODO Auto-generated method stub
-			
-		}
-	},
-	/** Help request. */
-	HELP("Aiuto", "Aiuto") {
-
-		@Override
-		public void clickEvent(final GUI gui) {
-			// TODO Auto-generated method stub
-			
+			Controller.getController().plot();
 		}
 	};
 	

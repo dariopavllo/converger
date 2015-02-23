@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleFunction;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,6 +20,7 @@ import org.converger.controller.exception.NoElementSelectedException;
 import org.converger.controller.utility.EObserver;
 import org.converger.controller.utility.ESource;
 import org.converger.controller.utility.KeyboardEvent;
+import org.converger.plot.Graph;
 import org.converger.userinterface.UserInterface;
 import org.converger.userinterface.gui.dialog.Dialog;
 import org.converger.userinterface.gui.dialog.ErrorDialog;
@@ -124,6 +126,12 @@ public class GUI implements UserInterface {
 		new Dialog(this.frame, operation, fields, index);
 	}
 	
+
+	@Override
+	public void showGraph(final DoubleFunction<Double> function) {
+		new Graph(function).show();
+	}
+	
 	private void buildGUI() {
 		this.frame.setJMenuBar(new Menu(this).getMenu());
 		final JPanel mainPanel = new JPanel();
@@ -156,4 +164,5 @@ public class GUI implements UserInterface {
             return false;
         }
     }
+
 }
