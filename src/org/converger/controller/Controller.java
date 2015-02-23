@@ -131,8 +131,15 @@ public final class Controller implements EObserver<KeyboardEvent> {
 	public void addNumericalExpression(final Double number, final Optional<String> op) {
 		try {
 			final Expression exp = this.framework.parse(Double.toString(number));
-			final String num = Double.isNaN(number) || Double.isInfinite(number) ? Double.toString(number) 
-					: new BigDecimal(String.valueOf(number)).setScale(DECIMALS, BigDecimal.ROUND_HALF_UP).toPlainString();
+			String num;
+			if (number.isNaN()) {
+				num = "Indeterminate";
+			} else if (number.isInfinite()) {
+				num = Double.toString(number);
+			} else {
+				num = new BigDecimal(String.valueOf(number)).setScale(DECIMALS, BigDecimal.ROUND_HALF_UP).toPlainString();
+			}
+			
 			this.currentEnvironment.add(new Record(num, num, exp, op));
 			this.ui.printExpression(num, op);
 		} catch (SyntaxErrorException e) {
