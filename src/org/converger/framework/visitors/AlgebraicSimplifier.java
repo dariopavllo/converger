@@ -88,6 +88,22 @@ public class AlgebraicSimplifier extends AbstractExpressionVisitor implements
 			return Constant.ONE;
 		}
 		
+		//(x^y)^z = x^(yz)
+		if (o1 instanceof BinaryOperation) {
+			final BinaryOperation child = (BinaryOperation) o1;
+			if (child.getOperator() == BinaryOperator.POWER) {
+				return new BinaryOperation(
+						BinaryOperator.POWER,
+						child.getFirstOperand(),
+						new NAryOperation(
+							NAryOperator.PRODUCT,
+							child.getSecondOperand(),
+							o2
+						)
+					);
+			}
+		}
+		
 		//If the operands are constants, the result can be calculated
 		if (o1 instanceof Constant && o2 instanceof Constant) {
 			final long base = ((Constant) o1).getValue();
