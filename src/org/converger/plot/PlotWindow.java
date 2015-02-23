@@ -4,14 +4,18 @@ import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
 import java.util.function.DoubleFunction;
+
 import javax.swing.JPanel;
 
 /**
@@ -51,11 +55,13 @@ public class PlotWindow extends JPanel {
 		
 		final AffineTransform newTrans = getTransform();
 
+		// Enables antialiasing
 		graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		graph.clearRect((int) getBounds().getX(), (int) getBounds().getY(),
-				(int) getBounds().getWidth(), (int) getBounds().getHeight());
+		// Clears the plot window
+		graph.setColor(PlotConstants.BACKGROUND_COLOR);
+		graph.fillRect(0, 0, (int) getBounds().getWidth(), (int) getBounds().getHeight());
 
 		drawTicks(graph, newTrans);
 		drawAxes(graph, newTrans);
@@ -108,7 +114,22 @@ public class PlotWindow extends JPanel {
 
 	private void drawFunction(final Graphics2D graph, final AffineTransform transform) {
 		final AffineTransform originalTransform = graph.getTransform();
-		graph.setStroke(new BasicStroke(PlotConstants.STROKE_WIDTH / ((float) transform.getScaleX())));
+		
+		// Sets the stroke to a fixed width, independent from the transform
+		graph.setStroke(new Stroke() {
+			@Override
+			public Shape createStrokedShape(final Shape s) {
+				final Stroke stroke = new BasicStroke(PlotConstants.STROKE_WIDTH);
+				final Shape transformed = transform.createTransformedShape(s);
+		        final Shape stroked = stroke.createStrokedShape(transformed);
+				try {
+					return transform.createInverse().createTransformedShape(stroked);
+				} catch (final NoninvertibleTransformException e) {
+					return stroke.createStrokedShape(s);
+				}
+		    }
+		});
+		
 		graph.transform(transform);
 		graph.setColor(PlotConstants.FUNCTION_COLOR);
 		graph.draw(this.path);
