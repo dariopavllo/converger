@@ -1,7 +1,7 @@
 package org.converger.framework.visitors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +51,8 @@ public class Collector extends AbstractExpressionVisitor
 	 * appending the exponent to the respective list.
 	 */
 	private Map<Expression, List<Expression>> buildBasesMap(final List<Expression> operands) {
-		final Map<Expression, List<Expression>> bases = new HashMap<>();
+		//LinkedHashMap is used here to preserve insertion order
+		final Map<Expression, List<Expression>> bases = new LinkedHashMap<>();
 		for (final Expression child : operands) {
 			//By default, the node has implicitly an exponent equal to 1
 			Expression base = child;
@@ -108,7 +109,8 @@ public class Collector extends AbstractExpressionVisitor
 	 */
 	@Override
 	public Expression visitAddition(final List<Expression> operands) {
-		final Map<Expression, List<Expression>> terms = new HashMap<>();
+		//LinkedHashMap is used here to preserve insertion order
+		final Map<Expression, List<Expression>> terms = new LinkedHashMap<>();
 		for (final Expression child : operands) {
 			//By default, the node has implicitly a coefficient equal to one
 			Expression term = child;
