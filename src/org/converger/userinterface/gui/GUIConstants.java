@@ -28,6 +28,8 @@ public final class GUIConstants {
 	public static final int ROW_BOX_WIDTH = 50;
 	/** the default dimension of the header buttons. */
 	public static final int HEADER_BUTTON_DIMENSION = 40;
+	/** the application icon. */
+	public static final String APP_ICON = "/org/converger/resources/icons/converger.png";
 	
 	private GUIConstants() {
 		
