@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleFunction;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -56,6 +57,7 @@ public class GUI implements UserInterface {
 		
 		this.frame = new JFrame(name);
 		this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.frame.setIconImage(new ImageIcon(GUI.class.getResource(GUIConstants.APP_ICON)).getImage());
 		this.frame.setSize(GUIConstants.PREFERRED_WIDTH, GUIConstants.PREFERRED_HEIGHT);
 		frame.addWindowListener(new WindowAdapter() {
 		    @Override
