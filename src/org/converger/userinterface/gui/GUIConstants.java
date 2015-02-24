@@ -26,6 +26,8 @@ public final class GUIConstants {
 	public static final Color SELECTION_COLOR = new Color(201, 240, 240);
 	/** the default width of the row number box. */
 	public static final int ROW_BOX_WIDTH = 50;
+	/** the default dimension of the header buttons. */
+	public static final int HEADER_BUTTON_DIMENSION = 40;
 	
 	private GUIConstants() {
 		

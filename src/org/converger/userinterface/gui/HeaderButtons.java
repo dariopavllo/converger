@@ -11,7 +11,7 @@ import org.converger.controller.Controller;
  */
 public enum HeaderButtons {
 	/** New file request. */
-	NEW("Nuovo", "Nuovo") {
+	NEW("New", "/org/converger/resources/icons/header/new.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -19,7 +19,7 @@ public enum HeaderButtons {
 		}
 	},
 	/** Open file request. */
-	OPEN("Apri", "Apri") {
+	OPEN("Open", "/org/converger/resources/icons/header/open.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -27,7 +27,7 @@ public enum HeaderButtons {
 		}
 	}, 
 	/** Save the current file request. */
-	SAVE("Salva", "Salva") {
+	SAVE("Save", "/org/converger/resources/icons/header/save.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -36,7 +36,7 @@ public enum HeaderButtons {
 	}, 
 	
 	/** Delete the selected expression. */
-	DELETE("Delete", "Delete") {
+	DELETE("Delete", "/org/converger/resources/icons/header/delete.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -45,7 +45,7 @@ public enum HeaderButtons {
 	},
 	
 	/** Simplify a given expression. */
-	SIMPLIFY("Semplifica", "Semplifica espressione") {
+	SIMPLIFY("Simplify", "/org/converger/resources/icons/header/simplify.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -53,7 +53,7 @@ public enum HeaderButtons {
 		}
 	},
 	/** Substitute variables in a given expression. */
-	SUBSTITUTE("Sostituisci", "Sostituisci espressione") {
+	SUBSTITUTE("Substitute", "/org/converger/resources/icons/header/substitute.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -61,7 +61,7 @@ public enum HeaderButtons {
 		}
 	},
 	/** Evaluate a given expression in a given point. */
-	EVALUATE("Valuta", "Valuta espressione") {
+	EVALUATE("Evaluate", "/org/converger/resources/icons/header/evaluate.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -69,7 +69,7 @@ public enum HeaderButtons {
 		}
 	},
 	/** Derive a given expression. */
-	DIFFERENTIATE("Derivata", "Deriva") {
+	DIFFERENTIATE("Differentiate", "/org/converger/resources/icons/header/differentiate.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -77,7 +77,7 @@ public enum HeaderButtons {
 		}
 	},
 	/** Plot a given expression. */
-	PLOT("Grafica", "Grafica") {
+	PLOT("Plot", "/org/converger/resources/icons/header/plot.png") {
 
 		@Override
 		public void clickEvent(final GUI gui) {
@@ -86,11 +86,11 @@ public enum HeaderButtons {
 	};
 	
 	private final String name;
-	private final String message;
+	private final String path;
 	
-	private HeaderButtons(final String btnName, final String btnMessage) {
+	private HeaderButtons(final String btnName, final String btnIconPath) {
 		this.name = btnName;
-		this.message = btnMessage;
+		this.path = btnIconPath;
 	}
 	
 	/**
@@ -105,8 +105,8 @@ public enum HeaderButtons {
 	 * Returns the message of the button in string format.
 	 * @return the message of the button 
 	 */
-	public String getMessage() {
-		return this.message;
+	public String getIconPath() {
+		return this.path;
 	}
 	
 	/**

@@ -1,7 +1,5 @@
-package org.converger.controller; // NOPMD
+package org.converger.controller; 
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -14,9 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.converger.controller.exception.NoElementSelectedException;
-import org.converger.controller.utility.EObserver;
-import org.converger.controller.utility.ESource;
-import org.converger.controller.utility.KeyboardEvent;
 import org.converger.framework.CasFramework;
 import org.converger.framework.CasManager;
 import org.converger.framework.Expression;
@@ -33,7 +28,7 @@ import org.converger.userinterface.gui.GUI;
  * getController method.
  * @author Gabriele Graffieti
  * */
-public final class Controller implements EObserver<KeyboardEvent> {
+public final class Controller {
 
 	private static final Controller SINGLETON = new Controller(); 
 	private static final int DECIMALS = 7;
@@ -43,7 +38,7 @@ public final class Controller implements EObserver<KeyboardEvent> {
 	private final Environment currentEnvironment;
 	
 	private Controller() {
-		this.ui = new GUI("Converger", this);
+		this.ui = new GUI("Converger", new KeyboardObserver());
 		this.framework = CasManager.getSingleton().createFramework();
 		this.currentEnvironment = new Environment();
 	}
@@ -172,23 +167,6 @@ public final class Controller implements EObserver<KeyboardEvent> {
 	}
 
 	
-	@Override
-	public void update(final ESource<? extends KeyboardEvent> s, final KeyboardEvent event) {
-		if (event == KeyboardEvent.COPY) {
-			boolean checker = true;
-			String copy = "";
-			try {
-				copy = this.currentEnvironment.getRecordList().get(this.getSelectedExpressionIndex()).getPlainText();
-			} catch (NoElementSelectedException e) { 
-				checker = false;
-			}
-			if (checker) {
-				final StringSelection selection = new StringSelection(copy);
-				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
-			}
-		}
-	}
-	
 	/**
 	 * Open a new empty environment.
 	 */
@@ -280,9 +258,7 @@ public final class Controller implements EObserver<KeyboardEvent> {
 			}
 			final Map<String, Double> map = new HashMap<>();
 			this.ui.showGraph(x-> {
-				if (vars.size() == 1) { //NOPMD  only one variable
-					vars.forEach(v->map.put(v, x));
-				}
+				vars.forEach(v->map.put(v, x)); // only one variable or no variable
 				return this.framework.evaluate(exp, map);
 			});
 			
