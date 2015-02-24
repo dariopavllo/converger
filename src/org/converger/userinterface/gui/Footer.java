@@ -26,10 +26,10 @@ import org.converger.controller.Controller;
 import java.awt.SystemColor;
 
 /**
- * Creates the bottom part of the gui, with utility buttons and the line input.
+ * Creates the bottom part of the gui, with utility buttons and the input line.
  * @author Gabriele Graffieti
  */
-public class FooterImpl implements GUIComponent {
+public class Footer implements GUIComponent {
 	private final JPanel mainPanel;
 	private final JTextField inputLine;
 	
@@ -37,7 +37,7 @@ public class FooterImpl implements GUIComponent {
 	/**
 	 * Create the footer.
 	 */
-	public FooterImpl() {
+	public Footer() {
 		this.mainPanel = new JPanel();
 		this.mainPanel.setLayout(new BorderLayout(GUIConstants.DEFAULT_MARGIN, 
 				GUIConstants.DEFAULT_MARGIN));
@@ -58,7 +58,7 @@ public class FooterImpl implements GUIComponent {
 		gbc.gridy = 0;
 		
 		final JButton inputButton = new JButton();
-		inputButton.setIcon(new ImageIcon(FooterImpl.class.getResource("/org/converger/resources/icons/footer/enter.png")));
+		inputButton.setIcon(new ImageIcon(Footer.class.getResource("/org/converger/resources/icons/footer/enter.png")));
 		inputButton.addActionListener(e -> Controller.getController().addExpression(this.inputLine.getText()));
 		inputPanel.add(inputButton, gbc);
 		
@@ -66,7 +66,7 @@ public class FooterImpl implements GUIComponent {
 		
 		final JButton clearButton = new JButton();
 		inputPanel.add(clearButton, gbc);
-		clearButton.setIcon(new ImageIcon(FooterImpl.class.getResource("/org/converger/resources/icons/footer/delete.png")));
+		clearButton.setIcon(new ImageIcon(Footer.class.getResource("/org/converger/resources/icons/footer/delete.png")));
 		clearButton.addActionListener(e -> this.inputLine.setText(""));
 		clearButton.setEnabled(false);
 		
@@ -110,7 +110,7 @@ public class FooterImpl implements GUIComponent {
 		
 		for (final UtilityButton b : UtilityButton.values()) {
 			final JButton button = new JButton();
-			button.setIcon(new ImageIcon(FooterImpl.class.getResource(b.getIconPath())));
+			button.setIcon(new ImageIcon(Footer.class.getResource(b.getIconPath())));
 			button.setToolTipText(b.getName());
 			button.addActionListener(e -> {
 				this.inputLine.setText(this.inputLine.getText() + b.getSymbol());

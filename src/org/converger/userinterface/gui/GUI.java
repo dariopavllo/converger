@@ -50,9 +50,9 @@ public class GUI implements UserInterface {
 	 * @param obs the observer of the keyboard events of the gui
 	 */
 	public GUI(final String name, final EObserver<KeyboardEvent> obs) {
-		this.header = new HeaderImpl(this);
+		this.header = new Header(this);
 		this.body = new BodyImpl();
-		this.footer = new FooterImpl();
+		this.footer = new Footer();
 		
 		this.frame = new JFrame(name);
 		this.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
