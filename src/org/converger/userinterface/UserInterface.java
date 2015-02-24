@@ -15,8 +15,6 @@ import org.converger.controller.exception.NoElementSelectedException;
  */
 public interface UserInterface {
 	
-	/* METTERSI D'ACCORDO CON EH */
-	
 	/**
 	 * Show the user interface on the screen.
 	 */
