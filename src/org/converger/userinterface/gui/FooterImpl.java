@@ -1,5 +1,6 @@
 package org.converger.userinterface.gui;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
@@ -56,14 +57,16 @@ public class FooterImpl implements Footer {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		
-		final JButton inputButton = new JButton(">");
+		final JButton inputButton = new JButton();
+		inputButton.setIcon(new ImageIcon(FooterImpl.class.getResource("/org/converger/resources/icons/footer/enter.png")));
 		inputButton.addActionListener(e -> Controller.getController().addExpression(this.inputLine.getText()));
 		inputPanel.add(inputButton, gbc);
 		
 		gbc.gridx++; // next row
 		
-		final JButton clearButton = new JButton("X");
+		final JButton clearButton = new JButton();
 		inputPanel.add(clearButton, gbc);
+		clearButton.setIcon(new ImageIcon(FooterImpl.class.getResource("/org/converger/resources/icons/footer/delete.png")));
 		clearButton.addActionListener(e -> this.inputLine.setText(""));
 		clearButton.setEnabled(false);
 		
@@ -105,15 +108,15 @@ public class FooterImpl implements Footer {
 		separator.setForeground(SystemColor.activeCaptionBorder);
 		this.mainPanel.add(separator, BorderLayout.CENTER);
 		
-		final JButton[] utility = new JButton[UtilityButtons.values().length];
-		
 		for (final UtilityButtons b : UtilityButtons.values()) {
-			utility[b.ordinal()] = new JButton(b.getName());
-			utility[b.ordinal()].addActionListener(e -> {
+			final JButton button = new JButton();
+			button.setIcon(new ImageIcon(FooterImpl.class.getResource(b.getIconPath())));
+			button.setToolTipText(b.getName());
+			button.addActionListener(e -> {
 				this.inputLine.setText(this.inputLine.getText() + b.getSymbol());
 				this.inputLine.requestFocusInWindow();
 			});
-			btnPanel.add(utility[b.ordinal()]);
+			btnPanel.add(button);
 		}
 
 	}

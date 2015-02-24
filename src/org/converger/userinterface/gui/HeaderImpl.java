@@ -1,8 +1,10 @@
 package org.converger.userinterface.gui;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.border.EtchedBorder;
@@ -24,12 +26,13 @@ public class HeaderImpl implements Header {
 				GUIConstants.DEFAULT_MARGIN));
 		this.mainPanel.setBorder(new EtchedBorder());
 		
-		final JButton[] buttons = new JButton[HeaderButtons.values().length];
-		
 		for (final HeaderButtons b : HeaderButtons.values()) {
-			buttons[b.ordinal()] = new JButton(b.getName());
-			buttons[b.ordinal()].addActionListener(e -> b.clickEvent(gui));
-			this.mainPanel.add(buttons[b.ordinal()]);
+			final JButton button  = new JButton();
+			button.setIcon(new ImageIcon(HeaderImpl.class.getResource(b.getIconPath())));
+			button.setToolTipText(b.getName());
+			button.setPreferredSize(new Dimension(GUIConstants.HEADER_BUTTON_DIMENSION, GUIConstants.HEADER_BUTTON_DIMENSION));
+			button.addActionListener(e -> b.clickEvent(gui));
+			this.mainPanel.add(button);
 		}
 	}
 
