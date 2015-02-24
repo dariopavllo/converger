@@ -9,7 +9,7 @@ import org.converger.controller.Controller;
  * @author Gabriele Graffieti
  *
  */
-public enum HeaderButtons {
+public enum HeaderButton {
 	/** New file request. */
 	NEW("New", "/org/converger/resources/icons/header/new.png") {
 
@@ -88,7 +88,7 @@ public enum HeaderButtons {
 	private final String name;
 	private final String path;
 	
-	private HeaderButtons(final String btnName, final String btnIconPath) {
+	private HeaderButton(final String btnName, final String btnIconPath) {
 		this.name = btnName;
 		this.path = btnIconPath;
 	}

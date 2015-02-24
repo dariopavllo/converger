@@ -50,11 +50,6 @@ public enum MenuButton {
 		 * @return a string representing the name of the menu item.
 		 */
 		String getName();
-		/** 
-		 * Return the message of a menu item, the message is the way which the menu can communicate user selections.
-		 * @return a string representing the message of the menu item.
-		 */
-		String getIconPath();
 		
 		/**
 		 * The method called when the item voice is clicked.
@@ -71,7 +66,7 @@ public enum MenuButton {
 	 */
 	public enum FileItem implements MenuItem {
 		/** A new empty environment. */
-		NEW("New", "Nuovo File") {
+		NEW("New") {
 
 			@Override
 			public void clickEvent(final GUI gui) {
@@ -80,7 +75,7 @@ public enum MenuButton {
 			
 		}, 
 		/** Open a new file. */
-		OPEN("Open", "Apri File") {
+		OPEN("Open") {
 
 			@Override
 			public void clickEvent(final GUI gui) {
@@ -89,7 +84,7 @@ public enum MenuButton {
 			
 		}, 
 		/** Save the current environment in a file. */
-		SAVE("Save", "Salva File") {
+		SAVE("Save") {
 
 			@Override
 			public void clickEvent(final GUI gui) {
@@ -98,7 +93,7 @@ public enum MenuButton {
 			
 		},
 		/** Exit from the application. */
-		EXIT("Exit", "Exit") {
+		EXIT("Exit") {
 
 			@Override
 			public void clickEvent(final GUI gui) {
@@ -108,21 +103,14 @@ public enum MenuButton {
 		};
 
 		private String name;
-		private String iconPath;
 		
-		private FileItem(final String itemName, final String itemIconPath) {
+		private FileItem(final String itemName) {
 			this.name = itemName;
-			this.iconPath = itemIconPath;
 		}
 		
 		@Override
 		public String getName() {
 			return this.name;
-		}
-
-		@Override
-		public String getIconPath() {
-			return this.iconPath;
 		}
 		
 		@Override
@@ -137,14 +125,14 @@ public enum MenuButton {
 	public enum EditItem implements FrameworkOperationMenuItem {
 		
 		/** Edit an expression. */
-		EDITEXP("Edit expression", "") {
+		EDITEXP("Edit expression") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				this.executeFrameworkOperation(gui, FrameworkOperation.EDIT);
 			}
 		}, 
 		/** Delete an expression. */
-		DELETEEXP("Delete expression", "") {
+		DELETEEXP("Delete expression") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				Controller.getController().deleteExpression();
@@ -152,21 +140,14 @@ public enum MenuButton {
 		};
 
 		private String name;
-		private String iconPath;
 		
-		private EditItem(final String itemName, final String itemIconPath) {
+		private EditItem(final String itemName) {
 			this.name = itemName;
-			this.iconPath = itemIconPath;
 		}
 		
 		@Override
 		public String getName() {
 			return this.name;
-		}
-
-		@Override
-		public String getIconPath() {
-			return this.iconPath;
 		}
 		
 		@Override
@@ -179,7 +160,7 @@ public enum MenuButton {
 	 */
 	public enum SolveItem implements FrameworkOperationMenuItem {
 		/** Variable substitution. */
-		VARIABLESUB("Variable substitution", "") {
+		VARIABLESUB("Variable substitution") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				this.executeFrameworkOperation(gui, FrameworkOperation.SUBSTITUTE);
@@ -187,7 +168,7 @@ public enum MenuButton {
 		}, 
 		
 		/** simplify an expression. */
-		SIMPLIFY("Simplify expression", "") {
+		SIMPLIFY("Simplify expression") {
 
 			@Override
 			public void clickEvent(final GUI gui) {
@@ -196,14 +177,14 @@ public enum MenuButton {
 			
 		},
 		/** Solve an equation. */
-		SOLVE("Solve equation", "") {
+		SOLVE("Solve equation") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				this.executeFrameworkOperation(gui, FrameworkOperation.SOLVE);
 			}
 		},
 		/** Evaluate an expression. */
-		EVALUATE("Evaluate", "") {
+		EVALUATE("Evaluate") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				this.executeFrameworkOperation(gui, FrameworkOperation.EVALUATE);
@@ -211,21 +192,14 @@ public enum MenuButton {
 		};
 
 		private String name;
-		private String iconPath;
 		
-		private SolveItem(final String itemName, final String itemIconPath) {
+		private SolveItem(final String itemName) {
 			this.name = itemName;
-			this.iconPath = itemIconPath;
 		}
 		
 		@Override
 		public String getName() {
 			return this.name;
-		}
-
-		@Override
-		public String getIconPath() {
-			return this.iconPath;
 		}
 		
 		@Override
@@ -238,7 +212,7 @@ public enum MenuButton {
 	 */
 	public enum CalculusItem implements FrameworkOperationMenuItem {
 		/** Find the derivative of an expression. */
-		DIFFERENTIATE("Differentiate", "") {
+		DIFFERENTIATE("Differentiate") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				this.executeFrameworkOperation(gui, FrameworkOperation.DIFFERENTIATE);
@@ -246,14 +220,14 @@ public enum MenuButton {
 			}
 		}, 
 		/** Calculates the definite integral of an expression between 2 points. */
-		INTEGRATE("Integrate", "") {
+		INTEGRATE("Integrate") {
 			@Override
 			public void clickEvent(final GUI gui) {
 				this.executeFrameworkOperation(gui, FrameworkOperation.INTEGRATE);
 			}
 		},
 		/** calculate the taylor series of an expression at the given point. */
-		TAYLOR("Taylor series", "") {
+		TAYLOR("Taylor series") {
 
 			@Override
 			public void clickEvent(final GUI gui) {
@@ -263,21 +237,14 @@ public enum MenuButton {
 		};
 
 		private String name;
-		private String iconPath;
 		
-		private CalculusItem(final String itemName, final String itemIconPath) {
+		private CalculusItem(final String itemName) {
 			this.name = itemName;
-			this.iconPath = itemIconPath;
 		}
 		
 		@Override
 		public String getName() {
 			return this.name;
-		}
-
-		@Override
-		public String getIconPath() {
-			return this.iconPath;
 		}
 		
 		@Override

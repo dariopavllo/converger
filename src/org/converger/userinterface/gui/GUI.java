@@ -40,9 +40,9 @@ import org.converger.userinterface.gui.dialog.YesNoDialog;
 public class GUI implements UserInterface {
 
 	private final JFrame frame;
-	private final Header header;
+	private final GUIComponent header;
 	private final Body body;
-	private final Footer footer;
+	private final GUIComponent footer;
 	
 	/**
 	 * Construct a new graphic user interface.

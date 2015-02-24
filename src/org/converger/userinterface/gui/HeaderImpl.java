@@ -13,7 +13,7 @@ import javax.swing.border.EtchedBorder;
  * Creates the high part of the gui, with shortcut buttons for manage environment or expressions.
  * @author Gabriele Graffieti
  */
-public class HeaderImpl implements Header {
+public class HeaderImpl implements GUIComponent {
 	
 	private final JPanel mainPanel;
 	/**
@@ -26,7 +26,7 @@ public class HeaderImpl implements Header {
 				GUIConstants.DEFAULT_MARGIN));
 		this.mainPanel.setBorder(new EtchedBorder());
 		
-		for (final HeaderButtons b : HeaderButtons.values()) {
+		for (final HeaderButton b : HeaderButton.values()) {
 			final JButton button  = new JButton();
 			button.setIcon(new ImageIcon(HeaderImpl.class.getResource(b.getIconPath())));
 			button.setToolTipText(b.getName());
