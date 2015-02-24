@@ -9,9 +9,10 @@ import javax.swing.JComboBox;
  * This component is used in the dialog.
  * @author Gabriele Graffieti
  */
-@SuppressWarnings("serial")
 public class DialogComboBox extends JComboBox<String> implements DialogComponent {
 	
+	private static final long serialVersionUID = -3907762002981643058L;
+
 	/**
 	 * Create the DialogComboBox and add to it the set of String passed.
 	 * @param values the set of values of the DialogComboBox.

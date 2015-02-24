@@ -13,8 +13,9 @@ import javax.swing.SpinnerNumberModel;
  * @author Gabriele Graffieti
  *
  */
-@SuppressWarnings("serial")
 public class DialogSpinner extends JSpinner implements DialogComponent {
+
+	private static final long serialVersionUID = 362412124356807044L;
 
 	/**
 	 * Create the DialogSpinner, set its property and its dimension.

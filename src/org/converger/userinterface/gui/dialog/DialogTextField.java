@@ -12,8 +12,9 @@ import org.converger.userinterface.gui.GUIConstants;
  * @author Gabriele Graffieti
  *
  */
-@SuppressWarnings("serial")
 public class DialogTextField extends JTextField implements DialogComponent {
+
+	private static final long serialVersionUID = -2975833711880471257L;
 
 	/**
 	 * Create the DialogTextField and set its lenght and its default font and text size.

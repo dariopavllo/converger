@@ -12,8 +12,9 @@ import org.converger.userinterface.gui.GUIConstants;
  * The getCoponentValue method throws an UnsopportedOperationException
  * @author Gabriele Graffieti
  */
-@SuppressWarnings("serial")
 public class DialogLabel extends JLabel implements DialogComponent {
+
+	private static final long serialVersionUID = 7024233045442852137L;
 
 	/**
 	 * Constructs a new DalogLabel with the given text.
