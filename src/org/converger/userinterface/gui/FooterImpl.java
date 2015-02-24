@@ -29,7 +29,7 @@ import java.awt.SystemColor;
  * Creates the bottom part of the gui, with utility buttons and the line input.
  * @author Gabriele Graffieti
  */
-public class FooterImpl implements Footer {
+public class FooterImpl implements GUIComponent {
 	private final JPanel mainPanel;
 	private final JTextField inputLine;
 	
@@ -108,7 +108,7 @@ public class FooterImpl implements Footer {
 		separator.setForeground(SystemColor.activeCaptionBorder);
 		this.mainPanel.add(separator, BorderLayout.CENTER);
 		
-		for (final UtilityButtons b : UtilityButtons.values()) {
+		for (final UtilityButton b : UtilityButton.values()) {
 			final JButton button = new JButton();
 			button.setIcon(new ImageIcon(FooterImpl.class.getResource(b.getIconPath())));
 			button.setToolTipText(b.getName());

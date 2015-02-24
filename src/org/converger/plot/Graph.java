@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.function.DoubleFunction;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -41,7 +42,9 @@ public class Graph {
 		
 		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		for (final PlotButton b : PlotButton.values()) {
-			final JButton button = new JButton("LEL");
+			final JButton button = new JButton();
+			button.setIcon(new ImageIcon(Graph.class.getResource(b.getIconPath())));
+			button.setToolTipText(b.getName());
 			button.addActionListener(e->b.clickEvent(controller));
 			buttonsPanel.add(button);
 		}

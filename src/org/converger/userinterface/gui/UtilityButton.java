@@ -5,7 +5,7 @@ package org.converger.userinterface.gui;
  * @author Gabriele Graffieti
  *
  */
-public enum UtilityButtons {
+public enum UtilityButton {
 	/** a left parenthesis. */
 	LPARENTHESIS("(", "(", "/org/converger/resources/icons/footer/left_par.png"),
 	/** a right parenthesis. */
@@ -54,7 +54,7 @@ public enum UtilityButtons {
 	private final String name;
 	private final String path;
 	
-	private UtilityButtons(final String exprSymbol, final String exprName, final String iconPath) {
+	private UtilityButton(final String exprSymbol, final String exprName, final String iconPath) {
 		this.symbol = exprSymbol;
 		this.name = exprName;
 		this.path = iconPath;
