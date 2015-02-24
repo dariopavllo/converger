@@ -23,7 +23,7 @@ public interface FrameworkOperationMenuItem extends MenuItem {
 
 	/**
 	 * Execute the given framework operation. If the operation do not requires any field (no user intervention) 
-	 * the operation is immediately execute.
+	 * the operation is immediately executed.
 	 * If the operation require user communication a dialog is shown.
 	 * @param gui the gui where the dialog will be shown
 	 * @param op the operation to be executed.

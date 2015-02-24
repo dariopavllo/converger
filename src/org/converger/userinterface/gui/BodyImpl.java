@@ -41,7 +41,7 @@ public class BodyImpl implements Body {
 	 * Create the body.
 	 */
 	public BodyImpl() {
-		this.panelSelected = -1;
+		this.panelSelected = -1; // no selection
 		
 		this.mainPanel = new JPanel(new BorderLayout());
 		
