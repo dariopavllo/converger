@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 
 import org.converger.userinterface.gui.GUIConstants;
 
@@ -35,12 +36,14 @@ public class Graph {
 		final GraphController controller = new GraphController(pw);
 		
 		final JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
+		mainPanel.setLayout(new BorderLayout(GUIConstants.DEFAULT_MARGIN, GUIConstants.DEFAULT_MARGIN));
 		mainPanel.setBorder(new EmptyBorder(GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER, 
 				GUIConstants.DEFAULT_BORDER, GUIConstants.DEFAULT_BORDER));
 		
 		
-		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 
+				GUIConstants.DEFAULT_MARGIN, GUIConstants.DEFAULT_MARGIN));
+		buttonsPanel.setBorder(new EtchedBorder());
 		for (final PlotButton b : PlotButton.values()) {
 			final JButton button = new JButton();
 			button.setIcon(new ImageIcon(Graph.class.getResource(b.getIconPath())));
