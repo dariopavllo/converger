@@ -26,6 +26,8 @@ public class NumericalSolver {
 	private static final double STARTING_POINT = 0.5632371895425321;
 	/** The stop condition (error between subsequent iterations). */
 	private static final double MAX_ERROR = 1e-9;
+	/** The minimum error for a solution to be allowed (on maximum iteration count). */
+	private static final double MIN_ERROR = 1e-5;
 	/** The maximum iteration count. */
 	private static final int MAX_ITERATIONS = 100;
 	/** The number of error increments before divergence is declared */
@@ -129,6 +131,7 @@ public class NumericalSolver {
 				//Calculates the error of the current iteration
 				final double error = Math.abs(x1 - x0);
 				if (error < NumericalSolver.MAX_ERROR) {
+					prevError = error; //For the minimum error check
 					break;
 				}
 				if (error > prevError) {
@@ -143,7 +146,8 @@ public class NumericalSolver {
 				prevError = error;
 			}
 			if (!diverged) {
-				if (Math.abs(x0) <= NumericalSolver.MAX_RANGE) {
+				if (Math.abs(x0) <= NumericalSolver.MAX_RANGE
+					&& prevError < NumericalSolver.MIN_ERROR) {
 					//Adds the solution
 					this.addSolution(x0, currentSolutionIndex++);
 				} else {
